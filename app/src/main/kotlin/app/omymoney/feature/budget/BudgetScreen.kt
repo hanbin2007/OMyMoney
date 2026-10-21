@@ -302,6 +302,7 @@ fun BudgetScreen(store: LedgerStore, book: Book, onBack: () -> Unit) {
         }
     }
     if (confirm != null) AlertDialog(onDismissRequest = { if (!busy) confirm = null },
+        icon = { Icon(if (confirm == "delete") Icons.Outlined.Delete else Icons.Outlined.ContentCopy, contentDescription = null) },
         title = { Text(stringResource(if (confirm == "delete") R.string.budget_delete else R.string.budget_copy_previous)) },
         text = { Text(stringResource(if (confirm == "delete") R.string.budget_delete_message else R.string.budget_copy_message)) },
         confirmButton = { TextButton({

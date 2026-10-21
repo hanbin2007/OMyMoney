@@ -89,11 +89,20 @@ private fun ScreenshotImportScreen(state: ScreenshotImportState, onChoose: () ->
     }) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).testTag("screenshot_import")) {
             if (state.error != null) ErrorText(ocrError(state.error), Modifier.padding(16.dp))
-            if (state.items.isEmpty()) EmptyState(stringResource(R.string.ocr_empty), Modifier.weight(1f))
-            else LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(bottom = 16.dp)) {
-                itemsIndexed(state.items, key = { _, item -> item.id }) { index, item ->
-                    ListItem(headlineContent = { Text(stringResource(R.string.ocr_image_number, index + 1)) },
-                        supportingContent = { Column {
+            if (state.items.isEmpty()) EmptyState(stringResource(R.string.ocr_empty), Modifier.weight(1f), icon = Icons.Outlined.DocumentScanner)
+            else LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp)) {
+                groupedItems(state.items.withIndex().toList(), key = { it.value.id }) { (index, item), shape ->
+                    val (icon, tint) = when (item.stage) {
+                        ScreenshotStage.READY -> Icons.Outlined.Image to (MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer)
+                        ScreenshotStage.READING -> Icons.Outlined.HourglassTop to (MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer)
+                        ScreenshotStage.QUEUED -> Icons.Outlined.CheckCircle to (MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer)
+                        ScreenshotStage.FAILED -> Icons.Outlined.ErrorOutline to (MaterialTheme.colorScheme.errorContainer to MaterialTheme.colorScheme.onErrorContainer)
+                        ScreenshotStage.CANCELLED -> Icons.Outlined.Block to (MaterialTheme.colorScheme.surfaceContainerHighest to MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    GroupedRow(shape, onClick = null,
+                        leading = { IconBadge(icon, containerColor = tint.first, contentColor = tint.second) },
+                        headline = { Text(stringResource(R.string.ocr_image_number, index + 1)) },
+                        supporting = { Column {
                             Text(stringResource(when (item.stage) {
                                 ScreenshotStage.READY -> R.string.ocr_ready; ScreenshotStage.READING -> R.string.ocr_reading
                                 ScreenshotStage.QUEUED -> R.string.ocr_queued; ScreenshotStage.FAILED -> R.string.ocr_failed
@@ -101,21 +110,20 @@ private fun ScreenshotImportScreen(state: ScreenshotImportState, onChoose: () ->
                             }))
                             if (item.rotation != 0) Text(stringResource(R.string.ocr_rotation, item.rotation))
                             item.error?.let { ErrorText(ocrError(it)) }
-                        } }, trailingContent = {
+                        } }, trailing = {
                             if (item.entryId != null) LedgerIconButton(Icons.Outlined.Edit, stringResource(R.string.ocr_review), { onReview(item.entryId) }, enabled = !state.busy)
                             else LedgerIconButton(Icons.Outlined.RotateRight, stringResource(R.string.ocr_rotate), { onRotate(item.id) }, enabled = !state.busy)
                         })
-                    HorizontalDivider()
                 }
             }
             if (state.busy) {
                 val finished = state.items.count { it.stage in setOf(ScreenshotStage.QUEUED, ScreenshotStage.FAILED) }
-                LinearProgressIndicator(progress = { finished.toFloat() / state.items.size.coerceAtLeast(1) }, modifier = Modifier.fillMaxWidth())
+                LinearProgressIndicator(progress = { finished.toFloat() / state.items.size.coerceAtLeast(1) }, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
                 Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     Text(stringResource(R.string.ocr_progress, finished, state.items.size), Modifier.weight(1f))
                     LedgerIconButton(Icons.Outlined.Close, stringResource(R.string.cancel), onCancel)
                 }
-            } else Button(onStart, Modifier.fillMaxWidth().padding(16.dp).heightIn(min = 48.dp).testTag("ocr_start"),
+            } else Button(onStart, Modifier.fillMaxWidth().padding(16.dp).heightIn(min = 56.dp).testTag("ocr_start"),
                 enabled = state.items.any { it.stage != ScreenshotStage.QUEUED }) {
                 Icon(Icons.Outlined.DocumentScanner, null); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.ocr_start))
             }

@@ -355,6 +355,7 @@ private fun accountKindIcon(kind: AccountKind): ImageVector = when (kind) {
 @Composable
 private fun ArchiveDialog(name: String, onDismiss: () -> Unit, onConfirm: () -> Unit, childCategoryCount: Int = 0) {
     AlertDialog(onDismissRequest = onDismiss,
+        icon = { Icon(Icons.Outlined.Archive, contentDescription = null) },
         title = { Text(stringResource(R.string.archive_title)) },
         text = { Text(if (childCategoryCount > 0) stringResource(R.string.archive_category_group_message, name, childCategoryCount)
             else stringResource(R.string.archive_message, name), Modifier.verticalScroll(rememberScrollState())) },
