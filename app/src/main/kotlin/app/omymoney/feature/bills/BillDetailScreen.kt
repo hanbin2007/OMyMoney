@@ -86,7 +86,9 @@ fun BillDetailScreen(viewModel: BillDetailViewModel, catalog: CatalogViewModel, 
     BackHandler(enabled = deleting) { }
     val bill = state.bill
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
-    if (confirmDelete) AlertDialog(onDismissRequest = { confirmDelete = false }, title = { Text(stringResource(R.string.delete_linked_title)) },
+    if (confirmDelete) AlertDialog(onDismissRequest = { confirmDelete = false },
+        icon = { Icon(Icons.Outlined.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
+        title = { Text(stringResource(R.string.delete_linked_title)) },
         text = { Text(stringResource(R.string.delete_linked_message)) },
         confirmButton = { TextButton({ confirmDelete = false; viewModel.delete() }, Modifier.testTag("linked_delete_confirm")) { Text(stringResource(R.string.delete_bill)) } },
         dismissButton = { TextButton({ confirmDelete = false }, Modifier.testTag("linked_delete_cancel")) { Text(stringResource(R.string.cancel)) } })

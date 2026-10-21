@@ -14,9 +14,6 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.activity.setViewTreeOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -40,7 +37,6 @@ import app.omymoney.feature.automation.DraftReviewContent
 import app.omymoney.feature.bills.BillEditorViewModel
 import app.omymoney.feature.catalog.CatalogViewModel
 import app.omymoney.platform.accessibility.AccessibilityStatus
-import app.omymoney.ui.components.LedgerIconButton
 import app.omymoney.ui.theme.LedgerTheme
 import app.omymoney.ui.theme.ThemeMode
 import kotlinx.coroutines.flow.update
@@ -109,6 +105,10 @@ class DraftOverlayHost(private val service: AccessibilityService, private val co
         root.setViewTreeSavedStateRegistryOwner(lifecycle)
         root.setViewTreeViewModelStoreOwner(lifecycle)
         root.setViewTreeOnBackPressedDispatcherOwner(lifecycle)
+        val receiptDuration = if (!receiptMode) 0L else if (android.os.Build.VERSION.SDK_INT >= 29) service.getSystemService(android.view.accessibility.AccessibilityManager::class.java)
+            .getRecommendedTimeoutMillis(8_000, android.view.accessibility.AccessibilityManager.FLAG_CONTENT_TEXT or
+                android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS or android.view.accessibility.AccessibilityManager.FLAG_CONTENT_ICONS).toLong()
+            else 8_000L
         compose.setContent {
             val appearance by container.preferences.state.collectAsStateWithLifecycle()
             LedgerTheme(appearance.theme, dynamicColor = appearance.dynamicColor) {
@@ -123,14 +123,9 @@ class DraftOverlayHost(private val service: AccessibilityService, private val co
                         catch (_: Exception) { dismiss(OverlayDismissReason.WINDOW_REJECTED) }
                     }
                     bill?.let { PaymentReceipt(it.toDraft(), onEdit = { openSavedBill(entry) },
-                        onDismiss = { dismiss(OverlayDismissReason.USER) }) }
-                } else if (!expanded) Surface(tonalElevation = 3.dp) {
-                    Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                        Text(stringResource(R.string.review_pending_count, pendingCount), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
-                        LedgerIconButton(Icons.Outlined.Edit, stringResource(R.string.review_reopen), ::expand)
-                        LedgerIconButton(Icons.Outlined.Close, stringResource(R.string.review_later), { dismiss(OverlayDismissReason.USER) })
-                    }
-                } else {
+                        onDismiss = { dismiss(OverlayDismissReason.USER) }, displayMillis = receiptDuration) }
+                } else if (!expanded) PendingIsland(pendingCount, onReopen = ::expand, onLater = { dismiss(OverlayDismissReason.USER) })
+                else {
                     val catalog: CatalogViewModel = viewModel(viewModelStoreOwner = lifecycle,
                         factory = remember { viewModelFactory { initializer { CatalogViewModel(container.store.catalog) } } })
                     val catalogState by catalog.state.collectAsStateWithLifecycle()
@@ -153,13 +148,7 @@ class DraftOverlayHost(private val service: AccessibilityService, private val co
         return try {
             lifecycle.start()
             manager.addView(root, parameters(focusable = false))
-            if (receiptMode) {
-                val duration = if (android.os.Build.VERSION.SDK_INT >= 29) service.getSystemService(android.view.accessibility.AccessibilityManager::class.java)
-                    .getRecommendedTimeoutMillis(8_000, android.view.accessibility.AccessibilityManager.FLAG_CONTENT_TEXT or
-                        android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS or android.view.accessibility.AccessibilityManager.FLAG_CONTENT_ICONS)
-                else 8_000
-                timeout = Runnable { dismiss(OverlayDismissReason.TIMEOUT) }.also { handler.postDelayed(it, duration.toLong()) }
-            }
+            if (receiptMode) timeout = Runnable { dismiss(OverlayDismissReason.TIMEOUT) }.also { handler.postDelayed(it, receiptDuration) }
             true
         } catch (_: RuntimeException) {
             AccessibilityStatus.mutable.update { it.copy(error = "overlay_unavailable") }
@@ -208,13 +197,14 @@ class DraftOverlayHost(private val service: AccessibilityService, private val co
 
     private fun parameters(focusable: Boolean) = WindowManager.LayoutParams(
         if (receiptMode) minOf((400 * service.resources.displayMetrics.density).toInt(), service.resources.displayMetrics.widthPixels - (24 * service.resources.displayMetrics.density).toInt())
-            else WindowManager.LayoutParams.MATCH_PARENT,
+            // The collapsed reminder is a capsule: wrapping it keeps the screen around it touchable.
+            else if (focusable) WindowManager.LayoutParams.MATCH_PARENT else WindowManager.LayoutParams.WRAP_CONTENT,
         if (focusable) WindowManager.LayoutParams.MATCH_PARENT else WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY,
         WindowManager.LayoutParams.FLAG_SECURE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
             if (focusable) 0 else WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
         PixelFormat.TRANSLUCENT,
-    ).apply { gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL; if (receiptMode) y = (8 * service.resources.displayMetrics.density).toInt()
+    ).apply { gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL; if (!focusable) y = (8 * service.resources.displayMetrics.density).toInt()
         softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE }
 
     private class Owner(onBack: () -> Unit) : SavedStateRegistryOwner, ViewModelStoreOwner, OnBackPressedDispatcherOwner {

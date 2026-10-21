@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Drafts
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Savings
@@ -451,7 +452,9 @@ fun BillEditorScreen(
             }
         }
     }
-    if (askLeave) AlertDialog(onDismissRequest = { askLeave = false }, title = { Text(stringResource(R.string.leave_draft_title)) },
+    if (askLeave) AlertDialog(onDismissRequest = { askLeave = false },
+        icon = { Icon(Icons.Outlined.Drafts, contentDescription = null) },
+        title = { Text(stringResource(R.string.leave_draft_title)) },
         text = if (editor.scheduleExecutionId != null) { { Text(stringResource(R.string.schedule_leave_detail)) } } else null,
         confirmButton = { TextButton({ askLeave = false; editor.keepAndClose() }) { Text(stringResource(R.string.keep_draft)) } },
         dismissButton = { Column(horizontalAlignment = Alignment.End) {

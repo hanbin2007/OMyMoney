@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.EditOff
 import androidx.compose.material.icons.outlined.Inbox
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.SearchOff
@@ -210,6 +211,7 @@ fun ArchiveSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
 fun DiscardDialog(onDiscard: () -> Unit, onKeep: () -> Unit) {
     AlertDialog(
         onDismissRequest = onKeep,
+        icon = { Icon(Icons.Outlined.EditOff, contentDescription = null) },
         title = { Text(stringResource(R.string.discard_title)) },
         text = { Text(stringResource(R.string.discard_message)) },
         confirmButton = { TextButton(onDiscard) { Text(stringResource(R.string.discard_changes)) } },

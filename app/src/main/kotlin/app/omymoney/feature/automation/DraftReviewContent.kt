@@ -1,6 +1,20 @@
 package app.omymoney.feature.automation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.automirrored.outlined.CompareArrows
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.FactCheck
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.ui.Alignment
+import app.omymoney.ui.components.IconBadge
+import app.omymoney.ui.components.groupedShape
+import app.omymoney.ui.theme.ExpressiveMotion
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material3.*
@@ -33,14 +47,17 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
     val confirmDuplicate = entry?.decision?.kind == DedupKind.SIMILAR && settings.settings.dedupPresentation == DedupPresentation.CONFIRM
     BillEditorScreen(editor, catalog, state, store.attachments, onBack, onSaved, overlayMode, onOpenApp,
         saveEnabled = !confirmDuplicate || duplicateConfirmed, header = {
-            if (entry != null) {
-                ReviewEvidence(entry, state, store, showSimilar = settings.settings.dedupPresentation != DedupPresentation.SKIP_SIMILARITY)
-                if (confirmDuplicate) BillCheckRow(stringResource(R.string.review_confirm_duplicate), duplicateConfirmed,
-                    !editorState.saving) { duplicateConfirmed = it }
-                TextButton(editor::discard, enabled = !editorState.saving, modifier = Modifier.testTag("review_ignore")) {
-                    Icon(Icons.Outlined.Block, null)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.review_ignore))
+            if (entry != null) Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.extraLarge, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ReviewEvidence(entry, state, store, showSimilar = settings.settings.dedupPresentation != DedupPresentation.SKIP_SIMILARITY)
+                    if (confirmDuplicate) BillCheckRow(stringResource(R.string.review_confirm_duplicate), duplicateConfirmed,
+                        !editorState.saving) { duplicateConfirmed = it }
+                    TextButton(editor::discard, enabled = !editorState.saving, modifier = Modifier.testTag("review_ignore"),
+                        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)) {
+                        Icon(Icons.Outlined.Block, null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.review_ignore))
+                    }
                 }
             }
         })
@@ -54,16 +71,26 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
         AccountMatcher.match(entry.draft, catalog.accounts, evidence.filter { it.field in setOf("accountHint", "fromAccountHint", "toAccountHint") }
             .map { it.copy(field = "accountHint") })
     }
-    Text(stringResource(R.string.review_source, applicationLabel(entry.draft.sourcePackage ?: entry.draft.source.name)),
-        style = MaterialTheme.typography.labelLarge)
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        IconBadge(if (entry.draft.source == BillSource.NOTIFICATION) Icons.Outlined.Notifications else Icons.Outlined.AutoAwesome,
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer, contentColor = MaterialTheme.colorScheme.onTertiaryContainer)
+        Text(stringResource(R.string.review_source, applicationLabel(entry.draft.sourcePackage ?: entry.draft.source.name)),
+            Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+    }
     val issues = (entry.result as? RecognitionResult.NeedsReview)?.issues.orEmpty()
-    if (issues.isNotEmpty()) ErrorText(stringResource(R.string.review_needs_check))
-    if (entry.draft.source == BillSource.NOTIFICATION) Text(stringResource(R.string.notification_capture_review),
-        style = MaterialTheme.typography.bodySmall)
-    if (showSimilar && entry.decision.kind == DedupKind.SIMILAR) {
-        TextButton({ comparisonOpen = !comparisonOpen }, Modifier.testTag("review_compare")) {
-            Text(stringResource(R.string.review_similar, entry.decision.matches.size))
+    if (issues.isNotEmpty()) Surface(shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.errorContainer,
+        contentColor = MaterialTheme.colorScheme.onErrorContainer) {
+        Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(Icons.Outlined.ErrorOutline, null, Modifier.size(18.dp))
+            ErrorText(stringResource(R.string.review_needs_check))
         }
+    }
+    if (entry.draft.source == BillSource.NOTIFICATION) Text(stringResource(R.string.notification_capture_review),
+        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    if (showSimilar && entry.decision.kind == DedupKind.SIMILAR) {
+        FilterChip(comparisonOpen, { comparisonOpen = !comparisonOpen }, label = { Text(stringResource(R.string.review_similar, entry.decision.matches.size)) },
+            leadingIcon = { Icon(Icons.AutoMirrored.Outlined.CompareArrows, null, Modifier.size(18.dp)) }, modifier = Modifier.testTag("review_compare"))
         if (comparisonOpen) {
             val comparisonFlow = remember(entry.id, store) {
                 val flows = entry.decision.matches.take(20).map { comparisonFlow(it, store) }
@@ -96,10 +123,21 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
                 style = MaterialTheme.typography.bodySmall)
         }
     }
-    TextButton({ evidenceOpen = !evidenceOpen }, Modifier.testTag("review_evidence")) { Text(stringResource(R.string.review_evidence)) }
-    if (evidenceOpen) evidence.forEach { field ->
-        Text(evidenceLabel(field.field), style = MaterialTheme.typography.labelLarge)
-        Text(field.rawText, style = MaterialTheme.typography.bodyMedium)
+    FilterChip(evidenceOpen, { evidenceOpen = !evidenceOpen }, label = { Text(stringResource(R.string.review_evidence)) },
+        leadingIcon = { Icon(Icons.Outlined.FactCheck, null, Modifier.size(18.dp)) }, modifier = Modifier.testTag("review_evidence"))
+    AnimatedVisibility(evidenceOpen, enter = expandVertically(ExpressiveMotion.defaultSpatial()) + fadeIn(),
+        exit = shrinkVertically(ExpressiveMotion.fastSpatial()) + fadeOut()) {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            evidence.forEachIndexed { index, field ->
+                Surface(Modifier.fillMaxWidth(), shape = groupedShape(index, evidence.size, outer = 16.dp, inner = 4.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh) {
+                    Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+                        Text(evidenceLabel(field.field), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Text(field.rawText, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+            }
+        }
     }
 }
 
