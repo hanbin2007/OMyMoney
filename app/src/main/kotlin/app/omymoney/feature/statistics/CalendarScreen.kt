@@ -1,9 +1,16 @@
 package app.omymoney.feature.statistics
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
+import app.omymoney.ui.components.GroupedRow
+import app.omymoney.ui.components.groupedShape
+import app.omymoney.ui.theme.ExpressiveMotion
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
@@ -27,7 +34,7 @@ import java.time.format.DateTimeFormatter
 @Composable internal fun CalendarHeader(month: YearMonth, annual: Boolean, onShift: (Int) -> Unit) {
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         if (annual) LedgerIconButton(Icons.AutoMirrored.Outlined.KeyboardArrowLeft, stringResource(R.string.budget_previous), { onShift(-1) }, enabled = month.monthValue > 1)
-        Text(month.toString(), Modifier.weight(1f).testTag("stats_calendar_month"), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+        Text(month.toString(), Modifier.weight(1f).padding(vertical = 12.dp).testTag("stats_calendar_month"), style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         if (annual) LedgerIconButton(Icons.AutoMirrored.Outlined.KeyboardArrowRight, stringResource(R.string.budget_next), { onShift(1) },
             Modifier.testTag("stats_calendar_next"), enabled = month.monthValue < 12)
     }
@@ -36,33 +43,51 @@ import java.time.format.DateTimeFormatter
 internal fun LazyListScope.calendarDays(summary: StatisticsSummary, month: YearMonth, selected: LocalDate,
     listMode: Boolean, displayedKind: EconomicKind, onChoose: (LocalDate) -> Unit) {
     val days = summary.days.filter { YearMonth.from(it.date) == month }
-    if (listMode) items(days, key = { "calendar/${it.date}" }) { day ->
+    if (listMode) itemsIndexed(days, key = { _, day -> "calendar/${day.date}" }) { index, day ->
         val description = dayDescription(day, summary)
-        ListItem(modifier = Modifier.testTag("stats_day_${day.date}").clickable { onChoose(day.date) }
-            .semantics { contentDescription = description; this.selected = day.date == selected },
-            headlineContent = { Text(day.date.format(DateTimeFormatter.ofPattern("MM-dd EEE"))) },
-            supportingContent = { Column {
+        val chosen = day.date == selected
+        GroupedRow(groupedShape(index, days.size), onClick = { onChoose(day.date) },
+            modifier = Modifier.testTag("stats_day_${day.date}").semantics { contentDescription = description; this.selected = chosen },
+            containerColor = if (chosen) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
+            headline = { Text(day.date.format(DateTimeFormatter.ofPattern("MM-dd EEE"))) },
+            supporting = { Column {
                 Text(economicLabel(displayedKind), style = MaterialTheme.typography.labelMedium)
                 StatisticsValue(day.totals[displayedKind], summary.currency, Modifier.fillMaxWidth())
-            } },
-            colors = ListItemDefaults.colors(containerColor = if (day.date == selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface))
+            } })
     } else item {
-        Column {
-            Row(Modifier.fillMaxWidth()) {
-                java.time.DayOfWeek.entries.forEach { day -> Text(day.getDisplayName(java.time.format.TextStyle.NARROW, java.util.Locale.getDefault()),
-                    Modifier.weight(1f), textAlign = TextAlign.Center, style = MaterialTheme.typography.labelMedium) }
-            }
-            val cells = List<StatisticsDay?>(month.atDay(1).dayOfWeek.value - 1) { null } + days
-            cells.chunked(7).forEach { week ->
-                Row(Modifier.fillMaxWidth()) {
-                    (week + List<StatisticsDay?>(7 - week.size) { null }).forEach { day ->
-                        if (day == null) Spacer(Modifier.weight(1f).height(48.dp)) else {
-                            val description = dayDescription(day, summary)
-                            TextButton({ onChoose(day.date) }, Modifier.weight(1f).heightIn(min = 48.dp)
-                                .testTag("stats_day_${day.date}").semantics { contentDescription = description; this.selected = day.date == selected },
-                                contentPadding = PaddingValues(0.dp),
-                                colors = ButtonDefaults.textButtonColors(containerColor = if (day.date == selected) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface)) {
-                                Text(day.date.dayOfMonth.toString())
+        // Each day is tinted by its share of the month's busiest day, turning the grid into a spending heatmap.
+        val peak = days.mapNotNull { it.totals[displayedKind].minor?.abs() }.maxOrNull()?.takeIf { it.signum() > 0 }
+        val heat = MaterialTheme.colorScheme.primary
+        Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+            Column(Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                    java.time.DayOfWeek.entries.forEach { day -> Text(day.getDisplayName(java.time.format.TextStyle.NARROW, java.util.Locale.getDefault()),
+                        Modifier.weight(1f), textAlign = TextAlign.Center, style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                }
+                val cells = List<StatisticsDay?>(month.atDay(1).dayOfWeek.value - 1) { null } + days
+                cells.chunked(7).forEach { week ->
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        (week + List<StatisticsDay?>(7 - week.size) { null }).forEach { day ->
+                            if (day == null) Spacer(Modifier.weight(1f).height(48.dp)) else {
+                                val description = dayDescription(day, summary)
+                                val chosen = day.date == selected
+                                val intensity = peak?.let { max -> day.totals[displayedKind].minor?.abs()?.toBigDecimal()
+                                    ?.divide(max.toBigDecimal(), 4, java.math.RoundingMode.HALF_EVEN)?.toFloat() } ?: 0f
+                                val container by animateColorAsState(when {
+                                    chosen -> MaterialTheme.colorScheme.primary
+                                    intensity > 0f -> heat.copy(alpha = 0.10f + 0.38f * intensity)
+                                    else -> Color.Transparent
+                                }, ExpressiveMotion.defaultEffects(), label = "day")
+                                val corner by animateDpAsState(if (chosen) 24.dp else 12.dp, ExpressiveMotion.fastSpatial(), label = "day-corner")
+                                Surface(onClick = { onChoose(day.date) }, modifier = Modifier.weight(1f).heightIn(min = 48.dp)
+                                    .testTag("stats_day_${day.date}").semantics { contentDescription = description; this.selected = chosen },
+                                    shape = RoundedCornerShape(corner), color = container,
+                                    contentColor = if (chosen) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(day.date.dayOfMonth.toString(), style = MaterialTheme.typography.titleSmall)
+                                    }
+                                }
                             }
                         }
                     }

@@ -1,6 +1,17 @@
 package app.omymoney.feature.bills
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.SearchOff
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import app.omymoney.ui.theme.ExpressiveMotion
+import app.omymoney.ui.theme.LocalLedgerColors
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -72,14 +83,25 @@ fun BillListScreen(viewModel: BillListViewModel, book: Book, catalog: CatalogVie
     }
     LaunchedEffect(searchOpen) { if (searchOpen) searchFocus.requestFocus() }
     Column(Modifier.fillMaxSize().imePadding()) {
-        if (searchOpen) OutlinedTextField(filters.search, viewModel::search, singleLine = true,
-            label = { Text(stringResource(R.string.search_notes)) },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).focusRequester(searchFocus).testTag("bill_search"),
-            trailingIcon = { if (filters.search.isNotEmpty()) LedgerIconButton(Icons.Outlined.Close, stringResource(R.string.clear_search), { viewModel.search("") }) })
-        if (filters.active) Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(filterSummary(filters, catalogState.accounts, categories), Modifier.weight(1f).testTag("bill_filter_summary"),
-                style = MaterialTheme.typography.bodyMedium, maxLines = 2, overflow = TextOverflow.Ellipsis)
-            LedgerIconButton(Icons.Outlined.Close, stringResource(R.string.clear_filters), viewModel::clearFilters)
+        AnimatedVisibility(searchOpen, enter = expandVertically(ExpressiveMotion.defaultSpatial()) + fadeIn(ExpressiveMotion.defaultEffects()),
+            exit = shrinkVertically(ExpressiveMotion.fastSpatial()) + fadeOut(ExpressiveMotion.fastEffects())) {
+            OutlinedTextField(filters.search, viewModel::search, singleLine = true, shape = CircleShape,
+                label = { Text(stringResource(R.string.search_notes)) },
+                leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp).focusRequester(searchFocus).testTag("bill_search"),
+                trailingIcon = { if (filters.search.isNotEmpty()) LedgerIconButton(Icons.Outlined.Close, stringResource(R.string.clear_search), { viewModel.search("") }) })
+        }
+        AnimatedVisibility(filters.active, enter = expandVertically(ExpressiveMotion.defaultSpatial()) + fadeIn(),
+            exit = shrinkVertically(ExpressiveMotion.fastSpatial()) + fadeOut()) {
+            Surface(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), shape = CircleShape,
+                color = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer) {
+                Row(Modifier.padding(start = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.FilterList, contentDescription = null, Modifier.size(18.dp))
+                    Text(filterSummary(filters, catalogState.accounts, categories), Modifier.weight(1f).padding(start = 8.dp).testTag("bill_filter_summary"),
+                        style = MaterialTheme.typography.labelLarge, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    LedgerIconButton(Icons.Outlined.Close, stringResource(R.string.clear_filters), viewModel::clearFilters)
+                }
+            }
         }
         when {
             state.loading -> LoadingState()
@@ -87,35 +109,39 @@ fun BillListScreen(viewModel: BillListViewModel, book: Book, catalog: CatalogVie
                 ErrorText(stringResource(R.string.bill_load_failed))
                 TextButton(viewModel::retry) { Text(stringResource(R.string.retry)) }
             }
-            else -> LazyColumn(state = listState, modifier = Modifier.fillMaxSize().testTag("bill_list"), contentPadding = PaddingValues(bottom = 96.dp)) {
+            else -> LazyColumn(state = listState, modifier = Modifier.fillMaxSize().testTag("bill_list"), contentPadding = PaddingValues(bottom = 112.dp)) {
                 if (!filters.active) item(key = "summary") { header() }
                 if (state.bills.isEmpty()) item(key = "empty") {
-                    Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(stringResource(if (filters.active) R.string.no_matching_bills else R.string.empty_bills))
-                        if (filters.active) TextButton(viewModel::clearFilters, Modifier.testTag("clear_bill_filters")) { Text(stringResource(R.string.clear_filters)) }
-                    }
+                    EmptyMessage(stringResource(if (filters.active) R.string.no_matching_bills else R.string.empty_bills),
+                        Modifier.padding(horizontal = 24.dp), icon = if (filters.active) Icons.Outlined.SearchOff else Icons.AutoMirrored.Outlined.ReceiptLong,
+                        action = if (filters.active) ({
+                            FilledTonalButton(viewModel::clearFilters, Modifier.testTag("clear_bill_filters")) { Text(stringResource(R.string.clear_filters)) }
+                        }) else null)
                 }
+                val today = LocalDate.now(book.zoneId)
                 val days = state.bills.groupBy { it.occurredAt.atZone(book.zoneId).toLocalDate() }
                 days.forEach { (day, bills) ->
-                    item(key = "date/$day") {
-                        Text(day.format(DateTimeFormatter.ofPattern("yyyy-MM-dd EEE")), Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-                            style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    items(bills, key = { it.id }) { bill ->
+                    item(key = "date/$day") { DayHeader(day, today, bills, Modifier.animateItem()) }
+                    groupedItems(bills, key = { it.id }) { bill, shape ->
                         val category = categories.firstOrNull { it.id == bill.categoryId }?.name
-                        ListItem(modifier = Modifier.clickable { onBill(bill.id) }.testTag("bill_row_${bill.id}"),
-                            headlineContent = { Text(bill.note.ifBlank { category ?: billKindLabel(bill.kind) }, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-                            supportingContent = { Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        val title = bill.note.ifBlank { category ?: billKindLabel(bill.kind) }
+                        GroupedRow(shape, onClick = { onBill(bill.id) }, modifier = Modifier.testTag("bill_row_${bill.id}"),
+                            leading = { MonogramBadge(category ?: billKindLabel(bill.kind)) },
+                            headline = { Text(title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+                            supporting = {
                                 Text(listOfNotNull(billKindLabel(bill.kind), category, bill.occurredAt.atZone(book.zoneId).format(DateTimeFormatter.ofPattern("HH:mm")))
-                                    .joinToString(" · "), style = MaterialTheme.typography.bodySmall)
-                                MoneyText(billAmountText(bill), Modifier.fillMaxWidth(), textAlign = TextAlign.End,
-                                    style = MaterialTheme.typography.titleMedium)
-                                bill.exchange?.let { exchange ->
-                                    MoneyText("${exchange.amount.currency.code} ${exchange.amount.decimalText()}", Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.End, style = MaterialTheme.typography.bodyMedium)
+                                    .joinToString(" · "), style = MaterialTheme.typography.bodySmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            },
+                            trailing = {
+                                Column(Modifier.widthIn(max = 168.dp), horizontalAlignment = Alignment.End) {
+                                    MoneyText(billAmountText(bill), textAlign = TextAlign.End, style = MaterialTheme.typography.titleMedium,
+                                        color = billAmountColor(bill.kind))
+                                    bill.exchange?.let { exchange ->
+                                        MoneyText("${exchange.amount.currency.code} ${exchange.amount.decimalText()}", textAlign = TextAlign.End,
+                                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    }
                                 }
-                            } })
-                        HorizontalDivider(Modifier.padding(horizontal = 16.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                            })
                     }
                 }
             }
@@ -132,6 +158,38 @@ fun billAmountText(bill: Bill): String {
         else -> ""
     }
     return "${bill.amount.currency.code} $sign${bill.amount.decimalText()}"
+}
+
+/** Income reads green, spending keeps the neutral body colour, money moved between accounts is muted. */
+@Composable
+fun billAmountColor(kind: BillKind): Color = when (kind) {
+    in app.omymoney.core.ledger.PostingCalculator.incomingKinds -> LocalLedgerColors.current.income
+    in app.omymoney.core.ledger.PostingCalculator.outgoingKinds -> MaterialTheme.colorScheme.onSurface
+    else -> MaterialTheme.colorScheme.onSurfaceVariant
+}
+
+@Composable
+private fun DayHeader(day: LocalDate, today: LocalDate, bills: List<Bill>, modifier: Modifier = Modifier) {
+    fun total(kinds: Set<BillKind>): String? = bills.filter { it.kind in kinds }.takeIf { it.isNotEmpty() }
+        ?.groupBy { it.amount.currency }?.takeIf { it.size == 1 }?.entries?.single()?.let { (currency, members) ->
+            runCatching { members.map { it.amount }.reduce { a, b -> a + b } }.getOrNull()?.let { "${currency.code} ${it.decimalText()}" }
+        }
+    val label = when (day) {
+        today -> stringResource(R.string.today)
+        today.minusDays(1) -> stringResource(R.string.yesterday)
+        else -> null
+    }
+    Row(modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp).semantics(mergeDescendants = true) {},
+        verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(label ?: day.format(DateTimeFormatter.ofPattern("MM-dd")), style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface)
+        Text(day.format(DateTimeFormatter.ofPattern(if (label == null) "EEE" else "MM-dd EEE")), Modifier.weight(1f),
+            style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        val totals = listOfNotNull(total(app.omymoney.core.ledger.PostingCalculator.outgoingKinds)?.let { stringResource(R.string.day_expense_total, it) },
+            total(app.omymoney.core.ledger.PostingCalculator.incomingKinds)?.let { stringResource(R.string.day_income_total, it) })
+        if (totals.isNotEmpty()) Text(totals.joinToString("  "), style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+    }
 }
 
 @Composable

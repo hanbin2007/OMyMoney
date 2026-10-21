@@ -4,7 +4,36 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.outlined.Notes
+import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
+import app.omymoney.ui.theme.ExpressiveMotion
+import app.omymoney.ui.theme.LocalLedgerColors
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
@@ -42,7 +71,7 @@ import app.omymoney.ui.components.*
 import java.time.*
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun BillEditorScreen(
     editor: BillEditorViewModel,
@@ -96,6 +125,7 @@ fun BillEditorScreen(
             keyboard?.show()
         }
     }
+    fun chipModifier(field: String, tag: String) = Modifier.testTag(tag).bringIntoViewRequester(positions.getValue(field))
     fun fieldModifier(field: String, tag: String) = Modifier.fillMaxWidth().testTag(tag)
         .bringIntoViewRequester(positions.getValue(field))
         .then(focusTargets[field]?.let { Modifier.focusRequester(it) } ?: Modifier)
@@ -112,9 +142,9 @@ fun BillEditorScreen(
     }
     ScreenScaffold(stringResource(title), ::leave,
         backEnabled = !state.saving, actions = {
-            if (!embeddedPicker) FilledTonalButton(editor::submit, Modifier.padding(end = 8.dp).testTag("bill_save"),
+            if (!embeddedPicker) Button(editor::submit, Modifier.padding(end = 8.dp).testTag("bill_save"),
                 enabled = saveEnabled && state.record != null && !state.saving && !state.importingAttachment) {
-                if (state.saving) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                if (state.saving) CircularProgressIndicator(Modifier.size(20.dp), color = LocalContentColor.current, strokeWidth = 2.dp)
                 else Text(stringResource(R.string.save))
             }
         }) { padding ->
@@ -141,18 +171,20 @@ fun BillEditorScreen(
                 Column(Modifier.widthIn(max = 720.dp).fillMaxWidth().verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 8.dp).testTag("bill_editor_form"), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     header()
-                    Column(Modifier.bringIntoViewRequester(positions.getValue("form"))) {
-                        Text(book?.name ?: draft.bookId, style = MaterialTheme.typography.titleMedium)
-                        error("form")?.let { ErrorText(it) }
-                        error("bookId")?.let { ErrorText(it) }
-                        if (state.persistenceFailed) {
-                            ErrorText(stringResource(R.string.draft_persist_failed))
-                            TextButton(editor::retryPersistence) { Text(stringResource(R.string.retry)) }
-                        } else if (state.dirty) {
+                    Row(Modifier.fillMaxWidth().bringIntoViewRequester(positions.getValue("form")), verticalAlignment = Alignment.CenterVertically) {
+                        Text(book?.name ?: draft.bookId, Modifier.weight(1f), style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        if (!state.persistenceFailed && state.dirty) {
                             Text(stringResource(if (state.persistencePending) R.string.draft_saving else R.string.draft_saved),
-                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.testTag("draft_status"))
                         }
+                    }
+                    error("form")?.let { ErrorText(it) }
+                    error("bookId")?.let { ErrorText(it) }
+                    if (state.persistenceFailed) {
+                        ErrorText(stringResource(R.string.draft_persist_failed))
+                        TextButton(editor::retryPersistence) { Text(stringResource(R.string.retry)) }
                     }
                     if (draft.kind == null || draft.kind in BillEditorViewModel.BASIC_KINDS + BillKind.REIMBURSEMENT) SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().bringIntoViewRequester(positions.getValue("kind"))) {
                         BillEditorViewModel.BASIC_KINDS.forEachIndexed { index, kind ->
@@ -162,36 +194,103 @@ fun BillEditorScreen(
                                 modifier = Modifier.testTag("bill_kind_${kind.name}")) { Text(billKindLabel(kind)) }
                         }
                     } else Text(billKindLabel(requireNotNull(draft.kind)), style = MaterialTheme.typography.titleMedium)
-                    if (draft.kind in listOf(BillKind.EXPENSE, BillKind.REIMBURSEMENT)) {
-                        BillCheckRow(stringResource(R.string.pending_reimbursement), draft.kind == BillKind.REIMBURSEMENT,
-                            !state.saving, Modifier.testTag("bill_pending_reimbursement")) {
-                            editor.onAction(EditorAction.Kind(if (it) BillKind.REIMBURSEMENT else BillKind.EXPENSE))
-                        }
-                    }
                     error("kind")?.let { ErrorText(it) }
                     error("linkedBillId")?.let { ErrorText(it) }
-                    if (draft.linkedBillId == null && draft.kind in PostingCalculator.outgoingKinds + PostingCalculator.incomingKinds) {
-                        PickerField(stringResource(R.string.currency_nominal), record.currency.code, { picker = "currency" },
-                            Modifier.fillMaxWidth().testTag("bill_currency"), enabled = !state.saving)
+                    // The amount is the one thing every bill needs, so it gets a large, kind-tinted stage of its own.
+                    val ledgerColors = LocalLedgerColors.current
+                    val (stage, onStage) = when (draft.kind) {
+                        in PostingCalculator.incomingKinds -> ledgerColors.incomeContainer to ledgerColors.onIncomeContainer
+                        in PostingCalculator.outgoingKinds -> ledgerColors.expenseContainer to ledgerColors.onExpenseContainer
+                        in PostingCalculator.transferKinds -> ledgerColors.transferContainer to ledgerColors.onTransferContainer
+                        else -> MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
                     }
-                    OutlinedTextField(record.amountText, { editor.onAction(EditorAction.Amount(it)) },
-                        modifier = fieldModifier("amount", "bill_amount"), enabled = !state.saving,
-                        label = { Text(stringResource(R.string.amount)) }, prefix = { Text(record.currency.code) },
-                        textStyle = MaterialTheme.typography.headlineMedium, singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
-                        isError = error("amount") != null, supportingText = error("amount")?.let { { ErrorText(it) } })
-                    if (draft.kind in PostingCalculator.outgoingKinds || draft.kind in PostingCalculator.transferKinds || (draft.kind == BillKind.ADJUSTMENT && draft.fromAccountId != null)) PickerField(
-                        stringResource(if (draft.kind in PostingCalculator.transferKinds) R.string.from_account else R.string.paying_account),
-                        accounts.firstOrNull { it.id == draft.fromAccountId }?.let { catalogName(it.name, it.archived) }
-                            ?: if (PostingCalculator.allowsUnassignedAccounts(draft)) unassignedFundingLabel(draft, true) else stringResource(R.string.select_account),
-                        { picker = "fromAccountId" }, fieldModifier("fromAccountId", "bill_from_account"),
-                        error = error("fromAccountId"), enabled = !state.saving && !fixedFrom)
-                    if (draft.kind in PostingCalculator.incomingKinds || draft.kind in PostingCalculator.transferKinds || (draft.kind == BillKind.ADJUSTMENT && draft.toAccountId != null)) PickerField(
-                        stringResource(if (draft.kind in PostingCalculator.transferKinds) R.string.to_account else R.string.receiving_account),
-                        accounts.firstOrNull { it.id == draft.toAccountId }?.let { catalogName(it.name, it.archived) }
-                            ?: if (PostingCalculator.allowsUnassignedAccounts(draft)) unassignedFundingLabel(draft, false) else stringResource(R.string.select_account),
-                        { picker = "toAccountId" }, fieldModifier("toAccountId", "bill_to_account"),
-                        error = error("toAccountId"), enabled = !state.saving && !fixedTo)
+                    val stageColor by animateColorAsState(stage, ExpressiveMotion.slowEffects(), label = "amount-stage")
+                    val currencySelectable = draft.linkedBillId == null && draft.kind in PostingCalculator.outgoingKinds + PostingCalculator.incomingKinds
+                    Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.extraLarge, color = stageColor, contentColor = onStage) {
+                        Column(Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                if (currencySelectable) Surface(onClick = { picker = "currency" }, enabled = !state.saving,
+                                    modifier = Modifier.padding(start = 4.dp).testTag("bill_currency"), shape = CircleShape, color = onStage.copy(alpha = 0.1f)) {
+                                    Row(Modifier.padding(start = 12.dp, end = 4.dp, top = 6.dp, bottom = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        Text(record.currency.code, style = MaterialTheme.typography.titleMedium)
+                                        Icon(Icons.Outlined.ArrowDropDown, contentDescription = stringResource(R.string.currency_nominal))
+                                    }
+                                } else Text(record.currency.code, Modifier.padding(start = 12.dp), style = MaterialTheme.typography.titleMedium)
+                                TextField(record.amountText, { editor.onAction(EditorAction.Amount(it)) },
+                                    modifier = Modifier.weight(1f).testTag("bill_amount").bringIntoViewRequester(positions.getValue("amount"))
+                                        .focusRequester(focusTargets.getValue("amount")), enabled = !state.saving,
+                                    placeholder = { Text("0.00", style = MaterialTheme.typography.displaySmall, color = onStage.copy(alpha = 0.35f)) },
+                                    label = { Text(stringResource(R.string.amount)) },
+                                    textStyle = MaterialTheme.typography.displaySmall.copy(fontFeatureSettings = "tnum"), singleLine = true,
+                                    colors = TextFieldDefaults.colors(focusedContainerColor = Color.Transparent, unfocusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent, errorContainerColor = Color.Transparent,
+                                        focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent, errorIndicatorColor = Color.Transparent,
+                                        focusedTextColor = onStage, unfocusedTextColor = onStage, focusedLabelColor = onStage.copy(alpha = 0.7f),
+                                        unfocusedLabelColor = onStage.copy(alpha = 0.7f), cursorColor = onStage),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+                                    isError = error("amount") != null)
+                            }
+                            error("amount")?.let { ErrorText(it, Modifier.padding(horizontal = 12.dp)) }
+                        }
+                    }
+                    // One tap for the common categories; the full searchable list stays a chip away.
+                    if (PostingCalculator.categoryKind(draft.kind) != null) {
+                        val quick = remember(categories, draft.kind, draft.categoryId) {
+                            val usable = categories.filter { it.kind == PostingCalculator.categoryKind(draft.kind) && !it.archived }
+                            val chosen = usable.firstOrNull { it.id == draft.categoryId }
+                            (listOfNotNull(chosen) + usable.filter { it.parentId == null && it.id != chosen?.id }).take(10)
+                        }
+                        if (quick.isNotEmpty()) LazyRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            items(quick, key = { it.id }) { category ->
+                                val selected = draft.categoryId == category.id
+                                FilterChip(selected, { editor.onAction(EditorAction.Category(if (selected) null else category.id)) },
+                                    label = { Text(category.name) }, enabled = !state.saving, modifier = Modifier.animateItem(),
+                                    leadingIcon = { MonogramBadge(category.name, size = 20.dp) }, shape = CircleShape)
+                            }
+                            item(key = "more") {
+                                AssistChip({ picker = "categoryId" }, label = { Text(stringResource(R.string.editor_more_categories)) }, enabled = !state.saving,
+                                    leadingIcon = { Icon(Icons.Outlined.GridView, null, Modifier.size(18.dp)) }, shape = CircleShape)
+                            }
+                        }
+                    }
+                    FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        if (draft.kind in PostingCalculator.outgoingKinds || draft.kind in PostingCalculator.transferKinds || (draft.kind == BillKind.ADJUSTMENT && draft.fromAccountId != null)) ParamChip(
+                            Icons.Outlined.AccountBalanceWallet,
+                            stringResource(if (draft.kind in PostingCalculator.transferKinds) R.string.from_account else R.string.paying_account),
+                            accounts.firstOrNull { it.id == draft.fromAccountId }?.let { catalogName(it.name, it.archived) }
+                                ?: if (PostingCalculator.allowsUnassignedAccounts(draft)) unassignedFundingLabel(draft, true) else stringResource(R.string.select_account),
+                            { picker = "fromAccountId" }, chipModifier("fromAccountId", "bill_from_account"),
+                            isError = error("fromAccountId") != null, enabled = !state.saving && !fixedFrom)
+                        if (draft.kind in PostingCalculator.incomingKinds || draft.kind in PostingCalculator.transferKinds || (draft.kind == BillKind.ADJUSTMENT && draft.toAccountId != null)) ParamChip(
+                            Icons.Outlined.Savings,
+                            stringResource(if (draft.kind in PostingCalculator.transferKinds) R.string.to_account else R.string.receiving_account),
+                            accounts.firstOrNull { it.id == draft.toAccountId }?.let { catalogName(it.name, it.archived) }
+                                ?: if (PostingCalculator.allowsUnassignedAccounts(draft)) unassignedFundingLabel(draft, false) else stringResource(R.string.select_account),
+                            { picker = "toAccountId" }, chipModifier("toAccountId", "bill_to_account"),
+                            isError = error("toAccountId") != null, enabled = !state.saving && !fixedTo)
+                        if (PostingCalculator.categoryKind(draft.kind) != null) ParamChip(Icons.Outlined.Category, stringResource(R.string.category),
+                            categories.firstOrNull { it.id == draft.categoryId }?.let { catalogName(it.name, it.archived) } ?: stringResource(R.string.uncategorized),
+                            { picker = "categoryId" }, chipModifier("categoryId", "bill_category"),
+                            isError = error("categoryId") != null, enabled = !state.saving)
+                        ParamChip(Icons.Outlined.Schedule, stringResource(R.string.transaction_time),
+                            if (draft.timeSource == TimeSource.UNKNOWN) stringResource(R.string.time_unconfirmed)
+                            else draft.occurredAt?.atZone(draft.zoneId)?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z"))
+                                ?: stringResource(R.string.time_unconfirmed),
+                            { datePicker = true }, chipModifier("occurredAt", "bill_time"),
+                            isError = error("occurredAt") != null, enabled = !state.saving)
+                        if (draft.kind in listOf(BillKind.EXPENSE, BillKind.REIMBURSEMENT)) {
+                            val pending = draft.kind == BillKind.REIMBURSEMENT
+                            FilterChip(pending, { editor.onAction(EditorAction.Kind(if (pending) BillKind.EXPENSE else BillKind.REIMBURSEMENT)) },
+                                label = { Text(stringResource(R.string.pending_reimbursement)) }, enabled = !state.saving,
+                                leadingIcon = { Icon(if (pending) Icons.Outlined.Check else Icons.AutoMirrored.Outlined.ReceiptLong, null, Modifier.size(18.dp)) },
+                                shape = CircleShape, modifier = Modifier.heightIn(min = 48.dp).semantics { role = Role.Checkbox; toggleableState = ToggleableState(pending) }
+                                    .testTag("bill_pending_reimbursement"))
+                        }
+                    }
+                    listOf("fromAccountId", "toAccountId", "categoryId", "occurredAt").forEach { field -> error(field)?.let { ErrorText(it) } }
+                    if (draft.timeSource == TimeSource.CAPTURED) Text(stringResource(R.string.time_captured),
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     if (fixedFrom || fixedTo) {
                         Text(stringResource(R.string.debt_principal_fixed), style = MaterialTheme.typography.bodySmall)
                         if (accounts.firstOrNull { it.id == principalId }?.archived == true && principalId !in state.originalAccountIds) {
@@ -203,10 +302,11 @@ fun BillEditorScreen(
                             style = MaterialTheme.typography.bodyMedium) }
                         OutlinedTextField(draft.payment?.counterparty.orEmpty(), { editor.onAction(EditorAction.Counterparty(it)) },
                             Modifier.fillMaxWidth().testTag("bill_counterparty"), label = { Text(stringResource(R.string.payment_counterparty)) },
-                            enabled = !state.saving, maxLines = 3)
+                            enabled = !state.saving, maxLines = 3, shape = MaterialTheme.shapes.large)
                     }
                     state.foreignCurrency?.let { currency ->
-                        Column(Modifier.bringIntoViewRequester(positions.getValue("exchange")), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                        Column(Modifier.padding(12.dp).bringIntoViewRequester(positions.getValue("exchange")), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             error("exchange")?.let { ErrorText(it) }
                             OutlinedTextField(record.exchangeRateText, { editor.onAction(EditorAction.ExchangeRate(it)) },
                                 fieldModifier("exchangeRate", "bill_exchange_rate"), enabled = !state.saving, singleLine = true,
@@ -236,39 +336,56 @@ fun BillEditorScreen(
                             difference?.let { Text(stringResource(R.string.currency_difference, "${it.currency.code} ${it.decimalText()}"),
                                 style = MaterialTheme.typography.bodySmall, modifier = Modifier.testTag("bill_exchange_difference")) }
                         }
+                        }
                     }
-                    if (draft.kind != BillKind.ADJUSTMENT || record.feeText.isNotBlank()) OutlinedTextField(record.feeText,
-                        { editor.onAction(EditorAction.Fee(it)) }, fieldModifier("fee", "bill_fee"), enabled = !state.saving,
-                        prefix = { Text((record.feeCurrency?.takeIf { record.feeText.isNotBlank() } ?: state.feeCurrency)?.code.orEmpty()) },
-                        label = { Text(stringResource(R.string.currency_fee)) }, singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), isError = error("fee") != null,
-                        supportingText = error("fee")?.let { { ErrorText(it) } })
-                    if (PostingCalculator.categoryKind(draft.kind) != null) PickerField(stringResource(R.string.category),
-                        categories.firstOrNull { it.id == draft.categoryId }?.let { catalogName(it.name, it.archived) } ?: stringResource(R.string.uncategorized),
-                        { picker = "categoryId" }, fieldModifier("categoryId", "bill_category"),
-                        error = error("categoryId"), enabled = !state.saving)
-                    PickerField(stringResource(R.string.transaction_time),
-                        if (draft.timeSource == TimeSource.UNKNOWN) stringResource(R.string.time_unconfirmed)
-                        else draft.occurredAt?.atZone(draft.zoneId)?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z"))
-                            ?: stringResource(R.string.time_unconfirmed),
-                        { datePicker = true }, fieldModifier("occurredAt", "bill_time"),
-                        error = error("occurredAt"), enabled = !state.saving)
-                    if (draft.timeSource == TimeSource.CAPTURED) Text(stringResource(R.string.time_captured),
-                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    OutlinedTextField(draft.note, { editor.onAction(EditorAction.Note(it)) }, fieldModifier("note", "bill_note"),
-                        label = { Text(stringResource(R.string.note)) }, minLines = 2, maxLines = 6, enabled = !state.saving,
+                    TextField(draft.note, { editor.onAction(EditorAction.Note(it)) }, fieldModifier("note", "bill_note"),
+                        placeholder = { Text(stringResource(R.string.note)) }, maxLines = 6, enabled = !state.saving,
+                        leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Notes, contentDescription = null) },
+                        shape = MaterialTheme.shapes.large, colors = TextFieldDefaults.colors(focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent),
                         isError = error("note") != null, supportingText = error("note")?.let { { ErrorText(it) } })
-                    OutlinedTextField(record.tagsText, { editor.onAction(EditorAction.Tags(it)) }, fieldModifier("tags", "bill_tags"),
-                        label = { Text(stringResource(R.string.tags)) }, singleLine = true, enabled = !state.saving,
-                        isError = error("tags") != null, supportingText = error("tags")?.let { { ErrorText(it) } })
-                    if (overlayMode) {
-                        onOpenApp?.let { open -> TextButton(open, enabled = !state.saving) { Text(stringResource(R.string.review_open_app)) } }
-                    } else AttachmentEditor(draft.attachments, attachments, state.importingAttachment, state.attachmentError,
-                        enabled = !state.saving, onAdd = { imagePicker?.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
-                        onRemove = { ref -> editor.onAction(EditorAction.Attachments(draft.attachments.filterNot { it.id == ref.id })) },
-                        onCancel = editor::cancelAttachmentImport)
-                    BillCheckRow(stringResource(R.string.exclude_stats), draft.excludeStats, !state.saving) { editor.onAction(EditorAction.ExcludeStats(it)) }
-                    BillCheckRow(stringResource(R.string.exclude_budget), draft.excludeBudget, !state.saving) { editor.onAction(EditorAction.ExcludeBudget(it)) }
+                    // Rarely used details stay folded away, but open on their own when they hold something or need attention.
+                    val optionalNeeded = record.feeText.isNotBlank() || record.tagsText.isNotBlank() || draft.attachments.isNotEmpty() ||
+                        draft.excludeStats || draft.excludeBudget || state.foreignCurrency != null || state.importingAttachment ||
+                        state.attachmentError != null || state.errors.any { it.field in setOf("fee", "tags") }
+                    var moreOpen by rememberSaveable { mutableStateOf(false) }
+                    val showMore = moreOpen || optionalNeeded
+                    Surface(onClick = { moreOpen = !showMore }, enabled = !optionalNeeded, modifier = Modifier.fillMaxWidth().testTag("bill_more_options"),
+                        shape = MaterialTheme.shapes.large, color = Color.Transparent) {
+                        Row(Modifier.padding(horizontal = 12.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Icon(Icons.Outlined.Tune, null, tint = MaterialTheme.colorScheme.primary)
+                            Column(Modifier.weight(1f)) {
+                                Text(stringResource(R.string.editor_more_options), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                                if (!showMore) Text(stringResource(R.string.editor_more_summary), style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            val turn by animateFloatAsState(if (showMore) 180f else 0f, ExpressiveMotion.defaultSpatial(), label = "more-arrow")
+                            Icon(Icons.Outlined.ExpandMore, null, Modifier.graphicsLayer { rotationZ = turn })
+                        }
+                    }
+                    AnimatedVisibility(showMore, enter = expandVertically(ExpressiveMotion.defaultSpatial()) + fadeIn(ExpressiveMotion.defaultEffects()),
+                        exit = shrinkVertically(ExpressiveMotion.fastSpatial()) + fadeOut(ExpressiveMotion.fastEffects())) {
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            if (draft.kind != BillKind.ADJUSTMENT || record.feeText.isNotBlank()) OutlinedTextField(record.feeText,
+                                { editor.onAction(EditorAction.Fee(it)) }, fieldModifier("fee", "bill_fee"), enabled = !state.saving,
+                                prefix = { Text((record.feeCurrency?.takeIf { record.feeText.isNotBlank() } ?: state.feeCurrency)?.code.orEmpty()) },
+                                label = { Text(stringResource(R.string.currency_fee)) }, singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), isError = error("fee") != null,
+                                supportingText = error("fee")?.let { { ErrorText(it) } })
+                            OutlinedTextField(record.tagsText, { editor.onAction(EditorAction.Tags(it)) }, fieldModifier("tags", "bill_tags"),
+                                label = { Text(stringResource(R.string.tags)) }, singleLine = true, enabled = !state.saving,
+                                isError = error("tags") != null, supportingText = error("tags")?.let { { ErrorText(it) } })
+                            if (overlayMode) {
+                                onOpenApp?.let { open -> TextButton(open, enabled = !state.saving) { Text(stringResource(R.string.review_open_app)) } }
+                            } else AttachmentEditor(draft.attachments, attachments, state.importingAttachment, state.attachmentError,
+                                enabled = !state.saving, onAdd = { imagePicker?.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                                onRemove = { ref -> editor.onAction(EditorAction.Attachments(draft.attachments.filterNot { it.id == ref.id })) },
+                                onCancel = editor::cancelAttachmentImport)
+                            BillCheckRow(stringResource(R.string.exclude_stats), draft.excludeStats, !state.saving) { editor.onAction(EditorAction.ExcludeStats(it)) }
+                            BillCheckRow(stringResource(R.string.exclude_budget), draft.excludeBudget, !state.saving) { editor.onAction(EditorAction.ExcludeBudget(it)) }
+                        }
+                    }
                     Spacer(Modifier.height(12.dp))
                 }
             }
@@ -365,6 +482,31 @@ fun BillEditorScreen(
                 invalid = local == null || draft.zoneId.rules.getValidOffsets(local).isEmpty()
                 if (!invalid) onConfirm(local!!.atZone(draft.zoneId).toInstant())
             }, Modifier.testTag("review_time_confirm")) { Text(stringResource(R.string.confirm)) }
+        }
+    }
+}
+
+/** Compact, tappable summary of one picker-backed field: icon, small label, current value. */
+@Composable
+private fun ParamChip(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, value: String, onClick: () -> Unit,
+                      modifier: Modifier = Modifier, isError: Boolean = false, enabled: Boolean = true) {
+    val keyboard = LocalSoftwareKeyboardController.current
+    val focus = LocalFocusManager.current
+    // The tag sits on a wrapper so the disabled clickable surface stays visible to tests and accessibility as its own child.
+    Box(modifier) {
+        Surface(onClick = { keyboard?.hide(); focus.clearFocus(); onClick() }, enabled = enabled, shape = MaterialTheme.shapes.large,
+            color = if (isError) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
+            contentColor = if (isError) MaterialTheme.colorScheme.onErrorContainer else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.heightIn(min = 56.dp).semantics { role = Role.DropdownList }) {
+            Row(Modifier.padding(start = 12.dp, end = 16.dp, top = 8.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Icon(icon, null, Modifier.size(20.dp), tint = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary)
+                Column {
+                    Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(value, style = MaterialTheme.typography.labelLarge, maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                        color = if (enabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f))
+                }
+            }
         }
     }
 }

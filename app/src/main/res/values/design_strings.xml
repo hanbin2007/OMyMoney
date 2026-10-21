@@ -1,0 +1,19 @@
+<resources>
+    <string name="yesterday">昨天</string>
+    <string name="day_expense_total">支出 %1$s</string>
+    <string name="day_income_total">收入 %1$s</string>
+    <string name="budget_used_of_total">已用 %1$s / %2$s</string>
+    <string name="budget_set_hint">设置月度预算，随时掌握花销节奏</string>
+    <string name="assets_overview">资产总览</string>
+    <string name="assets_account_count">%1$d 个账户</string>
+    <string name="settings_section_ledger">记账</string>
+    <string name="settings_section_automation">自动记账</string>
+    <string name="settings_section_data">数据与账本</string>
+    <string name="settings_section_app">应用</string>
+    <string name="settings_tagline">本地优先的个人记账</string>
+    <string name="preferences_widgets">桌面入口</string>
+    <string name="preferences_support">诊断与更新</string>
+    <string name="editor_more_options">更多选项</string>
+    <string name="editor_more_summary">手续费、标签、图片与统计设置</string>
+    <string name="editor_more_categories">更多分类</string>
+</resources>

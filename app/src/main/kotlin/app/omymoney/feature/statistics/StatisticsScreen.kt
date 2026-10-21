@@ -1,6 +1,20 @@
 package app.omymoney.feature.statistics
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.outlined.Balance
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.Insights
+import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.material.icons.outlined.ShoppingBag
+import androidx.compose.material.icons.outlined.SwapHoriz
+import app.omymoney.ui.theme.ExpressiveMotion
+import app.omymoney.ui.theme.LocalLedgerColors
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.rememberScrollState
@@ -108,7 +122,7 @@ fun StatisticsScreen(store: LedgerStore, book: Book, accounts: List<AssetAccount
                     ErrorText(stringResource(R.string.stats_load_failed))
                     TextButton({ retry++ }) { Text(stringResource(R.string.retry)) }
                 } else LinearProgressIndicator(Modifier.fillMaxWidth())
-            } else LazyColumn(Modifier.fillMaxSize().testTag("stats_list"), state = list, contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            } else LazyColumn(Modifier.fillMaxSize().testTag("stats_list"), state = list, contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 item(key = "period") {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
@@ -120,11 +134,19 @@ fun StatisticsScreen(store: LedgerStore, book: Book, accounts: List<AssetAccount
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             LedgerIconButton(Icons.AutoMirrored.Outlined.KeyboardArrowLeft, stringResource(R.string.budget_previous), { shift(-1) },
                                 Modifier.testTag("stats_previous"), enabled = !(year == 1 && (annual || month == 1)))
-                            TextButton({ showPeriod = true }, Modifier.weight(1f).testTag("stats_period")) { Text(period.key) }
+                            FilledTonalButton({ showPeriod = true }, Modifier.weight(1f).testTag("stats_period")) {
+                                AnimatedContent(period.key, transitionSpec = {
+                                    val forward = targetState > initialState
+                                    (slideInVertically(ExpressiveMotion.defaultSpatial()) { if (forward) it else -it } + fadeIn()) togetherWith
+                                        (slideOutVertically(ExpressiveMotion.defaultSpatial()) { if (forward) -it else it } + fadeOut())
+                                }, label = "period") { Text(it, style = MaterialTheme.typography.titleMedium) }
+                            }
                             LedgerIconButton(Icons.AutoMirrored.Outlined.KeyboardArrowRight, stringResource(R.string.budget_next), { shift(1) },
                                 Modifier.testTag("stats_next"), enabled = !(year == 9998 && (annual || month == 12)))
                         }
-                        Text(stringResource(R.string.stats_date_scope, period.start.toString(), period.endExclusive.minusDays(1).toString(), book.zoneId.id), style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(R.string.stats_date_scope, period.start.toString(), period.endExclusive.minusDays(1).toString(), book.zoneId.id),
+                            Modifier.fillMaxWidth(), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                         if (active) Text(buildList {
                             filter.kind?.let { add(economicLabel(it)) }
                             account?.let { id -> add(accounts.firstOrNull { it.id == id }?.name ?: stringResource(R.string.archived)) }
@@ -136,44 +158,76 @@ fun StatisticsScreen(store: LedgerStore, book: Book, accounts: List<AssetAccount
                 }
                 when {
                     tab == 0 -> {
-                        listOf(EconomicKind.EXPENSE, EconomicKind.INCOME, EconomicKind.TRANSFER).forEach { value -> item {
-                            Text(economicLabel(value), style = MaterialTheme.typography.labelLarge)
-                            StatisticsValue(summary.totals[value], book.currency, Modifier.fillMaxWidth().testTag("stats_total_$value"))
-                        } }
-                        item {
-                            Text(stringResource(R.string.stats_net), style = MaterialTheme.typography.labelLarge)
-                            Text(summary.totals.net?.let { statsMoney(it, book.currency) } ?: stringResource(R.string.stats_unavailable), Modifier.fillMaxWidth(), style = MaterialTheme.typography.titleMedium)
-                            summary.ratesUsed.forEach { Text(stringResource(R.string.budget_rate_basis, it.source.code, it.target.code, it.rate, it.asOf.toString()), style = MaterialTheme.typography.bodySmall) }
+                        item(key = "totals") {
+                            val colors = LocalLedgerColors.current
+                            Column(Modifier.padding(top = 12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    StatTile(economicLabel(EconomicKind.EXPENSE), Icons.Outlined.ShoppingBag, colors.expenseContainer, colors.onExpenseContainer,
+                                        Modifier.weight(1f).fillMaxHeight()) {
+                                        StatisticsValue(summary.totals[EconomicKind.EXPENSE], book.currency, Modifier.fillMaxWidth().testTag("stats_total_${EconomicKind.EXPENSE}"),
+                                            MaterialTheme.typography.titleLarge)
+                                    }
+                                    StatTile(economicLabel(EconomicKind.INCOME), Icons.Outlined.Savings, colors.incomeContainer, colors.onIncomeContainer,
+                                        Modifier.weight(1f).fillMaxHeight()) {
+                                        StatisticsValue(summary.totals[EconomicKind.INCOME], book.currency, Modifier.fillMaxWidth().testTag("stats_total_${EconomicKind.INCOME}"),
+                                            MaterialTheme.typography.titleLarge)
+                                    }
+                                }
+                                Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    StatTile(economicLabel(EconomicKind.TRANSFER), Icons.Outlined.SwapHoriz, colors.transferContainer, colors.onTransferContainer,
+                                        Modifier.weight(1f).fillMaxHeight()) {
+                                        StatisticsValue(summary.totals[EconomicKind.TRANSFER], book.currency, Modifier.fillMaxWidth().testTag("stats_total_${EconomicKind.TRANSFER}"),
+                                            MaterialTheme.typography.titleLarge)
+                                    }
+                                    StatTile(stringResource(R.string.stats_net), Icons.Outlined.Balance, MaterialTheme.colorScheme.secondaryContainer,
+                                        MaterialTheme.colorScheme.onSecondaryContainer, Modifier.weight(1f).fillMaxHeight()) {
+                                        Text(summary.totals.net?.let { statsMoney(it, book.currency) } ?: stringResource(R.string.stats_unavailable), Modifier.fillMaxWidth(),
+                                            style = MaterialTheme.typography.titleLarge)
+                                    }
+                                }
+                                summary.ratesUsed.forEach { Text(stringResource(R.string.budget_rate_basis, it.source.code, it.target.code, it.rate, it.asOf.toString()), style = MaterialTheme.typography.bodySmall) }
+                            }
                         }
-                        if (summary.entries.isEmpty()) item { Text(stringResource(R.string.stats_empty), Modifier.testTag("stats_empty")) }
-                        item { StatisticsChart(if (annual) summary.months.map { ChartPoint(it.month.toString(), it.totals) }
-                            else summary.days.map { ChartPoint(it.date.toString().takeLast(5), it.totals) }, book.currency, shortHeight) }
+                        if (summary.entries.isEmpty()) item { EmptyMessage(stringResource(R.string.stats_empty), Modifier.testTag("stats_empty"), icon = Icons.Outlined.Insights) }
+                        item { Box(Modifier.padding(vertical = 12.dp)) { StatisticsChart(if (annual) summary.months.map { ChartPoint(it.month.toString(), it.totals) }
+                            else summary.days.map { ChartPoint(it.date.toString().takeLast(5), it.totals) }, book.currency, shortHeight) } }
                         if (annual) annualSummary(summary) else {
-                            item { Text(stringResource(R.string.stats_daily), style = MaterialTheme.typography.titleMedium) }
-                            items(summary.days, key = { "trend/${it.date}" }) { day ->
-                                Column(Modifier.fillMaxWidth().testTag("stats_trend_${day.date}").semantics(mergeDescendants = true) {}) {
-                                    Text(day.date.toString(), style = MaterialTheme.typography.titleSmall)
-                                    TotalsData(day.totals, book.currency, "stats_trend_${day.date}")
-                                    HorizontalDivider(Modifier.padding(top = 8.dp))
+                            item { Text(stringResource(R.string.stats_daily), Modifier.padding(start = 8.dp, top = 8.dp, bottom = 8.dp), style = MaterialTheme.typography.titleMedium) }
+                            itemsIndexed(summary.days, key = { _, day -> "trend/${day.date}" }) { index, day ->
+                                Surface(Modifier.fillMaxWidth(),
+                                    shape = groupedShape(index, summary.days.size), color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                                    Column(Modifier.fillMaxWidth().padding(16.dp).testTag("stats_trend_${day.date}").semantics(mergeDescendants = true) {}) {
+                                        Text(day.date.toString(), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+                                        TotalsData(day.totals, book.currency, "stats_trend_${day.date}")
+                                    }
                                 }
                             }
                         }
                     }
                     tab == 1 -> {
-                        if (summary.categories.isEmpty()) item { Text(stringResource(R.string.stats_empty), Modifier.testTag("stats_empty")) }
+                        if (summary.categories.isEmpty()) item { EmptyMessage(stringResource(R.string.stats_empty), Modifier.testTag("stats_empty"), icon = Icons.Outlined.Category) }
                         val maximum = summary.categories.mapNotNull { it.amount.minor?.abs() }.maxOrNull()
                         if (maximum != null) item {
-                            Text(stringResource(R.string.stats_category_scale, statsMoney(-maximum, book.currency), statsMoney(maximum, book.currency)), style = MaterialTheme.typography.bodySmall)
-                            Text(stringResource(R.string.stats_zero_axis), Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center, style = MaterialTheme.typography.bodySmall)
+                            Spacer(Modifier.height(12.dp))
+                            Text(stringResource(R.string.stats_category_scale, statsMoney(-maximum, book.currency), statsMoney(maximum, book.currency)),
+                                Modifier.padding(horizontal = 8.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.stats_zero_axis), Modifier.fillMaxWidth().padding(bottom = 4.dp), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
-                        items(summary.categories, key = { "category/${it.kind}/${it.categoryId}" }) { row ->
-                            Column(Modifier.fillMaxWidth().testTag("stats_category_${row.kind}_${row.categoryId}").semantics(mergeDescendants = true) {},
-                                verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                val name = state.categories.firstOrNull { it.id == row.categoryId }?.let { statisticsCategoryName(it, state.categories) } ?: stringResource(R.string.stats_uncategorized)
-                                Text(stringResource(R.string.stats_category_description, economicLabel(row.kind), name), style = MaterialTheme.typography.titleSmall)
-                                StatisticsValue(row.amount, book.currency, Modifier.fillMaxWidth())
-                                if (maximum != null) CategoryBar(row.amount.minor, maximum)
-                                HorizontalDivider()
+                        itemsIndexed(summary.categories, key = { _, row -> "category/${row.kind}/${row.categoryId}" }) { index, row ->
+                            Surface(Modifier.fillMaxWidth().animateItem(),
+                                shape = groupedShape(index, summary.categories.size), color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                                Row(Modifier.fillMaxWidth().padding(16.dp).testTag("stats_category_${row.kind}_${row.categoryId}").semantics(mergeDescendants = true) {},
+                                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    val category = state.categories.firstOrNull { it.id == row.categoryId }
+                                    val name = category?.let { statisticsCategoryName(it, state.categories) } ?: stringResource(R.string.stats_uncategorized)
+                                    MonogramBadge(category?.name ?: name)
+                                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                        Text(stringResource(R.string.stats_category_description, economicLabel(row.kind), name), style = MaterialTheme.typography.titleSmall)
+                                        StatisticsValue(row.amount, book.currency, Modifier.fillMaxWidth())
+                                        if (maximum != null) CategoryBar(row.amount.minor, maximum)
+                                    }
+                                }
                             }
                         }
                     }
@@ -187,14 +241,18 @@ fun StatisticsScreen(store: LedgerStore, book: Book, accounts: List<AssetAccount
                             selectedDay = date.toString()
                             scope.launch { list.animateScrollToItem(2 + if (calendarList) displayedMonth.lengthOfMonth() else 1) }
                         }
-                        item { Text(selectedDay, Modifier.testTag("stats_selected_date"), style = MaterialTheme.typography.titleMedium) }
-                        item { TotalsData(summary.days.single { it.date == LocalDate.parse(selectedDay) }.totals, book.currency, "stats_day") }
+                        item { Text(selectedDay, Modifier.padding(start = 8.dp, top = 16.dp, bottom = 8.dp).testTag("stats_selected_date"), style = MaterialTheme.typography.titleMedium) }
+                        item {
+                            Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                                Box(Modifier.padding(16.dp)) { TotalsData(summary.days.single { it.date == LocalDate.parse(selectedDay) }.totals, book.currency, "stats_day") }
+                            }
+                        }
                         val entries = summary.entries.filter { it.date == LocalDate.parse(selectedDay) }
                         if (entries.isEmpty()) item { Text(stringResource(R.string.stats_no_day_entries)) }
                         statisticsEntries(entries, summary, onBill)
                     }
                     else -> {
-                        if (summary.entries.isEmpty()) item { Text(stringResource(R.string.stats_empty), Modifier.testTag("stats_empty")) }
+                        if (summary.entries.isEmpty()) item { EmptyMessage(stringResource(R.string.stats_empty), Modifier.testTag("stats_empty"), icon = Icons.AutoMirrored.Outlined.ReceiptLong) }
                         statisticsEntries(summary.entries, summary, onBill)
                     }
                 }
@@ -208,22 +266,22 @@ fun StatisticsScreen(store: LedgerStore, book: Book, accounts: List<AssetAccount
 }
 
 private fun LazyListScope.statisticsEntries(entries: List<StatisticsEntry>, summary: StatisticsSummary, onBill: (String) -> Unit) {
-    items(entries, key = { "entry/${it.key}" }) { entry ->
+    itemsIndexed(entries, key = { _, entry -> "entry/${entry.key}" }) { index, entry ->
         val fact = entry.fact
         val label = when {
             fact.fee -> stringResource(R.string.stats_fee)
             fact.bill.kind == BillKind.REFUND -> stringResource(if (fact.kind == EconomicKind.EXPENSE) R.string.stats_refund_reduction else R.string.stats_refund_income)
             else -> economicLabel(fact.kind)
         }
-        ListItem(modifier = Modifier.testTag("stats_entry_${entry.key}").clickable { onBill(fact.bill.id) },
-            headlineContent = { Text(fact.bill.note.ifBlank { label }) }, supportingContent = {
+        GroupedRow(groupedShape(index, entries.size), onClick = { onBill(fact.bill.id) }, modifier = Modifier.testTag("stats_entry_${entry.key}"),
+            leading = { MonogramBadge(label) },
+            headline = { Text(fact.bill.note.ifBlank { label }) }, supporting = {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text("${entry.date} · $label", style = MaterialTheme.typography.bodySmall)
                     StatisticsValue(StatisticsAmount(entry.valuation.minor, setOfNotNull(entry.valuation.missingCurrency)), summary.currency, Modifier.fillMaxWidth())
                     if (fact.amount.currency != summary.currency) Text(stringResource(R.string.stats_nominal, fact.amount.currency.code, fact.amount.decimalText()), style = MaterialTheme.typography.bodySmall)
                 }
             })
-        HorizontalDivider()
     }
 }
 
