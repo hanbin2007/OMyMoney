@@ -1,9 +1,7 @@
 package app.omymoney.feature.catalog
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -12,7 +10,14 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.ShowChart
+import app.omymoney.ui.theme.LocalLedgerColors
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -43,63 +48,57 @@ fun BookPickerSheet(state: CatalogState, onSelect: (String) -> Unit, onManage: (
     )
 }
 
+private data class HubEntry(val title: Int, val icon: ImageVector, val tag: String, val onClick: () -> Unit, val subtitle: String? = null)
+
 @Composable
 fun CatalogSettingsScreen(state: CatalogState, onBooks: () -> Unit, onCategories: () -> Unit, onBackup: () -> Unit, onAutomation: () -> Unit, onQueue: () -> Unit, onScreenshot: () -> Unit = {}, onCurrencies: () -> Unit = {}, onSchedules: () -> Unit = {}, onSavings: () -> Unit = {}, onPreferences: () -> Unit = {}, onExchange: () -> Unit = {}) {
-    LazyColumn(Modifier.testTag("catalog_settings")) {
-        item { Text(stringResource(R.string.app_name), Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge) }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.preferences_title)) }, leadingContent = { Icon(Icons.Outlined.Settings, null) },
-                modifier = Modifier.clickable(onClick = onPreferences).testTag("settings_preferences"))
+    val book = state.currentBook?.name.orEmpty()
+    val sections = listOf(
+        R.string.settings_section_ledger to listOf(
+            HubEntry(R.string.savings_title, Icons.Outlined.Savings, "settings_savings", onSavings, book),
+            HubEntry(R.string.schedule_title, Icons.Outlined.EventRepeat, "settings_schedules", onSchedules, book),
+            HubEntry(R.string.currency_rates, Icons.Outlined.CurrencyExchange, "settings_currencies", onCurrencies)),
+        R.string.settings_section_automation to listOf(
+            HubEntry(R.string.automation_title, Icons.Outlined.AutoAwesomeMotion, "settings_automation", onAutomation),
+            HubEntry(R.string.review_queue, Icons.Outlined.Inbox, "settings_queue", onQueue),
+            HubEntry(R.string.ocr_title, Icons.Outlined.DocumentScanner, "settings_screenshot", onScreenshot)),
+        R.string.settings_section_data to listOf(
+            HubEntry(R.string.manage_books, Icons.AutoMirrored.Outlined.MenuBook, "settings_books", onBooks),
+            HubEntry(R.string.manage_categories, Icons.Outlined.Category, "settings_categories", onCategories, book),
+            HubEntry(R.string.backup_title, Icons.Outlined.Backup, "settings_backup", onBackup),
+            HubEntry(R.string.exchange_title, Icons.Outlined.ImportExport, "settings_exchange", onExchange, book)),
+        R.string.settings_section_app to listOf(
+            HubEntry(R.string.preferences_title, Icons.Outlined.Tune, "settings_preferences", onPreferences)),
+    )
+    val accents = LocalLedgerColors.current.accents
+    LazyColumn(Modifier.fillMaxSize().testTag("catalog_settings"), contentPadding = PaddingValues(bottom = 24.dp)) {
+        item(key = "hero") {
+            EnterAnimated(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                HeroCard(containerColor = MaterialTheme.colorScheme.tertiaryContainer, accentColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        IconBadge(Icons.Outlined.AccountBalanceWallet, size = 56.dp, shape = ExpressiveShapes.Cookie,
+                            containerColor = MaterialTheme.colorScheme.tertiary, contentColor = MaterialTheme.colorScheme.onTertiary)
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineSmall)
+                            Text(stringResource(R.string.settings_tagline), style = MaterialTheme.typography.bodyMedium)
+                            if (book.isNotEmpty()) Text(book, style = MaterialTheme.typography.labelLarge, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        }
+                    }
+                }
+            }
         }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.savings_title)) }, supportingContent = { Text(state.currentBook?.name.orEmpty()) },
-                leadingContent = { Icon(Icons.Outlined.Savings, null) }, modifier = Modifier.clickable(onClick = onSavings).testTag("settings_savings"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.schedule_title)) }, supportingContent = { Text(state.currentBook?.name.orEmpty()) },
-                leadingContent = { Icon(Icons.Outlined.EventRepeat, null) }, modifier = Modifier.clickable(onClick = onSchedules).testTag("settings_schedules"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.currency_rates)) },
-                leadingContent = { Icon(Icons.Outlined.CurrencyExchange, null) },
-                modifier = Modifier.clickable(onClick = onCurrencies).testTag("settings_currencies"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.automation_title)) },
-                leadingContent = { Icon(Icons.Outlined.AutoAwesomeMotion, null) },
-                modifier = Modifier.clickable(onClick = onAutomation).testTag("settings_automation"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.review_queue)) },
-                leadingContent = { Icon(Icons.Outlined.Inbox, null) },
-                modifier = Modifier.clickable(onClick = onQueue).testTag("settings_queue"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.ocr_title)) },
-                leadingContent = { Icon(Icons.Outlined.DocumentScanner, null) },
-                modifier = Modifier.clickable(onClick = onScreenshot).testTag("settings_screenshot"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.manage_books)) },
-                leadingContent = { Icon(Icons.AutoMirrored.Outlined.MenuBook, null) },
-                modifier = Modifier.clickable(onClick = onBooks).testTag("settings_books"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.manage_categories)) },
-                supportingContent = { Text(state.currentBook?.name.orEmpty()) },
-                leadingContent = { Icon(Icons.Outlined.Category, null) },
-                modifier = Modifier.clickable(onClick = onCategories).testTag("settings_categories"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.backup_title)) },
-                leadingContent = { Icon(Icons.Outlined.Backup, null) },
-                modifier = Modifier.clickable(onClick = onBackup).testTag("settings_backup"))
-        }
-        item {
-            ListItem(headlineContent = { Text(stringResource(R.string.exchange_title)) },
-                supportingContent = { Text(state.currentBook?.name.orEmpty()) },
-                leadingContent = { Icon(Icons.Outlined.CurrencyExchange, null) },
-                modifier = Modifier.clickable(onClick = onExchange).testTag("settings_exchange"))
+        var accentIndex = 0
+        sections.forEach { (title, entries) ->
+            item(key = "section/$title") { SectionHeader(stringResource(title)) }
+            val tinted = entries.map { it to accents[accentIndex++ % accents.size] }
+            groupedItems(tinted, key = { it.first.tag }) { (entry, accent), shape ->
+                GroupedRow(shape, onClick = entry.onClick, modifier = Modifier.testTag(entry.tag),
+                    headline = { Text(stringResource(entry.title)) },
+                    supporting = entry.subtitle?.takeIf(String::isNotEmpty)?.let { subtitle -> { Text(subtitle, maxLines = 1, overflow = TextOverflow.Ellipsis) } },
+                    leading = { IconBadge(entry.icon, containerColor = accent.first, contentColor = accent.second) },
+                    trailing = { Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, contentDescription = null) })
+            }
         }
     }
 }
@@ -124,11 +123,11 @@ fun BooksScreen(viewModel: CatalogViewModel, state: CatalogState, onBack: () -> 
             ExtendedFloatingActionButton(onClick = { onEdit(null) }, modifier = Modifier.testTag("add_book"),
                 icon = { Icon(Icons.Outlined.Add, stringResource(R.string.new_book)) }, text = { Text(stringResource(R.string.new_book)) })
         }) { padding ->
-        LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("book_list"), contentPadding = PaddingValues(bottom = 96.dp)) {
+        LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("book_list"), contentPadding = PaddingValues(bottom = 112.dp)) {
             item { ArchiveSwitch(showArchived, { showArchived = it }) }
-            items(state.books.filter { showArchived || !it.archived }, key = { it.id }) { book ->
+            groupedItems(state.books.filter { showArchived || !it.archived }, key = { it.id }) { book, shape ->
                 val index = active.indexOfFirst { it.id == book.id }
-                CatalogRow(book.name, if (state.currentBookId == book.id) stringResource(R.string.current_book_currency, book.currency.code) else book.currency.code,
+                CatalogRow(shape, book.name, if (state.currentBookId == book.id) stringResource(R.string.current_book_currency, book.currency.code) else book.currency.code,
                     Icons.AutoMirrored.Outlined.MenuBook, book.archived,
                     onEdit = { onEdit(book.id) }, onArchive = { archiveId = book.id },
                     onRestore = { mutate({ viewModel.restoreBook(book.id) }, context.getString(R.string.restored)) },
@@ -160,24 +159,32 @@ fun AccountsScreen(viewModel: CatalogViewModel, state: CatalogState, snackbar: S
             else if (success != null) snackbar.showSnackbar(success)
         }
     }
-    LazyColumn(Modifier.fillMaxSize().testTag("account_list"), contentPadding = PaddingValues(bottom = 16.dp)) {
-        item { TextButton(onGroups, Modifier.padding(horizontal = 16.dp).testTag("asset_groups")) {
-            Icon(Icons.Outlined.Folder, null); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.asset_groups))
-        } }
-        item { ArchiveSwitch(showArchived, { showArchived = it }) }
+    LazyColumn(Modifier.fillMaxSize().testTag("account_list"), contentPadding = PaddingValues(bottom = 24.dp)) {
+        val live = state.accounts.filterNot { it.archived }
+        if (live.isNotEmpty()) item(key = "overview") { AssetsOverview(live) }
+        item(key = "tools") {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilledTonalButton(onGroups, Modifier.testTag("asset_groups")) {
+                    Icon(Icons.Outlined.Folder, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.asset_groups))
+                }
+            }
+        }
+        item(key = "archived") { ArchiveSwitch(showArchived, { showArchived = it }) }
         state.accounts.filter { showArchived || !it.archived }.groupBy { it.group }.forEach { (group, members) ->
-            item(key = "group/${group.orEmpty()}") { Text(group ?: stringResource(R.string.asset_ungrouped), Modifier.padding(16.dp), style = MaterialTheme.typography.titleSmall) }
-            items(members, key = { it.id }) { account ->
+            item(key = "group/${group.orEmpty()}") { SectionHeader(group ?: stringResource(R.string.asset_ungrouped), Modifier.animateItem()) }
+            groupedItems(members, key = { it.id }) { account, shape ->
                 val index = active.indexOfFirst { it.id == account.id }
-                CatalogRow(account.name, "${account.currency.code} ${account.balance.decimalText()}", Icons.Outlined.AccountBalanceWallet,
+                CatalogRow(shape, account.name, "${account.currency.code} ${account.balance.decimalText()}", accountKindIcon(account.kind),
                     account.archived, onEdit = { onEdit(account.id) }, onArchive = { archiveId = account.id },
-                    onOpen = { onOpen(account.id) },
+                    onOpen = { onOpen(account.id) }, money = true, negative = account.balance.minor < 0,
+                    tint = LocalLedgerColors.current.accents.let { it[account.kind.ordinal % it.size] },
                     onRestore = { mutate({ viewModel.restoreAccount(account.id) }, context.getString(R.string.restored)) },
                     onMoveUp = if (index > 0 && active[index - 1].group == account.group) ({ mutate({ viewModel.reorderAccounts(moved(active.map { it.id }, index, -1)) }) }) else null,
                     onMoveDown = if (index in 0 until active.lastIndex && active[index + 1].group == account.group) ({ mutate({ viewModel.reorderAccounts(moved(active.map { it.id }, index, 1)) }) }) else null)
             }
         }
-        if (state.accounts.none { showArchived || !it.archived }) item { Text(stringResource(R.string.empty_assets), Modifier.padding(24.dp)) }
+        if (state.accounts.none { showArchived || !it.archived }) item { EmptyMessage(stringResource(R.string.empty_assets), icon = Icons.Outlined.AccountBalanceWallet) }
     }
     state.accounts.firstOrNull { it.id == archiveId }?.let { account ->
         ArchiveDialog(account.name, onDismiss = { archiveId = null }, onConfirm = {
@@ -211,15 +218,16 @@ fun CategoriesScreen(viewModel: CatalogViewModel, book: Book, onBack: () -> Unit
             ExtendedFloatingActionButton(onClick = { onEdit(null, kind, null) }, modifier = Modifier.testTag("add_category"),
                 icon = { Icon(Icons.Outlined.Add, stringResource(R.string.new_category)) }, text = { Text(stringResource(R.string.new_category)) })
         }) { padding ->
-        LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("category_list"), contentPadding = PaddingValues(bottom = 96.dp)) {
-            item { Text(book.name, Modifier.padding(16.dp), style = MaterialTheme.typography.titleMedium) }
+        LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("category_list"), contentPadding = PaddingValues(bottom = 112.dp)) {
+            item { Text(book.name, Modifier.padding(horizontal = 24.dp, vertical = 8.dp), style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant) }
             item { KindSelector(kind, { kind = it }, Modifier.padding(horizontal = 16.dp)) }
             item { ArchiveSwitch(showArchived, { showArchived = it }) }
-            items(rows, key = { it.id }) { category ->
+            groupedItems(rows, key = { it.id }) { category, shape ->
                 val siblings = categories.filter { !it.archived && it.parentId == category.parentId }
                 val index = siblings.indexOfFirst { it.id == category.id }
-                CatalogRow(category.name, category.parentId?.let { id -> categories.firstOrNull { it.id == id }?.name },
-                    Icons.Outlined.Category, category.archived,
+                CatalogRow(shape, category.name, category.parentId?.let { id -> categories.firstOrNull { it.id == id }?.name },
+                    Icons.Outlined.Category, category.archived, monogram = true,
                     modifier = Modifier.padding(start = if (category.parentId == null) 0.dp else 24.dp),
                     onEdit = { onEdit(category.id, category.kind, category.parentId) }, onArchive = { archiveId = category.id },
                     onRestore = { mutate({ viewModel.restoreCategory(category.id) }, context.getString(R.string.restored)) },
@@ -227,7 +235,7 @@ fun CategoriesScreen(viewModel: CatalogViewModel, book: Book, onBack: () -> Unit
                     onMoveDown = if (index in 0 until siblings.lastIndex) ({ mutate({ viewModel.reorderCategories(book.id, kind, category.parentId, moved(siblings.map { it.id }, index, 1)) }) }) else null,
                     onAddChild = if (category.parentId == null && !category.archived) ({ onEdit(null, category.kind, category.id) }) else null)
             }
-            if (rows.isEmpty()) item { Text(stringResource(R.string.empty_categories), Modifier.padding(24.dp)) }
+            if (rows.isEmpty()) item { EmptyMessage(stringResource(R.string.empty_categories), icon = Icons.Outlined.Category) }
         }
     }
     categories.firstOrNull { it.id == archiveId }?.let { category ->
@@ -253,6 +261,7 @@ fun KindSelector(selected: BillKind, onSelect: (BillKind) -> Unit, modifier: Mod
 
 @Composable
 private fun CatalogRow(
+    shape: Shape,
     name: String,
     subtitle: String?,
     icon: ImageVector,
@@ -265,16 +274,30 @@ private fun CatalogRow(
     modifier: Modifier = Modifier,
     onAddChild: (() -> Unit)? = null,
     onOpen: () -> Unit = onEdit,
+    monogram: Boolean = false,
+    money: Boolean = false,
+    negative: Boolean = false,
+    tint: Pair<Color, Color>? = null,
 ) {
     var menu by remember { mutableStateOf(false) }
-    ListItem(
-        headlineContent = { Text(name) },
-        supportingContent = { Column { subtitle?.let { Text(it) }; if (archived) Text(stringResource(R.string.archived)) } },
-        leadingContent = { Icon(icon, null) },
-        trailingContent = {
+    GroupedRow(
+        shape = shape,
+        onClick = onOpen,
+        containerColor = if (archived) MaterialTheme.colorScheme.surfaceContainerHighest else MaterialTheme.colorScheme.surfaceContainerLow,
+        headline = { Text(name, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+        supporting = { Column {
+            subtitle?.let {
+                if (money) MoneyText(it, style = MaterialTheme.typography.titleMedium,
+                    color = if (negative) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant)
+                else Text(it)
+            }
+            if (archived) Text(stringResource(R.string.archived), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.outline)
+        } },
+        leading = { if (monogram) MonogramBadge(name) else tint?.let { (container, content) -> IconBadge(icon, containerColor = container, contentColor = content) } ?: IconBadge(icon) },
+        trailing = {
             Box {
                 LedgerIconButton(Icons.Outlined.MoreVert, stringResource(R.string.item_actions, name), { menu = true })
-                DropdownMenu(menu, { menu = false }) {
+                DropdownMenu(menu, { menu = false }, shape = MaterialTheme.shapes.large) {
                     DropdownMenuItem(text = { Text(stringResource(R.string.edit)) }, onClick = { menu = false; onEdit() }, leadingIcon = { Icon(Icons.Outlined.Edit, null) })
                     if (!archived) {
                         DropdownMenuItem(text = { Text(stringResource(R.string.move_up)) }, enabled = onMoveUp != null,
@@ -289,8 +312,44 @@ private fun CatalogRow(
                 }
             }
         },
-        modifier = modifier.fillMaxWidth().clickable(onClick = onOpen),
+        modifier = modifier,
     )
+}
+
+/** Net balance per currency across live accounts; currencies are never mixed without a rate. */
+@Composable
+private fun AssetsOverview(accounts: List<AssetAccount>) {
+    val totals = remember(accounts) {
+        accounts.groupBy { it.currency }.mapNotNull { (currency, members) ->
+            runCatching { members.map { it.balance }.reduce { a, b -> a + b } }.getOrNull()?.let { currency to it }
+        }
+    }
+    EnterAnimated(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        HeroCard {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IconBadge(Icons.Outlined.AccountBalance, size = 32.dp, shape = ExpressiveShapes.Sunny,
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f), contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text(stringResource(R.string.assets_overview), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.assets_account_count, accounts.size), style = MaterialTheme.typography.labelMedium)
+            }
+            totals.forEachIndexed { index, (currency, total) ->
+                MoneyText("${currency.code} ${total.decimalText()}", Modifier.fillMaxWidth().padding(top = if (index == 0) 4.dp else 0.dp),
+                    style = if (index == 0) MaterialTheme.typography.displaySmall else MaterialTheme.typography.titleLarge,
+                    color = if (total.minor < 0) MaterialTheme.colorScheme.error else Color.Unspecified)
+            }
+        }
+    }
+}
+
+private fun accountKindIcon(kind: AccountKind): ImageVector = when (kind) {
+    AccountKind.CASH -> Icons.Outlined.Payments
+    AccountKind.DEBIT -> Icons.Outlined.AccountBalance
+    AccountKind.CREDIT -> Icons.Outlined.CreditCard
+    AccountKind.WALLET -> Icons.Outlined.AccountBalanceWallet
+    AccountKind.INVESTMENT -> Icons.AutoMirrored.Outlined.ShowChart
+    AccountKind.OTHER -> Icons.Outlined.Wallet
+    AccountKind.LIABILITY -> Icons.Outlined.MoneyOff
+    AccountKind.RECEIVABLE -> Icons.Outlined.RequestQuote
 }
 
 @Composable

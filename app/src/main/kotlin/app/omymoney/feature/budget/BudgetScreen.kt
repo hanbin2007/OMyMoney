@@ -1,6 +1,21 @@
 package app.omymoney.feature.budget
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.material.icons.outlined.AccountBalanceWallet
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.Savings
+import androidx.compose.material.icons.outlined.ShoppingBag
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
+import app.omymoney.ui.theme.ExpressiveMotion
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -92,27 +107,73 @@ fun HomeBudgetSummary(store: LedgerStore, book: Book, onOpen: () -> Unit) {
     val period = BudgetPeriod(today.year, today.monthValue)
     var retry by remember { mutableIntStateOf(0) }
     val state by budgetState(store, book, period, today, retry)
-    Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        TextButton(onOpen, Modifier.testTag("home_budget_open")) { Text(stringResource(R.string.budget_month_heading, period.key)) }
-        when {
-            state.loading -> LinearProgressIndicator(Modifier.fillMaxWidth())
-            state.failed -> { ErrorText(stringResource(R.string.budget_load_failed)); TextButton({ retry++ }) { Text(stringResource(R.string.retry)) } }
-            state.summary == null -> Text(stringResource(R.string.budget_unset), style = MaterialTheme.typography.bodyMedium)
-            else -> BudgetRemaining(requireNotNull(state.summary).total, "home_budget_remaining")
+    EnterAnimated(Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp)) {
+        HeroCard {
+            // Only the heading is the link: making the whole card clickable would merge the amount's own semantics away.
+            Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).clip(CircleShape).clickable(onClick = onOpen, role = Role.Button)
+                .testTag("home_budget_open"), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IconBadge(Icons.Outlined.Savings, size = 32.dp, shape = ExpressiveShapes.Sunny,
+                    containerColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.1f), contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
+                Text(stringResource(R.string.budget_month_heading, period.key), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
+                Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, contentDescription = null)
+            }
+            AnimatedContent(when {
+                state.loading -> 0
+                state.failed -> 1
+                state.summary == null -> 2
+                else -> 3
+            }, transitionSpec = { fadeIn(ExpressiveMotion.defaultEffects()) togetherWith fadeOut(ExpressiveMotion.fastEffects()) using SizeTransform(clip = false) },
+                label = "home-budget") { phase ->
+                Column(Modifier.fillMaxWidth().padding(top = 4.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    when (phase) {
+                        0 -> LinearProgressIndicator(Modifier.fillMaxWidth().padding(vertical = 16.dp))
+                        1 -> { ErrorText(stringResource(R.string.budget_load_failed)); TextButton({ retry++ }) { Text(stringResource(R.string.retry)) } }
+                        2 -> {
+                            Text(stringResource(R.string.budget_unset), style = MaterialTheme.typography.titleLarge)
+                            Text(stringResource(R.string.budget_set_hint), style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f))
+                        }
+                        else -> state.summary?.let { summary ->
+                            BudgetRemaining(summary.total, "home_budget_remaining", MaterialTheme.typography.displaySmall)
+                            BudgetUsageBar(summary.total, onContainer = true)
+                        }
+                    }
+                }
+            }
         }
     }
-    HorizontalDivider()
 }
 
 @Composable
-private fun BudgetRemaining(usage: BudgetUsage, tag: String) {
+private fun BudgetRemaining(usage: BudgetUsage, tag: String, style: TextStyle = MaterialTheme.typography.headlineMedium) {
     if (usage.remaining == null) ErrorText(stringResource(R.string.budget_missing_rates, usage.missingCurrencies.joinToString { it.code }))
     else {
-        Text(stringResource(if (usage.remaining!!.signum() < 0) R.string.budget_overspent else R.string.budget_remaining),
-            style = MaterialTheme.typography.labelLarge)
+        val overspent = usage.remaining!!.signum() < 0
+        Text(stringResource(if (overspent) R.string.budget_overspent else R.string.budget_remaining),
+            style = MaterialTheme.typography.labelLarge, color = if (overspent) MaterialTheme.colorScheme.error else Color.Unspecified)
         MoneyText(budgetMoney(usage.remaining!!.abs(), usage.limit.currency), Modifier.fillMaxWidth().testTag(tag),
-            style = MaterialTheme.typography.titleLarge)
+            style = style, color = if (overspent) MaterialTheme.colorScheme.error else Color.Unspecified)
     }
+}
+
+/** Share of the limit already spent, with the used and total amounts underneath. */
+@Composable
+private fun BudgetUsageBar(usage: BudgetUsage, onContainer: Boolean = false) {
+    val used = usage.used ?: return
+    val limit = BigInteger.valueOf(usage.limit.minor)
+    val fraction = if (limit.signum() <= 0) (if (used.signum() > 0) 1f else 0f)
+        else used.toBigDecimal().divide(limit.toBigDecimal(), 4, java.math.RoundingMode.HALF_EVEN).toFloat()
+    val overspent = fraction > 1f
+    val track = if (onContainer) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.14f) else MaterialTheme.colorScheme.secondaryContainer
+    val color = when {
+        overspent -> MaterialTheme.colorScheme.error
+        onContainer -> MaterialTheme.colorScheme.primary
+        fraction > 0.85f -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.primary
+    }
+    ExpressiveProgress(fraction, Modifier.padding(top = 4.dp), color = color, trackColor = track)
+    Text(stringResource(R.string.budget_used_of_total, budgetMoney(used, usage.limit.currency), budgetMoney(limit, usage.limit.currency)),
+        style = MaterialTheme.typography.labelMedium, color = LocalContentColor.current.copy(alpha = 0.8f))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -182,36 +243,59 @@ fun BudgetScreen(store: LedgerStore, book: Book, onBack: () -> Unit) {
             when {
                 state.loading -> item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                 state.failed -> item { ErrorText(stringResource(R.string.budget_load_failed)); TextButton({ retry++ }) { Text(stringResource(R.string.retry)) } }
-                state.plan == null -> item { Text(stringResource(R.string.budget_unset), Modifier.testTag("budget_empty")) }
+                state.plan == null -> item { EmptyMessage(stringResource(R.string.budget_unset), Modifier.testTag("budget_empty"), icon = Icons.Outlined.Savings) }
                 else -> {
                     val summary = requireNotNull(state.summary)
                     val plan = requireNotNull(state.plan)
                     item {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            BudgetRemaining(summary.total, "budget_remaining")
-                            Text(stringResource(R.string.budget_total), style = MaterialTheme.typography.labelMedium)
-                            MoneyText(budgetMoney(BigInteger.valueOf(plan.total.minor), book.currency), Modifier.fillMaxWidth())
-                            Text(stringResource(R.string.budget_used), style = MaterialTheme.typography.labelMedium)
-                            MoneyText(summary.total.used?.let { budgetMoney(it, book.currency) } ?: stringResource(R.string.budget_unavailable), Modifier.fillMaxWidth())
-                            Text(stringResource(R.string.budget_daily, summary.daysRemaining), style = MaterialTheme.typography.labelMedium)
-                            MoneyText(summary.dailyAvailable?.let { budgetMoney(it, book.currency) } ?: stringResource(R.string.budget_unavailable), Modifier.fillMaxWidth())
+                        EnterAnimated {
+                            HeroCard {
+                                BudgetRemaining(summary.total, "budget_remaining", MaterialTheme.typography.displaySmall)
+                                BudgetUsageBar(summary.total, onContainer = true)
+                            }
+                        }
+                    }
+                    item {
+                        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            StatTile(stringResource(R.string.budget_total), Icons.Outlined.AccountBalanceWallet, MaterialTheme.colorScheme.secondaryContainer,
+                                MaterialTheme.colorScheme.onSecondaryContainer, Modifier.weight(1f).fillMaxHeight()) {
+                                MoneyText(budgetMoney(BigInteger.valueOf(plan.total.minor), book.currency), Modifier.fillMaxWidth())
+                            }
+                            StatTile(stringResource(R.string.budget_used), Icons.Outlined.ShoppingBag, MaterialTheme.colorScheme.tertiaryContainer,
+                                MaterialTheme.colorScheme.onTertiaryContainer, Modifier.weight(1f).fillMaxHeight()) {
+                                MoneyText(summary.total.used?.let { budgetMoney(it, book.currency) } ?: stringResource(R.string.budget_unavailable), Modifier.fillMaxWidth())
+                            }
+                        }
+                    }
+                    item {
+                        StatTile(stringResource(R.string.budget_daily, summary.daysRemaining), Icons.Outlined.CalendarToday, MaterialTheme.colorScheme.surfaceContainerHigh,
+                            MaterialTheme.colorScheme.onSurface, Modifier.fillMaxWidth()) {
+                            MoneyText(summary.dailyAvailable?.let { budgetMoney(it, book.currency) } ?: stringResource(R.string.budget_unavailable), Modifier.fillMaxWidth(),
+                                style = MaterialTheme.typography.titleLarge)
                             plan.copiedFrom?.let { Text(stringResource(R.string.budget_copied_from, it.key), style = MaterialTheme.typography.bodySmall) }
                             summary.ratesUsed.forEach { Text(stringResource(R.string.budget_rate_basis, it.source.code, it.target.code, it.rate, it.asOf.toString()), style = MaterialTheme.typography.bodySmall) }
                         }
-                        HorizontalDivider(Modifier.padding(top = 16.dp))
                     }
                     items(plan.categories, key = { it.categoryId }) { limit ->
                         val category = state.categories.firstOrNull { it.id == limit.categoryId }
                         val usage = summary.categories.getValue(limit.categoryId)
-                        Column(Modifier.fillMaxWidth().testTag("budget_category_${limit.categoryId}").semantics(mergeDescendants = true) {},
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Text(category?.let { budgetCategoryName(it, state.categories) } ?: limit.categoryId, style = MaterialTheme.typography.titleMedium)
-                            if (state.categories.any { it.parentId == limit.categoryId }) Text(stringResource(R.string.budget_includes_children), style = MaterialTheme.typography.bodySmall)
-                            BudgetRemaining(usage, "budget_remaining_${limit.categoryId}")
-                            Text(stringResource(R.string.budget_limit), style = MaterialTheme.typography.labelMedium)
-                            MoneyText(budgetMoney(BigInteger.valueOf(limit.limit.minor), book.currency), Modifier.fillMaxWidth())
+                        val name = category?.let { budgetCategoryName(it, state.categories) } ?: limit.categoryId
+                        Surface(Modifier.fillMaxWidth().animateItem(), shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                            Column(Modifier.fillMaxWidth().padding(16.dp).testTag("budget_category_${limit.categoryId}").semantics(mergeDescendants = true) {},
+                                verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    MonogramBadge(category?.name ?: name)
+                                    Column(Modifier.weight(1f)) {
+                                        Text(name, style = MaterialTheme.typography.titleMedium)
+                                        if (state.categories.any { it.parentId == limit.categoryId }) Text(stringResource(R.string.budget_includes_children), style = MaterialTheme.typography.bodySmall)
+                                    }
+                                }
+                                BudgetRemaining(usage, "budget_remaining_${limit.categoryId}", MaterialTheme.typography.titleLarge)
+                                BudgetUsageBar(usage)
+                                Text(stringResource(R.string.budget_limit), style = MaterialTheme.typography.labelMedium)
+                                MoneyText(budgetMoney(BigInteger.valueOf(limit.limit.minor), book.currency), Modifier.fillMaxWidth())
+                            }
                         }
-                        HorizontalDivider(Modifier.padding(top = 16.dp))
                     }
                 }
             }

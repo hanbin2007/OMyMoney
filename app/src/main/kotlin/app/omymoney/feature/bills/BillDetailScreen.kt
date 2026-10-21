@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Handshake
+import androidx.compose.material.icons.outlined.Link
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -70,6 +73,7 @@ class BillDetailViewModel(private val ledger: LedgerRepository, private val id: 
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BillDetailScreen(viewModel: BillDetailViewModel, catalog: CatalogViewModel, catalogState: CatalogState,
                      onBack: () -> Unit, onEdit: (Bill) -> Unit, onDeleted: (UndoToken) -> Unit, snackbar: SnackbarHostState,
@@ -107,8 +111,18 @@ fun BillDetailScreen(viewModel: BillDetailViewModel, catalog: CatalogViewModel, 
                     Column(Modifier.widthIn(max = 720.dp).fillMaxWidth().verticalScroll(rememberScrollState()).padding(16.dp).testTag("bill_detail"),
                         verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         if (failed != null) ErrorText(stringResource(if (failed == "linked_records") R.string.source_has_links else R.string.bill_delete_failed))
-                        Text(billKindLabel(bill.kind), style = MaterialTheme.typography.titleMedium)
-                        MoneyText(billAmountText(bill), Modifier.fillMaxWidth(), style = MaterialTheme.typography.headlineSmall)
+                        val category = categories.firstOrNull { it.id == bill.categoryId }
+                        EnterAnimated {
+                            HeroCard {
+                                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                    MonogramBadge(category?.name ?: billKindLabel(bill.kind), size = 48.dp)
+                                    Column(Modifier.weight(1f)) {
+                                        Text(billKindLabel(bill.kind), style = MaterialTheme.typography.titleMedium)
+                                    }
+                                }
+                                MoneyText(billAmountText(bill), Modifier.fillMaxWidth().padding(top = 8.dp), style = MaterialTheme.typography.displaySmall)
+                            }
+                        }
                         bill.exchange?.let { exchange ->
                             DetailField(stringResource(R.string.currency_actual), "${exchange.amount.currency.code} ${exchange.amount.decimalText()}", Modifier.testTag("detail_exchange_amount"))
                             Text("1 ${bill.amount.currency.code} = ${exchange.rate} ${exchange.amount.currency.code}")
@@ -118,17 +132,25 @@ fun BillDetailScreen(viewModel: BillDetailViewModel, catalog: CatalogViewModel, 
                             else Text(stringResource(R.string.currency_difference, "${difference.currency.code} ${difference.decimalText()}"))
                         }
                         bill.fee?.let { DetailField(stringResource(R.string.currency_fee), "${it.currency.code} ${it.decimalText()}", Modifier.testTag("detail_fee")) }
-                        if (bill.kind in listOf(BillKind.EXPENSE, BillKind.REIMBURSEMENT)) TextButton({ onLinked(bill) }, Modifier.testTag("bill_linked")) {
-                            Text(stringResource(if (bill.kind == BillKind.REIMBURSEMENT) R.string.reimbursement_records else R.string.refund_records))
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (bill.kind in listOf(BillKind.EXPENSE, BillKind.REIMBURSEMENT)) FilledTonalButton({ onLinked(bill) }, Modifier.testTag("bill_linked")) {
+                                Icon(Icons.Outlined.Link, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp))
+                                Text(stringResource(if (bill.kind == BillKind.REIMBURSEMENT) R.string.reimbursement_records else R.string.refund_records))
+                            }
+                            bill.linkedBillId?.let { id -> FilledTonalButton({ onSource(id) }, Modifier.testTag("bill_source_link")) {
+                                Icon(Icons.AutoMirrored.Outlined.OpenInNew, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.linked_source)) } }
+                            if (bill.kind in DebtRules.sourceKinds) FilledTonalButton({ onDebt(bill) }, Modifier.testTag("bill_debt_records")) {
+                                Icon(Icons.Outlined.Handshake, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.debt_records)) }
                         }
-                        bill.linkedBillId?.let { id -> TextButton({ onSource(id) }, Modifier.testTag("bill_source_link")) { Text(stringResource(R.string.linked_source)) } }
-                        if (bill.kind in DebtRules.sourceKinds) TextButton({ onDebt(bill) }, Modifier.testTag("bill_debt_records")) { Text(stringResource(R.string.debt_records)) }
-                        HorizontalDivider()
+                        Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                        Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         DetailField(stringResource(R.string.book), catalogState.books.firstOrNull { it.id == bill.bookId }?.name ?: bill.bookId)
                         bill.payment?.counterparty?.takeIf(String::isNotBlank)?.let {
                             DetailField(stringResource(R.string.payment_counterparty), it, Modifier.testTag("detail_counterparty"))
                         }
-                        categories.firstOrNull { it.id == bill.categoryId }?.let { DetailField(stringResource(R.string.category), it.name) }
+                        category?.let { DetailField(stringResource(R.string.category), it.name) }
                         bill.fromAccountId?.let { id -> DetailField(stringResource(if (bill.kind == BillKind.TRANSFER) R.string.from_account else R.string.paying_account),
                             catalogState.accounts.firstOrNull { it.id == id }?.name ?: stringResource(R.string.unavailable_account)) }
                         bill.toAccountId?.let { id -> DetailField(stringResource(if (bill.kind == BillKind.TRANSFER) R.string.to_account else R.string.receiving_account),
@@ -148,6 +170,8 @@ fun BillDetailScreen(viewModel: BillDetailViewModel, catalog: CatalogViewModel, 
                             applicationLabel(requireNotNull(bill.sourcePackage)) else billSourceLabel(bill.source), Modifier.testTag("detail_source"))
                         if (bill.excludeStats) Text(stringResource(R.string.exclude_stats))
                         if (bill.excludeBudget) Text(stringResource(R.string.exclude_budget))
+                        }
+                        }
                         Spacer(Modifier.height(16.dp))
                     }
                 }

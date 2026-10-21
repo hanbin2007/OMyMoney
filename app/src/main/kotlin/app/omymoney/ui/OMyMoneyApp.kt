@@ -1,12 +1,18 @@
 package app.omymoney.ui
 
+import app.omymoney.ui.theme.ExpressiveMotion
 import androidx.annotation.StringRes
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Settings
@@ -25,6 +31,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalAccessibilityManager
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,6 +64,7 @@ import app.omymoney.feature.exchange.*
 import app.omymoney.ui.components.*
 import app.omymoney.ui.navigation.LedgerNavigation
 import app.omymoney.ui.theme.DesignTokens
+import app.omymoney.ui.theme.LedgerMotion
 import app.omymoney.ui.theme.LedgerTheme
 import app.omymoney.ui.theme.ThemeMode
 import kotlinx.coroutines.launch
@@ -65,12 +76,15 @@ enum class AppDestination(
     @param:StringRes val label: Int,
     @param:StringRes val emptyMessage: Int,
     val icon: ImageVector,
+    val selectedIcon: ImageVector,
 ) {
-    BILLS("bills", R.string.nav_bills, R.string.empty_bills, Icons.AutoMirrored.Outlined.ReceiptLong),
-    ASSETS("assets", R.string.nav_assets, R.string.empty_assets, Icons.Outlined.AccountBalanceWallet),
-    STATS("stats", R.string.nav_stats, R.string.empty_stats, Icons.Outlined.BarChart),
-    SETTINGS("settings", R.string.nav_settings, R.string.local_storage, Icons.Outlined.Settings),
+    BILLS("bills", R.string.nav_bills, R.string.empty_bills, Icons.AutoMirrored.Outlined.ReceiptLong, Icons.AutoMirrored.Filled.ReceiptLong),
+    ASSETS("assets", R.string.nav_assets, R.string.empty_assets, Icons.Outlined.AccountBalanceWallet, Icons.Filled.AccountBalanceWallet),
+    STATS("stats", R.string.nav_stats, R.string.empty_stats, Icons.Outlined.BarChart, Icons.Filled.BarChart),
+    SETTINGS("settings", R.string.nav_settings, R.string.local_storage, Icons.Outlined.Settings, Icons.Filled.Settings),
 }
+
+private val topLevelRoutes = AppDestination.entries.map { it.route }.toSet()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -152,8 +166,8 @@ private fun UnlockedApp(themeMode: ThemeMode, dynamicColor: Boolean, container: 
             Row(Modifier.fillMaxSize()) {
                 if (expanded && selected != null) LedgerNavigation(selected, ::selectTab, expanded = true)
                 NavHost(nav, startDestination = AppDestination.BILLS.route, modifier = Modifier.weight(1f),
-                    enterTransition = { fadeIn(tween(150)) }, exitTransition = { fadeOut(tween(90)) },
-                    popEnterTransition = { fadeIn(tween(150)) }, popExitTransition = { fadeOut(tween(90)) }) {
+                    enterTransition = LedgerMotion.enter(topLevelRoutes), exitTransition = LedgerMotion.exit(topLevelRoutes),
+                    popEnterTransition = LedgerMotion.popEnter(topLevelRoutes), popExitTransition = LedgerMotion.popExit(topLevelRoutes)) {
                     AppDestination.entries.forEach { destination ->
                         composable(destination.route) { rootEntry ->
                             val currentBook = state.currentBook
@@ -551,27 +565,46 @@ private fun RootScreen(
     actions: @Composable RowScope.() -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    // The FAB tucks its label away while the list scrolls down and unfolds again on the way back up.
+    var fabExpanded by remember { mutableStateOf(true) }
+    val fabConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                if (available.y < -8f) fabExpanded = false else if (available.y > 8f) fabExpanded = true
+                return Offset.Zero
+            }
+        }
+    }
     Scaffold(
+        modifier = Modifier.nestedScroll(fabConnection).nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(title = {
                 if (destination in listOf(AppDestination.BILLS, AppDestination.STATS) && state.currentBook != null) {
-                    TextButton(onBookSwitch, Modifier.heightIn(min = 48.dp).testTag("book_switch"), contentPadding = PaddingValues(0.dp)) {
-                        Text(state.currentBook!!.name, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
+                    Surface(onClick = onBookSwitch, modifier = Modifier.heightIn(min = 48.dp).testTag("book_switch"), shape = CircleShape,
+                        color = MaterialTheme.colorScheme.secondaryContainer, contentColor = MaterialTheme.colorScheme.onSecondaryContainer) {
+                        Row(Modifier.padding(start = 16.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text(state.currentBook!!.name, Modifier.weight(1f, fill = false), style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1, overflow = TextOverflow.Ellipsis)
+                            Icon(Icons.Outlined.ArrowDropDown, contentDescription = null)
+                        }
                     }
-                } else Text(stringResource(if (state.currentBook == null) R.string.app_name else destination.label))
+                } else Text(stringResource(if (state.currentBook == null) R.string.app_name else destination.label),
+                    style = MaterialTheme.typography.headlineSmall)
             }, actions = {
                 actions()
                 if (destination == AppDestination.ASSETS && state.initialized) {
                     LedgerIconButton(Icons.Outlined.Add, stringResource(R.string.new_account), onAddAccount, Modifier.testTag("add_account"))
                 }
-            })
+            }, scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer))
         },
         bottomBar = { if (!expanded) Box(Modifier.onSizeChanged { onBottomBarHeight(it.height) }) { LedgerNavigation(destination, onSelect) } },
         floatingActionButton = {
-            if (destination == AppDestination.BILLS && state.currentBook != null) {
-                ExtendedFloatingActionButton(onClick = onAddBill, modifier = Modifier.testTag("add_bill"),
+            AnimatedVisibility(destination == AppDestination.BILLS && state.currentBook != null,
+                enter = scaleIn(ExpressiveMotion.fastSpatial()), exit = scaleOut(ExpressiveMotion.fastEffects())) {
+                ExtendedFloatingActionButton(onClick = onAddBill, modifier = Modifier.testTag("add_bill"), expanded = fabExpanded,
+                    containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     icon = { Icon(Icons.Outlined.Add, stringResource(R.string.new_bill)) }, text = { Text(stringResource(R.string.new_bill)) })
             }
         },
