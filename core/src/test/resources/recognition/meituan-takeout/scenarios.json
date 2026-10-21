@@ -1,0 +1,14 @@
+[
+  {"name":"takeout inline payment receipt","ruleId":"MeiTuanTakeoutPaySuccess","positive":true,"kind":"EXPENSE","minor":2580,"nodes":[{"text":"支付成功 ¥25.80"},{"text":"完成"}]},
+  {"name":"takeout labelled payment receipt","ruleId":"MeiTuanTakeoutPaySuccess","positive":true,"kind":"EXPENSE","minor":2580,"time":"2026-10-18T11:30:00Z","outcome":"matched","nodes":[{"text":"支付成功"},{"text":"实付金额"},{"text":"￥25.80"},{"text":"支付时间"},{"text":"2026-10-18 19:30:00"},{"text":"返回商家"}]},
+  {"name":"takeout failed receipt","ruleId":"MeiTuanTakeoutPaySuccess","positive":false,"nodes":[{"text":"支付失败"},{"text":"实付金额"},{"text":"￥25.80"},{"text":"完成"}]},
+  {"name":"takeout receipt without an amount","ruleId":"MeiTuanTakeoutPaySuccess","positive":false,"nodes":[{"text":"支付成功"},{"text":"完成"}]},
+  {"name":"takeout product advertisement is not a receipt","ruleId":"MeiTuanTakeoutPaySuccess","positive":false,"nodes":[{"text":"商品名称"},{"text":"支付成功 ¥25.80"},{"text":"完成"}]},
+  {"name":"takeout paid order with explicit payment time","ruleId":"MeiTuanTakeoutOrderDetail","positive":true,"kind":"EXPENSE","minor":2840,"time":"2026-10-18T11:30:00Z","outcome":"matched","nodes":[{"text":"订单详情"},{"text":"订单编号"},{"text":"TEST-TAKEOUT-1"},{"text":"订单已完成"},{"text":"实付款"},{"text":"¥"},{"text":"28.40"},{"text":"支付成功"},{"text":"下单时间"},{"text":"2026-10-18 19:00:00"},{"text":"支付时间"},{"text":"2026-10-18 19:30:00"}]},
+  {"name":"takeout delivered order without settlement proof","ruleId":"MeiTuanTakeoutOrderDetail","positive":true,"kind":"EXPENSE","minor":2840,"paymentIssue":"unknown","nodes":[{"text":"订单详情"},{"text":"订单编号"},{"text":"TEST-TAKEOUT-2"},{"text":"订单已完成"},{"text":"实付款"},{"text":"¥28.40"}]},
+  {"name":"takeout future pay later order","ruleId":"MeiTuanTakeoutOrderDetail","positive":true,"kind":"EXPENSE","minor":2840,"paymentIssue":"pending","nodes":[{"text":"订单详情"},{"text":"订单号：TEST-TAKEOUT-3"},{"text":"订单已完成"},{"text":"实付款"},{"text":"¥28.40"},{"text":"先用后付"},{"text":"待扣款"}]},
+  {"name":"takeout refunded order","ruleId":"MeiTuanTakeoutOrderDetail","positive":true,"kind":"EXPENSE","minor":2840,"paymentIssue":"refund_pending","nodes":[{"text":"订单详情"},{"text":"订单号码"},{"text":"TEST-TAKEOUT-4"},{"text":"实付金额：￥28.40"},{"text":"支付成功"},{"text":"退款成功"}]},
+  {"name":"takeout total alone is not actual payment","ruleId":"MeiTuanTakeoutOrderDetail","positive":true,"kind":"EXPENSE","paymentIssue":"unknown","nodes":[{"text":"订单详情"},{"text":"订单编号"},{"text":"TEST-TAKEOUT-5"},{"text":"订单已完成"},{"text":"合计"},{"text":"¥48.40"}]},
+  {"name":"takeout order not submitted","ruleId":"MeiTuanTakeoutOrderDetail","positive":false,"nodes":[{"text":"待提交订单"},{"text":"实付款"},{"text":"¥28.40"},{"text":"确认支付"}]},
+  {"name":"takeout cancelled order with stale success text","ruleId":"MeiTuanTakeoutOrderDetail","positive":false,"nodes":[{"text":"订单详情"},{"text":"订单编号"},{"text":"TEST-TAKEOUT-6"},{"text":"订单已取消"},{"text":"实付款"},{"text":"¥28.40"},{"text":"支付成功"}]}
+]

@@ -1,0 +1,6 @@
+<resources>
+    <color name="widget_background">#FAFAFA</color>
+    <color name="widget_foreground">#202422</color>
+    <color name="widget_income">#14664B</color>
+    <color name="widget_expense">#A13540</color>
+</resources>

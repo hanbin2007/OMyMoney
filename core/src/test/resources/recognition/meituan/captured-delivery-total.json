@@ -1,0 +1,23 @@
+{
+  "packageName": "com.sankuai.meituan",
+  "capturedAt": "2026-10-21T09:13:50Z",
+  "nodes": [
+    {"className": "android.widget.FrameLayout"},
+    {"text": "17:44-17:59预计送达", "className": "android.widget.TextView", "parentIndex": 0},
+    {"className": "androidx.recyclerview.widget.RecyclerView", "parentIndex": 0},
+    {"className": "android.widget.FrameLayout", "parentIndex": 2},
+    {"text": "订单信息", "className": "android.widget.TextView", "parentIndex": 3},
+    {"className": "android.widget.FrameLayout", "parentIndex": 3},
+    {"text": "配送骑手/支付方式等", "className": "android.widget.TextView", "parentIndex": 5},
+    {"className": "android.widget.FrameLayout", "parentIndex": 2},
+    {"text": "商品费用", "className": "android.widget.TextView", "parentIndex": 7},
+    {"className": "android.widget.FrameLayout", "parentIndex": 7},
+    {"text": "测试商家", "className": "android.widget.TextView", "parentIndex": 9},
+    {"text": "共1件", "className": "android.widget.TextView", "parentIndex": 7},
+    {"text": "合计", "className": "android.widget.TextView", "parentIndex": 7},
+    {"text": "¥", "className": "android.widget.TextView", "parentIndex": 7},
+    {"text": "25.5", "className": "android.widget.TextView", "parentIndex": 7},
+    {"className": "android.widget.FrameLayout", "parentIndex": 7},
+    {"text": "费用明细", "className": "android.widget.TextView", "parentIndex": 15}
+  ]
+}

@@ -1,0 +1,2 @@
+certbot==5.8.0
+aliyun-python-sdk-alidns==3.0.7

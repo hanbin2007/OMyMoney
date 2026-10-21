@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical"
+    android:background="@drawable/widget_background" android:padding="12dp">
+    <TextView android:id="@+id/widget_title" android:layout_width="match_parent" android:layout_height="40dp"
+        android:gravity="center_vertical" android:text="@string/app_name" android:textColor="@color/widget_foreground"
+        android:textStyle="bold" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="12sp" android:autoSizeMaxTextSize="20sp" android:maxLines="1" android:ellipsize="end" />
+    <TextView android:id="@+id/widget_status" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:gravity="center_vertical" android:text="@string/widget_private" android:textColor="@color/widget_foreground"
+        android:autoSizeTextType="uniform" android:autoSizeMinTextSize="10sp" android:autoSizeMaxTextSize="14sp" android:maxLines="3" />
+    <LinearLayout android:id="@+id/widget_totals" android:layout_width="match_parent" android:layout_height="128dp" android:orientation="vertical">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="64dp" android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/income" android:textSize="12sp" android:textColor="@color/widget_foreground" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/widget_income" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:gravity="end|center_vertical"
+                android:textColor="@color/widget_income" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="18sp" android:maxLines="3" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="64dp" android:gravity="center_vertical" android:orientation="horizontal">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/expense" android:textSize="12sp" android:textColor="@color/widget_foreground" android:layout_marginEnd="8dp" />
+            <TextView android:id="@+id/widget_expense" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:gravity="end|center_vertical"
+                android:textColor="@color/widget_expense" android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="18sp" android:maxLines="3" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal">
+        <Button android:id="@+id/widget_open" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:text="@string/widget_open"
+            android:autoSizeTextType="uniform" android:autoSizeMinTextSize="8sp" android:autoSizeMaxTextSize="12sp" android:maxLines="1"
+            android:paddingStart="8dp" android:paddingEnd="8dp" android:textColor="@color/widget_foreground" android:background="?android:attr/selectableItemBackground" />
+        <!-- RemoteViews inflates framework widgets, not AppCompat widgets. -->
+        <ImageButton android:id="@+id/widget_add" android:layout_width="48dp" android:layout_height="48dp" android:src="@android:drawable/ic_input_add" android:tint="@color/widget_foreground" tools:ignore="UseAppTint" android:contentDescription="@string/new_bill" android:background="?android:attr/selectableItemBackground" />
+    </LinearLayout>
+</LinearLayout>

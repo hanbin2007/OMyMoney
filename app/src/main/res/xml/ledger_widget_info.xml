@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp" android:minHeight="296dp" android:minResizeWidth="250dp" android:minResizeHeight="296dp"
+    android:targetCellWidth="4" android:targetCellHeight="3" android:resizeMode="horizontal|vertical"
+    android:updatePeriodMillis="1800000" android:widgetCategory="home_screen|not_keyguard"
+    android:initialLayout="@layout/ledger_widget" android:previewLayout="@layout/ledger_widget"
+    android:configure="app.omymoney.platform.widget.WidgetConfigureActivity" android:widgetFeatures="reconfigurable"
+    android:description="@string/widget_description" />

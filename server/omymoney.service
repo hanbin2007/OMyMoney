@@ -1,0 +1,40 @@
+[Unit]
+Description=OMyMoney diagnostics and signed release distribution
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=omymoney
+Group=omymoney
+WorkingDirectory=/data/omymoney/app
+Environment=OMYMONEY_DATA=/data/omymoney/state
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/data/omymoney/venv/bin/python -m receiver.serve
+Restart=on-failure
+RestartSec=10
+MemoryMax=256M
+MemorySwapMax=0
+CPUQuota=20%
+Nice=10
+IOSchedulingClass=idle
+IOWeight=10
+TasksMax=32
+LimitNOFILE=128
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/data/omymoney/state
+ReadOnlyPaths=/data/omymoney/state/releases
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+LockPersonality=true
+RestrictSUIDSGID=true
+CapabilityBoundingSet=
+
+[Install]
+WantedBy=multi-user.target

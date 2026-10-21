@@ -1,0 +1,1305 @@
+{
+  "schema_version": 1,
+  "scope": "Parser evidence only. Registration and fixture presence do not prove live compatibility, queue insertion or ledger save.",
+  "inventory": "docs/qianji-static-inventory.json",
+  "source_apk_sha256": "0c656dabd3f9ce09592fc146e5ae2c349f1a542bf3d5bb3480248e2cb1f8f4bf",
+  "verification_command": "sh work/run-gradle.sh :core:test",
+  "generated_from_sources_not_runtime_results": true,
+  "configured_but_unregistered_packages": [
+    "cn.gov.pbc.dcep",
+    "com.sankuai.meituan.takeoutnew",
+    "com.taobao.taobao",
+    "me.ele"
+  ],
+  "registered_scenarios": 56,
+  "scenarios": [
+    {
+      "id": "WeChatBillDetail",
+      "package": "com.tencent.mm",
+      "priority": 6,
+      "original_extractor": "q9.b",
+      "original_matcher": "z9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "bill detail actual payment",
+          "positive": true
+        },
+        {
+          "name": "bill waiting for payment",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WeChatTransferDetailWaiting",
+      "package": "com.tencent.mm",
+      "priority": 7,
+      "original_extractor": "q9.j",
+      "original_matcher": "z9.k",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "waiting transfer does not assert receipt",
+          "positive": true
+        },
+        {
+          "name": "waiting chat title without transaction amount",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WeChatPaySuccess",
+      "package": "com.tencent.mm",
+      "priority": 12,
+      "original_extractor": "q9.e",
+      "original_matcher": "z9.f",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "payment success lacks original transaction time",
+          "positive": true
+        },
+        {
+          "name": "embedded ordering homepage is not payment detail",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatPersonalRedPacketSend",
+      "package": "com.tencent.mm",
+      "priority": 0,
+      "original_extractor": "q9.h",
+      "original_matcher": "z9.i",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "personal packet sent awaiting claim",
+          "positive": true
+        },
+        {
+          "name": "packet amount without owner title",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatPersonalRedPacketReceive",
+      "package": "com.tencent.mm",
+      "priority": 2,
+      "original_extractor": "q9.g",
+      "original_matcher": "z9.g",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "personal receipt layout one",
+          "positive": true
+        },
+        {
+          "name": "personal packet greeting not amount",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatPersonalRedPacketReceive2",
+      "package": "com.tencent.mm",
+      "priority": 3,
+      "original_extractor": "q9.f",
+      "original_matcher": "z9.h",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "personal receipt layout two",
+          "positive": true
+        },
+        {
+          "name": "separate yuan without receipt navigation",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WeChatTransferDetail",
+      "package": "com.tencent.mm",
+      "priority": 4,
+      "original_extractor": "q9.i",
+      "original_matcher": "z9.j",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "outgoing transfer detail",
+          "positive": true
+        },
+        {
+          "name": "outgoing transfer failed",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WeChatTransferInDetail",
+      "package": "com.tencent.mm",
+      "priority": 5,
+      "original_extractor": "q9.k",
+      "original_matcher": "z9.l",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "merchant incoming transfer",
+          "positive": true
+        },
+        {
+          "name": "merchant transfer missing merchant field",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatGroupRedPacketDetail",
+      "package": "com.tencent.mm",
+      "priority": 1,
+      "original_extractor": "q9.d",
+      "original_matcher": "z9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "group progress does not establish my income",
+          "positive": true
+        },
+        {
+          "name": "group face value alone",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatWithdrawSuccess",
+      "package": "com.tencent.mm",
+      "priority": 8,
+      "original_extractor": "q9.m",
+      "original_matcher": "z9.n",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "withdrawal success naming actually application",
+          "positive": true
+        },
+        {
+          "name": "withdrawal form before application",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatWithdrawDetail",
+      "package": "com.tencent.mm",
+      "priority": 9,
+      "original_extractor": "q9.l",
+      "original_matcher": "z9.m",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "withdrawal detail with proven arrival",
+          "positive": true
+        },
+        {
+          "name": "withdrawal unrelated balance",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "WechatChargeDetail",
+      "package": "com.tencent.mm",
+      "priority": 10,
+      "original_extractor": "q9.c",
+      "original_matcher": "z9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "cases": [
+        {
+          "name": "charge detail own account transfer",
+          "positive": true
+        },
+        {
+          "name": "charge awaiting verification",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-wechat.md"
+    },
+    {
+      "id": "AlipayBillDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 0,
+      "original_extractor": "j9.a",
+      "original_matcher": "t9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "bill explicit amount and payment time",
+          "positive": true
+        },
+        {
+          "name": "bill unpaid",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayPaySuccess",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 1,
+      "original_extractor": "j9.e",
+      "original_matcher": "t9.e",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "payment success without fabricated time",
+          "positive": true
+        },
+        {
+          "name": "payment successful banner absent",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayTransfer",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 2,
+      "original_extractor": "j9.h",
+      "original_matcher": "t9.j",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "external transfer successful",
+          "positive": true
+        },
+        {
+          "name": "external transfer before authorization",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayCharge",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 5,
+      "original_extractor": "j9.c",
+      "original_matcher": "t9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "balance recharge actual debit",
+          "positive": true
+        },
+        {
+          "name": "recharge only submitted",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayChargeDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 6,
+      "original_extractor": "j9.b",
+      "original_matcher": "t9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "balance recharge detail no explicit status",
+          "positive": true
+        },
+        {
+          "name": "balance detail not recharge",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayWithdraw",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 7,
+      "original_extractor": "j9.l",
+      "original_matcher": "t9.l",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "withdrawal successful",
+          "positive": true
+        },
+        {
+          "name": "withdrawal pending",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayWithdrawDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 8,
+      "original_extractor": "j9.k",
+      "original_matcher": "t9.k",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "withdrawal detail no explicit status",
+          "positive": true
+        },
+        {
+          "name": "withdrawal balance overview",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayTransferOut",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 3,
+      "original_extractor": "j9.j",
+      "original_matcher": "t9.i",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "balance transfer out",
+          "positive": true
+        },
+        {
+          "name": "transfer out unknown destination",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayTransferIn",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 4,
+      "original_extractor": "j9.i",
+      "original_matcher": "t9.h",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "balance transfer in web layout",
+          "positive": true
+        },
+        {
+          "name": "web transfer incomplete",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipaySendRedPacket",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 9,
+      "original_extractor": "j9.g",
+      "original_matcher": "t9.g",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "sent packet total not already claimed portion",
+          "positive": true
+        },
+        {
+          "name": "packet progress without sent identity",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayQRCodeReceiveDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 10,
+      "original_extractor": "j9.f",
+      "original_matcher": "t9.f",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "QR payment received",
+          "positive": true
+        },
+        {
+          "name": "QR awaiting receipt",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayYuLiBaoIncomeDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 11,
+      "original_extractor": "j9.m",
+      "original_matcher": "t9.m",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "investment earnings paid",
+          "positive": true
+        },
+        {
+          "name": "estimated yield not paid",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayYuLiBaoTransferOutSuccess",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 12,
+      "original_extractor": "j9.q",
+      "original_matcher": "t9.q",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "investment principal out success",
+          "positive": true
+        },
+        {
+          "name": "investment principal out pending",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayYuLiBaoTransferOutDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 13,
+      "original_extractor": "j9.p",
+      "original_matcher": "t9.p",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "investment principal out detail",
+          "positive": true
+        },
+        {
+          "name": "investment out webview title required",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayYuLiBaoTransferInDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 14,
+      "original_extractor": "j9.n",
+      "original_matcher": "t9.n",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "investment principal in detail",
+          "positive": true
+        },
+        {
+          "name": "investment in without source account",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "AlipayYuLiBaoTransferInSuccess",
+      "package": "com.eg.android.AlipayGphone",
+      "priority": 15,
+      "original_extractor": "j9.o",
+      "original_matcher": "t9.o",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "cases": [
+        {
+          "name": "investment in success inline amount",
+          "positive": true
+        },
+        {
+          "name": "investment in schedule without success",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-alipay.md"
+    },
+    {
+      "id": "PddOrderDetail",
+      "package": "com.xunmeng.pinduoduo",
+      "priority": 0,
+      "original_extractor": "n9.d",
+      "original_matcher": "x9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/pdd/scenarios.json",
+      "cases": [
+        {
+          "name": "order actual payment",
+          "positive": true
+        },
+        {
+          "name": "cancelled order not paid",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-pdd.md"
+    },
+    {
+      "id": "PddPayFirstDialog",
+      "package": "com.xunmeng.pinduoduo",
+      "priority": 1,
+      "original_extractor": "n9.e",
+      "original_matcher": "x9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/pdd/scenarios.json",
+      "cases": [
+        {
+          "name": "pay later is future debit",
+          "positive": true
+        },
+        {
+          "name": "pay later advertisement not order receipt",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-pdd.md"
+    },
+    {
+      "id": "PddWalletBillDetail",
+      "package": "com.xunmeng.pinduoduo",
+      "priority": 2,
+      "original_extractor": "n9.f",
+      "original_matcher": "x9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/pdd/scenarios.json",
+      "cases": [
+        {
+          "name": "wallet payment detail",
+          "positive": true
+        },
+        {
+          "name": "wallet failed payment",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-pdd.md"
+    },
+    {
+      "id": "UnionpayBillDetail",
+      "package": "com.unionpay",
+      "priority": 0,
+      "original_extractor": "p9.b",
+      "original_matcher": "y9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "cases": [
+        {
+          "name": "bill payment detail",
+          "positive": true
+        },
+        {
+          "name": "bill failed",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-unionpay.md"
+    },
+    {
+      "id": "UnionpayPaySuccess",
+      "package": "com.unionpay",
+      "priority": 1,
+      "original_extractor": "p9.d",
+      "original_matcher": "y9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "cases": [
+        {
+          "name": "payment result no transaction time",
+          "positive": true
+        },
+        {
+          "name": "payment form not success",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-unionpay.md"
+    },
+    {
+      "id": "UnionpayTransferSuccess",
+      "package": "com.unionpay",
+      "priority": 2,
+      "original_extractor": "p9.f",
+      "original_matcher": "y9.f",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "cases": [
+        {
+          "name": "transfer result",
+          "positive": true
+        },
+        {
+          "name": "transfer failed",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-unionpay.md"
+    },
+    {
+      "id": "UnionpayTransferDetail",
+      "package": "com.unionpay",
+      "priority": 3,
+      "original_extractor": "p9.e",
+      "original_matcher": "y9.e",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "cases": [
+        {
+          "name": "transfer detail order time only",
+          "positive": true
+        },
+        {
+          "name": "transfer detail no destination",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-unionpay.md"
+    },
+    {
+      "id": "UnionpayMessageOrderDetail",
+      "package": "com.unionpay",
+      "priority": 4,
+      "original_extractor": "p9.c",
+      "original_matcher": "y9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "cases": [
+        {
+          "name": "message transaction type without success proof",
+          "positive": true
+        },
+        {
+          "name": "message unknown transaction category",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-unionpay.md"
+    },
+    {
+      "id": "JingDongWalletBillDetail",
+      "package": "com.jingdong.app.mall",
+      "priority": 0,
+      "original_extractor": "l9.f",
+      "original_matcher": "v9.f",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "cases": [
+        {
+          "name": "wallet version one prior amount",
+          "positive": true
+        },
+        {
+          "name": "wallet version one unpaid",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-jd.md"
+    },
+    {
+      "id": "JingDongWalletBillDetailV2",
+      "package": "com.jingdong.app.mall",
+      "priority": 1,
+      "original_extractor": "l9.g",
+      "original_matcher": "v9.g",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "cases": [
+        {
+          "name": "wallet version two merged node",
+          "positive": true
+        },
+        {
+          "name": "wallet version two processing",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-jd.md"
+    },
+    {
+      "id": "JingDongAihuishouOrderDetail",
+      "package": "com.jingdong.app.mall",
+      "priority": 2,
+      "original_extractor": "l9.b",
+      "original_matcher": "v9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "cases": [
+        {
+          "name": "recycling received payment",
+          "positive": true
+        },
+        {
+          "name": "recycling quote is not income",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-jd.md"
+    },
+    {
+      "id": "JingDongOrderDetail",
+      "package": "com.jingdong.app.mall",
+      "priority": 3,
+      "original_extractor": "l9.c",
+      "original_matcher": "v9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "cases": [
+        {
+          "name": "native paid order actual amount",
+          "positive": true
+        },
+        {
+          "name": "native unpaid order",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-jd.md"
+    },
+    {
+      "id": "JingDongOrderWeb",
+      "package": "com.jingdong.app.mall",
+      "priority": 4,
+      "original_extractor": "l9.d",
+      "original_matcher": "v9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "cases": [
+        {
+          "name": "web paid order colon labels",
+          "positive": true
+        },
+        {
+          "name": "web unpaid order",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-jd.md"
+    },
+    {
+      "id": "JingDongPaySuccess",
+      "package": "com.jingdong.app.mall",
+      "priority": 5,
+      "original_extractor": "l9.e",
+      "original_matcher": "v9.e",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "cases": [
+        {
+          "name": "typed native payment and coupon line",
+          "positive": true
+        },
+        {
+          "name": "untyped payment text is not native result",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-jd.md"
+    },
+    {
+      "id": "MeiTuanOrderDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 0,
+      "original_extractor": "m9.g",
+      "original_matcher": "w9.g",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "consumed order explicit payment time",
+          "positive": true
+        },
+        {
+          "name": "cancelled order",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanVoucherDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 1,
+      "original_extractor": "m9.i",
+      "original_matcher": "w9.i",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "unused voucher not consumed yet",
+          "positive": true
+        },
+        {
+          "name": "voucher advertisement lacks paid field",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanVoucherSuccessDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 2,
+      "original_extractor": "m9.j",
+      "original_matcher": "w9.j",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "voucher payment split character labels",
+          "positive": true
+        },
+        {
+          "name": "voucher payment fragmented marker missing",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanGrouponDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 3,
+      "original_extractor": "m9.e",
+      "original_matcher": "w9.e",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "group purchase distinct detail",
+          "positive": true
+        },
+        {
+          "name": "group purchase without actual payment",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanMovieDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 4,
+      "original_extractor": "m9.f",
+      "original_matcher": "w9.f",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "movie ticket actual amount",
+          "positive": true
+        },
+        {
+          "name": "movie showtime not purchased ticket",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanChargeOrderDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 5,
+      "original_extractor": "m9.c",
+      "original_matcher": "w9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "power bank return does not prove payment",
+          "positive": true
+        },
+        {
+          "name": "power bank still rented",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanBikeOrderDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 6,
+      "original_extractor": "m9.b",
+      "original_matcher": "w9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "bike paid ride summary",
+          "positive": true
+        },
+        {
+          "name": "bike estimated price not paid",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanPaySuccess",
+      "package": "com.sankuai.meituan",
+      "priority": 7,
+      "original_extractor": "m9.h",
+      "original_matcher": "w9.h",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "web payment result inline amount",
+          "positive": true
+        },
+        {
+          "name": "web payment requires typed title",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanWalletBillDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 8,
+      "original_extractor": "m9.k",
+      "original_matcher": "w9.k",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "wallet explicit paid time",
+          "positive": true
+        },
+        {
+          "name": "wallet failed payment",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "MeiTuanDeliveryDetail",
+      "package": "com.sankuai.meituan",
+      "priority": 9,
+      "original_extractor": "m9.d",
+      "original_matcher": "w9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "cases": [
+        {
+          "name": "delivery order actual payment",
+          "positive": true
+        },
+        {
+          "name": "delivery not placed",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-meituan.md"
+    },
+    {
+      "id": "DouyingTransferWaiting",
+      "package": "com.ss.android.ugc.aweme",
+      "priority": 0,
+      "original_extractor": "k9.d",
+      "original_matcher": "u9.d",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "cases": [
+        {
+          "name": "outgoing transfer pending receipt",
+          "positive": true
+        },
+        {
+          "name": "chat reminder without transfer page",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-douyin.md"
+    },
+    {
+      "id": "DouyingTransferReceived",
+      "package": "com.ss.android.ugc.aweme",
+      "priority": 1,
+      "original_extractor": "k9.c",
+      "original_matcher": "u9.c",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "cases": [
+        {
+          "name": "outgoing transfer recipient received",
+          "positive": true
+        },
+        {
+          "name": "transfer not received yet",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-douyin.md"
+    },
+    {
+      "id": "DouyingWalletBillDetail",
+      "package": "com.ss.android.ugc.aweme",
+      "priority": 2,
+      "original_extractor": "k9.e",
+      "original_matcher": "u9.e",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "cases": [
+        {
+          "name": "wallet payment inline fields",
+          "positive": true
+        },
+        {
+          "name": "wallet failed payment",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-douyin.md"
+    },
+    {
+      "id": "DouyingPaySuccess",
+      "package": "com.ss.android.ugc.aweme",
+      "priority": 3,
+      "original_extractor": "k9.b",
+      "original_matcher": "u9.b",
+      "evidence": "static_source_and_independent_synthetic_fixtures",
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "cases": [
+        {
+          "name": "lynx payment success typed fields",
+          "positive": true
+        },
+        {
+          "name": "untyped success label not lynx result",
+          "positive": false
+        }
+      ],
+      "live_app_version": null,
+      "device_payment_test": "not_tested",
+      "acceptance_test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "notes": "docs/recognition-douyin.md"
+    }
+  ]
+}

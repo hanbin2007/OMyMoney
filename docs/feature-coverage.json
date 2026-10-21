@@ -1,0 +1,64 @@
+{
+  "product": "OMyMoney",
+  "package": "app.omymoney.android",
+  "assessmentScope": "Historical Stage A/B checkpoint only; superseded by full-coverage.json. Entries below are not current whole-app status.",
+  "currentAssessment": "full-coverage.json",
+  "features": [
+    {
+      "scope": "Offline Android foundation and official Material 3 navigation",
+      "implementation": {"state": "implemented", "modules": ["app", "core", "data"], "minimumApi": 26, "targetApi": 36},
+      "tests": ["LaunchTest", "MaterialThemeTest", "ControlAccessibilityTest", "CompactHeightNavigationTest", "scripts/verify-offline.sh"],
+      "deviceEvidence": {"kind": "emulator", "device": "ledger34", "api": 34, "screenshots": ["work/qa/a4", "work/qa/a5"]},
+      "knownDifferences": ["No login, original backend, network permission, cloud synchronization or analytics", "Real API 26/36 execution and physical TalkBack service testing await C10", "Theme controls are scheduled for C8; system/dynamic theme currently defaults on"]
+    },
+    {
+      "scope": "Exact money, basic postings and atomic ledger mutations",
+      "implementation": {"state": "implemented", "kinds": ["EXPENSE", "INCOME", "TRANSFER"], "databaseSchema": 4},
+      "tests": ["MoneyTest", "PostingCalculatorTest", "LedgerTransactionTest", "LedgerMigrationTest", "StageAAcceptanceTest"],
+      "deviceEvidence": {"kind": "emulator", "device": "ledger34", "api": 34, "logs": ["work/build-logs/a8-final-regression.log", "work/build-logs/a9-acceptance-first.log"]},
+      "knownDifferences": ["Advanced transaction kinds, fees and cross-currency transfer are not enabled until C1/C2", "No binary floating-point money storage"]
+    },
+    {
+      "scope": "Books, asset accounts and two-level categories",
+      "implementation": {"state": "implemented", "operations": ["create", "edit", "select", "archive", "restore", "reorder"]},
+      "tests": ["CatalogTest", "CatalogFlowTest", "ControlAccessibilityTest"],
+      "deviceEvidence": {"kind": "emulator", "api": 34, "screenshots": ["work/qa/a5"], "processRestart": "verified in dedicated native walkthrough"},
+      "knownDifferences": ["Accounts are shared locally across books; categories belong to one book", "Archiving a parent archives its children; restoring the parent does not silently restore children"]
+    },
+    {
+      "scope": "Manual editor, raw draft recovery and bill lifecycle",
+      "implementation": {"state": "implemented", "operations": ["income", "expense", "transfer", "edit", "search", "filter", "delete", "undo", "persist draft"]},
+      "tests": ["DraftRepositoryTest", "BillEditorStateTest", "BillEditorFlowTest", "BillTimePickerTest", "BillLifecycleTest", "DraftProcessRecoveryTest", "MoneyDisplayTest", "StageAAcceptanceTest"],
+      "deviceEvidence": {"kind": "emulator", "api": 34, "screenshots": ["work/qa/a6", "work/qa/a7"], "nativeChecks": ["360dp and 600dp", "200 percent font", "IME and actual Back key", "force-stop and raw draft recovery"]},
+      "knownDifferences": ["Unknown transaction times require manual confirmation", "List date grouping uses the selected book timezone; details retain transaction timezone", "Batch operations are scheduled for C7"]
+    },
+    {
+      "scope": "Private image attachments and accessible image viewer",
+      "implementation": {"state": "implemented", "formats": ["PNG", "JPEG", "WebP", "GIF"], "maxImageBytes": 20971520},
+      "tests": ["AttachmentStoreTest", "AttachmentLayoutTest", "AttachmentUiTest", "AttachmentProcessTest", "BillEditorStateTest"],
+      "deviceEvidence": {"kind": "emulator", "api": 34, "screenshots": ["work/qa/a7"], "nativeChecks": ["system photo picker", "force-stop and image checksum readback", "keyboard pan and semantic actions"]},
+      "knownDifferences": ["No broad media-library permission", "No claim of process death while the system picker itself was open", "Orphaned private images are retained pending reference-safe cleanup"]
+    },
+    {
+      "scope": "Complete local backup, validated preview, merge and replacement",
+      "implementation": {"state": "implemented", "archiveSchema": 2, "format": "ZIP + JSON + referenced images", "encrypted": false},
+      "tests": ["BackupRoundTripTest", "BackupStateTest", "BackupPreviewTest", "BackupFlowTest", "StageAAcceptanceTest"],
+      "deviceEvidence": {"kind": "emulator", "api": 34, "screenshots": ["work/qa/a8"], "nativeChecks": ["SAF CreateDocument export", "SHA-256 readback", "SAF OpenDocument preview", "200 percent confirmation/conflict screens"]},
+      "knownDifferences": ["Same-ID content conflicts block merge rather than silently choosing a winner", "One private before-replacement recovery snapshot is retained", "A chosen external document provider may synchronize files independently", "CSV and original-app import compatibility await C9"]
+    },
+    {
+      "scope": "Accessibility recognition, 56 scenario rule index, draft queue, overlay, OCR and no-op AI contract",
+      "implementation": {"state": "implemented", "stage": "B", "connectedScenarios": 56, "packages": 7, "bundledOcr": "ML Kit Chinese 16.0.1", "enhancer": "NoOp"},
+      "tests": ["RuleRegistryTest", "RecognitionBoundaryTest", "RecognitionQueueTest", "AccessibilityCaptureTest", "OverlayReviewTest", "ScreenshotImportTest", "ScreenshotPipelineTest", "ScreenshotUiTest", "QueueIntentTest", "RecognitionEnhancerTest", "AutomationAcceptanceTest"],
+      "deviceEvidence": {"kind": "emulator", "device": "ledger34", "api": 34, "screenshots": ["work/qa/b10", "work/qa/b11", "work/qa/b12", "work/qa/b14"], "nativeChecks": ["explicit accessibility grant/revoke", "overlay IME and edge Back", "fresh offline bundled OCR", "200 percent font compact/wide", "force-stop and raw queue draft recovery"]},
+      "knownDifferences": ["All 56 scenarios have synthetic positive/negative fixtures; zero live third-party payment-app scenarios are verified", "No generative AI provider, model download or keys; bundled OCR is the separate approved local image reader", "Explicit currency conflicts leave amount unknown", "Per-scenario evidence is in recognition-coverage.json", "Four deferred UI minors and device limits are in acceptance-B.md"]
+    },
+    {
+      "scope": "Advanced finance, budgets, statistics, recurrence/installments, savings, CSV, settings/privacy lock and widgets",
+      "implementation": {"state": "not_started", "stage": "C"},
+      "tests": [],
+      "deviceEvidence": {"kind": "not_tested"},
+      "knownDifferences": ["Stages A and B are not the whole-project delivery", "Statistics is an explicit empty destination until C5", "Manufacturer-specific widgets and live exchange rates are outside the local implementation"]
+    }
+  ]
+}

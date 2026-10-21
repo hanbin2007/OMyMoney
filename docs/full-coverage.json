@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "product": "OMyMoney",
+  "package": "app.omymoney.android",
+  "versionName": "0.1.0",
+  "versionCode": 1,
+  "minimumApi": 26,
+  "targetApi": 36,
+  "databaseSchema": 10,
+  "backupSchema": 8,
+  "assessmentScope": "Approved independent personal offline rewrite; not the original server-backed application",
+  "acceptanceStatus": "PASS_WITH_DISCLOSED_LIMITATIONS",
+  "authoritativeDifferenceReport": "known-differences.md",
+  "historicalReports": ["acceptance-A.md", "acceptance-B.md", "feature-coverage.json"],
+  "verification": {
+    "lastCompleteApi34Gate": {"stage": "C10", "core": {"passed": 163, "failed": 0, "execution": "Shared host JVM suite"}, "data": {"passed": 126, "failed": 0}, "app": {"total": 199, "passed": 187, "skipped": 12, "failed": 0}, "lint": "PASS", "log": "work/build-logs/c10-api34-final-full.log"},
+    "finalMatrix": [
+      {"api": 26, "android": "8.0.0", "device": "Google APIs ARM64 emulator", "data": {"passed": 126, "failed": 0}, "app": {"total": 197, "passed": 170, "skipped": 27, "failed": 0}, "xml": "work/qa/c10/api26-final/regression", "log": "work/build-logs/c10-api26-final-full2.log"},
+      {"api": 34, "android": "14", "device": "Google APIs ARM64 emulator", "data": {"passed": 126, "failed": 0}, "app": {"total": 199, "passed": 187, "skipped": 12, "failed": 0}, "xml": "work/qa/c10/api34-final/regression", "log": "work/build-logs/c10-api34-final-full.log"},
+      {"api": 36, "android": "16", "device": "Google APIs ARM64 emulator", "data": {"passed": 126, "failed": 0}, "app": {"total": 199, "passed": 187, "skipped": 12, "failed": 0}, "xml": "work/qa/c10/api36-final/regression", "log": "work/build-logs/c10-api36-final-full.log"}
+    ],
+    "physicalDevices": {"tested": 0, "status": "UNVERIFIED"},
+    "nativeAcceptance": {"apis": [26, 34, 36], "forceStopRecovery": "PASS: compact light and wide dark at 200 percent font", "crossFeatureNavigation": "PASS: five cases in three viewports on each API", "systemCredentials": "PASS: actual temporary system PIN, cancellation, wrong PIN, relock and disable", "keyboard": "PASS: native key events, not a physical keyboard", "visualInspection": "PASS: representative native frames including signed-release light and dark screens"},
+    "signedRelease": {"file": "outputs/OMyMoney.apk", "sha256File": "outputs/OMyMoney.apk.sha256", "sourceRevisionFile": "outputs/source-revision.txt", "certificateSha256": "91275b1e64da9ff62a5da9444bcbb6e4ef42f51fb5fd9dd83e14820a10129a37", "nativeInstallAndSave": {"26": "PASS", "34": "PASS", "36": "PASS"}, "debuggable": false, "internetPermission": false, "licenseModules": 163, "noticeReferences": 100, "distinctNoticeFiles": 99},
+    "talkBack": {"status": "NOT_REQUIRED_BY_USER", "productResult": "UNVERIFIED", "lastAttempt": "Native service started, but the test could not locate the bills navigation node", "temporarySettingsRestored": true},
+    "thirdPartyPaymentApps": {"liveScenariosVerified": 0, "syntheticPositiveScenarios": 56, "syntheticNegativeScenarios": 56, "packages": 7, "status": "SYNTHETIC_ONLY"},
+    "review": {"code": "ACCEPTED_FINDINGS_FIXED", "uxAccessibility": "ACCEPTED_FINDINGS_FIXED", "reReview": false}
+  },
+  "features": [
+    {
+      "id": "foundation",
+      "implementation": "IMPLEMENTED",
+      "scope": "Native Kotlin, official Compose Material 3, Material You, four primary destinations, responsive navigation, named accessible controls",
+      "tests": ["LaunchTest", "MaterialThemeTest", "ThemeScreenshotTest", "ControlAccessibilityTest", "CompactHeightNavigationTest", "TalkBackAcceptanceTest"],
+      "evidence": ["work/qa/a4", "work/qa/a5"],
+      "limits": ["No pixel-identical clone of the old app", "Dynamic/system theme results are tied to the tested image and palette, not all devices"]
+    },
+    {
+      "id": "catalog",
+      "implementation": "IMPLEMENTED",
+      "scope": "Multiple books, shared local accounts, two-level per-book categories, archive/restore, ordering, account groups and aliases",
+      "tests": ["CatalogTest", "CatalogFlowTest", "BatchRepositoryTest", "AssetFlowTest"],
+      "evidence": ["work/qa/a5", "work/qa/c2"],
+      "limits": ["Historical financial and batch-snapshot references prevent incompatible currency/type changes", "Restoring a parent category does not silently restore its children"]
+    },
+    {
+      "id": "ledger",
+      "implementation": "IMPLEMENTED",
+      "scope": "Exact minor-unit amounts, unified validated posting transactions, idempotency, revisions, editing, soft delete, single-use undo, list search and filters",
+      "tests": ["MoneyTest", "PostingCalculatorTest", "LedgerTransactionTest", "BillLifecycleTest", "MoneyDisplayTest", "StageAAcceptanceTest", "FullAcceptanceTest"],
+      "evidence": ["work/qa/a7", "work/qa/a9"],
+      "limits": ["No binary floating-point money truth", "Failed writes never count as committed transactions"]
+    },
+    {
+      "id": "editor_drafts_attachments",
+      "implementation": "IMPLEMENTED",
+      "scope": "Manual editor, raw input recovery, explicit time provenance, tags/notes/exclusion flags, private image attachments and image viewer",
+      "tests": ["DraftRepositoryTest", "BillEditorStateTest", "BillEditorFlowTest", "BillTimePickerTest", "DraftProcessRecoveryTest", "AttachmentStoreTest", "AttachmentUiTest", "AttachmentProcessTest"],
+      "evidence": ["work/qa/a6", "work/qa/a7"],
+      "limits": ["Unknown transaction time requires confirmation", "Private orphan images are retained until reference-safe cleanup is implemented", "Image formats PNG/JPEG/WebP/GIF; 20 MiB attachment limit"]
+    },
+    {
+      "id": "linked_finance",
+      "implementation": "IMPLEMENTED",
+      "scope": "Linked partial and excess refunds, reimbursement advances/settlements, borrow/lend/repay/collect, separate interest, credit payments and cycle settings",
+      "tests": ["LinkedBillRulesTest", "LinkedBillTransactionTest", "LinkedBillUiTest", "DebtRulesTest", "AssetTransactionTest", "CreditCycleTest", "AssetFlowTest", "FullAcceptanceTest"],
+      "evidence": ["work/qa/c1", "work/qa/c2"],
+      "limits": ["Source deletion cannot orphan linked children", "Principal and settlements are not duplicate ordinary spending/income", "Credit cycles are local records, not bank connectivity"]
+    },
+    {
+      "id": "currency_history",
+      "implementation": "IMPLEMENTED",
+      "scope": "Manual exchange rates, actual source/target amounts, independent fees, immutable trade snapshots, asset history and explicit missing-rate states",
+      "tests": ["ExchangeRulesTest", "ExchangeHistoryTest", "ExchangeEditorTest", "CurrencyFlowTest", "FullAcceptanceTest"],
+      "evidence": ["work/qa/c3"],
+      "limits": ["No live rate service", "Changing current valuation rates does not rewrite recorded trade amounts"]
+    },
+    {
+      "id": "budgets_statistics",
+      "implementation": "IMPLEMENTED",
+      "scope": "Monthly/annual and category budgets, copy/delete tombstones, daily availability, income/expense/transfer reports, categories, trends, calendar, yearly summary and filters",
+      "tests": ["BudgetCalculatorTest", "BudgetCopyTest", "BudgetFlowTest", "StatisticsCalculatorTest", "StatisticsUiTest", "FullAcceptanceTest"],
+      "evidence": ["work/qa/c4", "work/qa/c5"],
+      "limits": ["Statistics and budget exclusions are separate", "Refunds can make a period's net spending negative", "Charts expose exact textual values; display ratios are not money truth"]
+    },
+    {
+      "id": "schedules_installments",
+      "implementation": "IMPLEMENTED",
+      "scope": "Recurring plans, exact installment division, anchored local calendar/timezone, pending or explicitly automatic posting, catch-up, pause/resume, execution records and duplicate protection",
+      "tests": ["ScheduleCalculatorTest", "ScheduleIdempotencyTest", "ScheduledWorkerTest", "ScheduleUiTest", "CrossFeatureNavigationTest", "FullAcceptanceTest"],
+      "evidence": ["work/qa/c6"],
+      "limits": ["WorkManager is not an exact alarm or a guarantee of manufacturer background execution", "Calendar and installment principal cannot rewrite already generated occurrences"]
+    },
+    {
+      "id": "savings",
+      "implementation": "IMPLEMENTED",
+      "scope": "Fixed, increasing, decreasing and custom savings targets, deposit records, linked real transfers, progress/calendar, editing, sorting and pause",
+      "tests": ["SavingsCalculatorTest", "SavingsRepositoryTest", "SavingsUiTest", "CrossFeatureNavigationTest", "FullAcceptanceTest"],
+      "evidence": ["work/qa/c7"],
+      "limits": ["Manual progress records do not secretly create ledger money movements", "Deleted or changed linked transfers are flagged rather than counted silently"]
+    },
+    {
+      "id": "recognition_capture",
+      "implementation": "IMPLEMENTED",
+      "scope": "Explicit accessibility consent, enabled-package filtering, bounded node snapshots, event coalescing, 56 modeled payment scenarios and currency/time/evidence validation",
+      "tests": ["AccessibilityCaptureTest", "AccessibilityPermissionTest", "RuleRegistryTest", "RecognitionBoundaryTest", "WeChatRulesTest", "AlipayRulesTest", "PddRulesTest", "UnionPayRulesTest", "JdRulesTest", "MeituanRulesTest", "DouyinRulesTest"],
+      "evidence": ["recognition-coverage.json", "work/qa/b10"],
+      "limits": ["56 synthetic positive/negative pairs do not establish live external-app coverage", "No automatic payment clicks or security bypass"]
+    },
+    {
+      "id": "recognition_queue",
+      "implementation": "IMPLEMENTED",
+      "scope": "Deduplication and similarity comparison, account matching, editable queued drafts, floating confirmation, explicit save/ignore/reopen and durable failure history",
+      "tests": ["DeduplicatorTest", "AccountMatcherTest", "RecognitionQueueTest", "OverlayReviewTest", "AccessibilityOverlayDeviceTest", "QueueReviewUiTest", "QueueIntentTest", "AutomationAcceptanceTest", "CrossFeatureNavigationTest"],
+      "evidence": ["work/qa/b11", "work/qa/b14"],
+      "limits": ["New drafts queue instead of replacing user input", "Recognition counts are not committed-bill counts", "Privacy mode suppresses financial overlays"]
+    },
+    {
+      "id": "offline_ocr_ai_boundary",
+      "implementation": "IMPLEMENTED",
+      "scope": "Explicit image share/picker import, bundled Chinese OCR, rotation and image limits, known screenshot templates, editable unknowns, cancellable batch review and no-op enhancement contract",
+      "tests": ["ScreenshotImportTest", "ScreenshotPipelineTest", "ScreenshotRulesTest", "ScreenshotShareTest", "ScreenshotUiTest", "RecognitionEnhancerTest"],
+      "evidence": ["offline-ocr.md", "work/qa/b12"],
+      "limits": ["No generative AI provider or model download", "No broad real-receipt accuracy claim", "ML Kit is separately licensed and not claimed to contain no telemetry-related code"]
+    },
+    {
+      "id": "backup_restore",
+      "implementation": "IMPLEMENTED",
+      "scope": "Complete validated ZIP backup of business tables, original import fields and referenced images, persistent preview, explicit merge/replacement, integrity checks and before-replacement recovery",
+      "tests": ["BackupRoundTripTest", "LedgerMigrationTest", "BackupStateTest", "BackupPreviewTest", "BackupFlowTest", "BatchRepositoryTest", "FullAcceptanceTest"],
+      "evidence": ["backup-format.md", "work/qa/a8", "work/qa/c9"],
+      "limits": ["Unencrypted user-initiated archives", "Conflicting IDs block merge rather than silently choosing a winner", "One private recovery snapshot; local privacy preferences excluded"]
+    },
+    {
+      "id": "exchange_batch",
+      "implementation": "IMPLEMENTED",
+      "scope": "Bounded mature CSV/XLSX parsing, structured JSON, parsed/raw previews, explicit mappings/selection, row errors, formula-safe exports, exact readback, persistent duplicate receipts and atomic reversible batch operations",
+      "tests": ["ImportExportTest", "BatchRepositoryTest", "ImportPreviewUiTest", "ExchangeFlowTest", "ExchangeStateTest", "ExchangeSystemSafTest", "BatchActionTest", "BatchStateTest", "FullAcceptanceTest"],
+      "evidence": ["data-exchange.md", "work/qa/c9/system-documents", "work/qa/c9"],
+      "limits": ["10000 rows, 64 columns and documented byte limits", "Original server-provided import platforms are unverified", "Qianji mapping has modeled four-basic-kind samples only", "Two disclosed UI minors for maximum selection and mapping order"]
+    },
+    {
+      "id": "privacy_widgets_shortcuts",
+      "implementation": "IMPLEMENTED",
+      "scope": "System/light/dark appearance, dynamic color control, system-credential privacy lock, secure screenshots, cold-start/background relock, validated quick entries and configurable standard widgets",
+      "tests": ["PrivacyAndWidgetTest", "PrivacyNativeTest", "PrivacyProcessTest", "SettingsUiTest", "WidgetHostTest", "WidgetConfigTest", "WidgetConfigurationUiTest", "WidgetPinningTest", "WidgetEntryTest", "CrossFeatureNavigationTest"],
+      "evidence": ["work/qa/c8"],
+      "limits": ["Standard Android widgets only, not vendor proprietary formats", "Widget privacy hides both book name and money even while the app itself is unlocked", "No biometric hardware or physical-vendor compatibility claim"]
+    },
+    {
+      "id": "release_delivery",
+      "implementation": "IMPLEMENTED",
+      "scope": "Independent installable signed release, permission/debug-entry guards, compiled backup-rule checks, SHA-256 and signer readback, dependency license/source notices",
+      "tests": ["scripts/test-release-verifier.rb", "scripts/verify-release.rb", "scripts/verify-offline.sh", "FullAcceptanceTest"],
+      "evidence": ["build-and-test.md", "third-party-notices.md", "release-dependencies.json"],
+      "limits": ["Final acceptance status governs whether this release can be called verified", "Not a public app-store compliance certification", "Release private key is not included in APK/source delivery"]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut android:shortcutId="new-bill" android:enabled="true" android:icon="@android:drawable/ic_input_add"
+        android:shortcutShortLabel="@string/new_bill" android:shortcutLongLabel="@string/new_bill">
+        <intent android:action="app.omymoney.NEW_BILL" android:targetPackage="app.omymoney.android" android:targetClass="app.omymoney.MainActivity" />
+    </shortcut>
+</shortcuts>

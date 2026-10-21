@@ -1,0 +1,1017 @@
+{
+  "scope": "Static registration inventory only; not complete logic extraction or runtime acceptance",
+  "apk": {
+    "file": "qianji_453b7_1229_beta.apk",
+    "sha256": "0c656dabd3f9ce09592fc146e5ae2c349f1a542bf3d5bb3480248e2cb1f8f4bf",
+    "package_name": "com.mutangtech.qianji",
+    "version_name": "4.5.3b7",
+    "version_code": 1229,
+    "min_sdk": 26,
+    "target_sdk": 35
+  },
+  "tooling": {
+    "apktool": "3.0.3",
+    "jadx": "1.5.6",
+    "jadx_exit_code": 3,
+    "jadx_error_count": 42
+  },
+  "configured_accessibility_packages": [
+    "com.eg.android.AlipayGphone",
+    "com.tencent.mm",
+    "cn.gov.pbc.dcep",
+    "com.unionpay",
+    "com.ss.android.ugc.aweme",
+    "com.sankuai.meituan",
+    "com.sankuai.meituan.takeoutnew",
+    "com.xunmeng.pinduoduo",
+    "com.jingdong.app.mall",
+    "com.taobao.taobao",
+    "me.ele"
+  ],
+  "registered_apps": [
+    {
+      "package_name": "com.tencent.mm",
+      "adapter_class": "aa.h",
+      "matcher_count": 13
+    },
+    {
+      "package_name": "com.eg.android.AlipayGphone",
+      "adapter_class": "aa.a",
+      "matcher_count": 16
+    },
+    {
+      "package_name": "com.xunmeng.pinduoduo",
+      "adapter_class": "aa.e",
+      "matcher_count": 3
+    },
+    {
+      "package_name": "com.unionpay",
+      "adapter_class": "aa.g",
+      "matcher_count": 5
+    },
+    {
+      "package_name": "com.jingdong.app.mall",
+      "adapter_class": "aa.c",
+      "matcher_count": 6
+    },
+    {
+      "package_name": "com.sankuai.meituan",
+      "adapter_class": "aa.d",
+      "matcher_count": 10
+    },
+    {
+      "package_name": "com.ss.android.ugc.aweme",
+      "adapter_class": "aa.b",
+      "matcher_count": 4
+    }
+  ],
+  "configured_but_not_registered": [
+    "cn.gov.pbc.dcep",
+    "com.sankuai.meituan.takeoutnew",
+    "com.taobao.taobao",
+    "me.ele"
+  ],
+  "extractors": [
+    {
+      "page_type": "WeChatBillDetail",
+      "extractor_class": "q9.b",
+      "registry_line": 19,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 6,
+        "matcher_class": "z9.b",
+        "page_type": "WeChatBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WeChatTransferDetailWaiting",
+      "extractor_class": "q9.j",
+      "registry_line": 20,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 7,
+        "matcher_class": "z9.k",
+        "page_type": "WeChatTransferDetailWaiting"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WeChatPaySuccess",
+      "extractor_class": "q9.e",
+      "registry_line": 21,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 12,
+        "matcher_class": "z9.f",
+        "page_type": "WeChatPaySuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatPersonalRedPacketSend",
+      "extractor_class": "q9.h",
+      "registry_line": 22,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 0,
+        "matcher_class": "z9.i",
+        "page_type": "WechatPersonalRedPacketSend"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatPersonalRedPacketReceive",
+      "extractor_class": "q9.g",
+      "registry_line": 23,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 2,
+        "matcher_class": "z9.g",
+        "page_type": "WechatPersonalRedPacketReceive"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatPersonalRedPacketReceive2",
+      "extractor_class": "q9.f",
+      "registry_line": 24,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 3,
+        "matcher_class": "z9.h",
+        "page_type": "WechatPersonalRedPacketReceive2"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WeChatTransferDetail",
+      "extractor_class": "q9.i",
+      "registry_line": 25,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 4,
+        "matcher_class": "z9.j",
+        "page_type": "WeChatTransferDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WeChatTransferInDetail",
+      "extractor_class": "q9.k",
+      "registry_line": 26,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 5,
+        "matcher_class": "z9.l",
+        "page_type": "WeChatTransferInDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatGroupRedPacketDetail",
+      "extractor_class": "q9.d",
+      "registry_line": 27,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 1,
+        "matcher_class": "z9.d",
+        "page_type": "WechatGroupRedPacketDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatWithdrawSuccess",
+      "extractor_class": "q9.m",
+      "registry_line": 28,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 8,
+        "matcher_class": "z9.n",
+        "page_type": "WechatWithdrawSuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatWithdrawDetail",
+      "extractor_class": "q9.l",
+      "registry_line": 29,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 9,
+        "matcher_class": "z9.m",
+        "page_type": "WechatWithdrawDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "WechatChargeDetail",
+      "extractor_class": "q9.c",
+      "registry_line": 30,
+      "matcher": {
+        "package_name": "com.tencent.mm",
+        "adapter_class": "aa.h",
+        "priority_in_app": 10,
+        "matcher_class": "z9.c",
+        "page_type": "WechatChargeDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayBillDetail",
+      "extractor_class": "j9.a",
+      "registry_line": 31,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 0,
+        "matcher_class": "t9.b",
+        "page_type": "AlipayBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayPaySuccess",
+      "extractor_class": "j9.e",
+      "registry_line": 32,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 1,
+        "matcher_class": "t9.e",
+        "page_type": "AlipayPaySuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayTransfer",
+      "extractor_class": "j9.h",
+      "registry_line": 33,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 2,
+        "matcher_class": "t9.j",
+        "page_type": "AlipayTransfer"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayCharge",
+      "extractor_class": "j9.c",
+      "registry_line": 34,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 5,
+        "matcher_class": "t9.d",
+        "page_type": "AlipayCharge"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayChargeDetail",
+      "extractor_class": "j9.b",
+      "registry_line": 35,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 6,
+        "matcher_class": "t9.c",
+        "page_type": "AlipayChargeDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayWithdraw",
+      "extractor_class": "j9.l",
+      "registry_line": 36,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 7,
+        "matcher_class": "t9.l",
+        "page_type": "AlipayWithdraw"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayWithdrawDetail",
+      "extractor_class": "j9.k",
+      "registry_line": 37,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 8,
+        "matcher_class": "t9.k",
+        "page_type": "AlipayWithdrawDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayTransferOut",
+      "extractor_class": "j9.j",
+      "registry_line": 38,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 3,
+        "matcher_class": "t9.i",
+        "page_type": "AlipayTransferOut"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayTransferIn",
+      "extractor_class": "j9.i",
+      "registry_line": 39,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 4,
+        "matcher_class": "t9.h",
+        "page_type": "AlipayTransferIn"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipaySendRedPacket",
+      "extractor_class": "j9.g",
+      "registry_line": 40,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 9,
+        "matcher_class": "t9.g",
+        "page_type": "AlipaySendRedPacket"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayQRCodeReceiveDetail",
+      "extractor_class": "j9.f",
+      "registry_line": 41,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 10,
+        "matcher_class": "t9.f",
+        "page_type": "AlipayQRCodeReceiveDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayYuLiBaoIncomeDetail",
+      "extractor_class": "j9.m",
+      "registry_line": 42,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 11,
+        "matcher_class": "t9.m",
+        "page_type": "AlipayYuLiBaoIncomeDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayYuLiBaoTransferOutSuccess",
+      "extractor_class": "j9.q",
+      "registry_line": 43,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 12,
+        "matcher_class": "t9.q",
+        "page_type": "AlipayYuLiBaoTransferOutSuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayYuLiBaoTransferOutDetail",
+      "extractor_class": "j9.p",
+      "registry_line": 44,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 13,
+        "matcher_class": "t9.p",
+        "page_type": "AlipayYuLiBaoTransferOutDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayYuLiBaoTransferInDetail",
+      "extractor_class": "j9.n",
+      "registry_line": 45,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 14,
+        "matcher_class": "t9.n",
+        "page_type": "AlipayYuLiBaoTransferInDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "AlipayYuLiBaoTransferInSuccess",
+      "extractor_class": "j9.o",
+      "registry_line": 46,
+      "matcher": {
+        "package_name": "com.eg.android.AlipayGphone",
+        "adapter_class": "aa.a",
+        "priority_in_app": 15,
+        "matcher_class": "t9.o",
+        "page_type": "AlipayYuLiBaoTransferInSuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "PddOrderDetail",
+      "extractor_class": "n9.d",
+      "registry_line": 47,
+      "matcher": {
+        "package_name": "com.xunmeng.pinduoduo",
+        "adapter_class": "aa.e",
+        "priority_in_app": 0,
+        "matcher_class": "x9.b",
+        "page_type": "PddOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "PddPayFirstDialog",
+      "extractor_class": "n9.e",
+      "registry_line": 48,
+      "matcher": {
+        "package_name": "com.xunmeng.pinduoduo",
+        "adapter_class": "aa.e",
+        "priority_in_app": 1,
+        "matcher_class": "x9.c",
+        "page_type": "PddPayFirstDialog"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "PddWalletBillDetail",
+      "extractor_class": "n9.f",
+      "registry_line": 49,
+      "matcher": {
+        "package_name": "com.xunmeng.pinduoduo",
+        "adapter_class": "aa.e",
+        "priority_in_app": 2,
+        "matcher_class": "x9.d",
+        "page_type": "PddWalletBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "UnionpayBillDetail",
+      "extractor_class": "p9.b",
+      "registry_line": 50,
+      "matcher": {
+        "package_name": "com.unionpay",
+        "adapter_class": "aa.g",
+        "priority_in_app": 0,
+        "matcher_class": "y9.b",
+        "page_type": "UnionpayBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "UnionpayPaySuccess",
+      "extractor_class": "p9.d",
+      "registry_line": 51,
+      "matcher": {
+        "package_name": "com.unionpay",
+        "adapter_class": "aa.g",
+        "priority_in_app": 1,
+        "matcher_class": "y9.d",
+        "page_type": "UnionpayPaySuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "UnionpayTransferSuccess",
+      "extractor_class": "p9.f",
+      "registry_line": 52,
+      "matcher": {
+        "package_name": "com.unionpay",
+        "adapter_class": "aa.g",
+        "priority_in_app": 2,
+        "matcher_class": "y9.f",
+        "page_type": "UnionpayTransferSuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "UnionpayTransferDetail",
+      "extractor_class": "p9.e",
+      "registry_line": 53,
+      "matcher": {
+        "package_name": "com.unionpay",
+        "adapter_class": "aa.g",
+        "priority_in_app": 3,
+        "matcher_class": "y9.e",
+        "page_type": "UnionpayTransferDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "UnionpayMessageOrderDetail",
+      "extractor_class": "p9.c",
+      "registry_line": 54,
+      "matcher": {
+        "package_name": "com.unionpay",
+        "adapter_class": "aa.g",
+        "priority_in_app": 4,
+        "matcher_class": "y9.c",
+        "page_type": "UnionpayMessageOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "TaoBaoOrderDetailHuafei",
+      "extractor_class": "o9.c",
+      "registry_line": 55,
+      "matcher": null,
+      "status": "extractor_without_registered_matcher"
+    },
+    {
+      "page_type": "TaoBaoOrderDetailSuccess",
+      "extractor_class": "o9.d",
+      "registry_line": 56,
+      "matcher": null,
+      "status": "extractor_without_registered_matcher"
+    },
+    {
+      "page_type": "JingDongWalletBillDetail",
+      "extractor_class": "l9.f",
+      "registry_line": 57,
+      "matcher": {
+        "package_name": "com.jingdong.app.mall",
+        "adapter_class": "aa.c",
+        "priority_in_app": 0,
+        "matcher_class": "v9.f",
+        "page_type": "JingDongWalletBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "JingDongWalletBillDetailV2",
+      "extractor_class": "l9.g",
+      "registry_line": 58,
+      "matcher": {
+        "package_name": "com.jingdong.app.mall",
+        "adapter_class": "aa.c",
+        "priority_in_app": 1,
+        "matcher_class": "v9.g",
+        "page_type": "JingDongWalletBillDetailV2"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "JingDongAihuishouOrderDetail",
+      "extractor_class": "l9.b",
+      "registry_line": 59,
+      "matcher": {
+        "package_name": "com.jingdong.app.mall",
+        "adapter_class": "aa.c",
+        "priority_in_app": 2,
+        "matcher_class": "v9.b",
+        "page_type": "JingDongAihuishouOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "JingDongOrderDetail",
+      "extractor_class": "l9.c",
+      "registry_line": 60,
+      "matcher": {
+        "package_name": "com.jingdong.app.mall",
+        "adapter_class": "aa.c",
+        "priority_in_app": 3,
+        "matcher_class": "v9.c",
+        "page_type": "JingDongOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "JingDongOrderWeb",
+      "extractor_class": "l9.d",
+      "registry_line": 61,
+      "matcher": {
+        "package_name": "com.jingdong.app.mall",
+        "adapter_class": "aa.c",
+        "priority_in_app": 4,
+        "matcher_class": "v9.d",
+        "page_type": "JingDongOrderWeb"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "JingDongPaySuccess",
+      "extractor_class": "l9.e",
+      "registry_line": 62,
+      "matcher": {
+        "package_name": "com.jingdong.app.mall",
+        "adapter_class": "aa.c",
+        "priority_in_app": 5,
+        "matcher_class": "v9.e",
+        "page_type": "JingDongPaySuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanOrderDetail",
+      "extractor_class": "m9.g",
+      "registry_line": 64,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 0,
+        "matcher_class": "w9.g",
+        "page_type": "MeiTuanOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanVoucherDetail",
+      "extractor_class": "m9.i",
+      "registry_line": 65,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 1,
+        "matcher_class": "w9.i",
+        "page_type": "MeiTuanVoucherDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanVoucherSuccessDetail",
+      "extractor_class": "m9.j",
+      "registry_line": 66,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 2,
+        "matcher_class": "w9.j",
+        "page_type": "MeiTuanVoucherSuccessDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanGrouponDetail",
+      "extractor_class": "m9.e",
+      "registry_line": 67,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 3,
+        "matcher_class": "w9.e",
+        "page_type": "MeiTuanGrouponDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanMovieDetail",
+      "extractor_class": "m9.f",
+      "registry_line": 68,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 4,
+        "matcher_class": "w9.f",
+        "page_type": "MeiTuanMovieDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanChargeOrderDetail",
+      "extractor_class": "m9.c",
+      "registry_line": 69,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 5,
+        "matcher_class": "w9.c",
+        "page_type": "MeiTuanChargeOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanBikeOrderDetail",
+      "extractor_class": "m9.b",
+      "registry_line": 70,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 6,
+        "matcher_class": "w9.b",
+        "page_type": "MeiTuanBikeOrderDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanPaySuccess",
+      "extractor_class": "m9.h",
+      "registry_line": 71,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 7,
+        "matcher_class": "w9.h",
+        "page_type": "MeiTuanPaySuccess"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanWalletBillDetail",
+      "extractor_class": "m9.k",
+      "registry_line": 72,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 8,
+        "matcher_class": "w9.k",
+        "page_type": "MeiTuanWalletBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "MeiTuanDeliveryDetail",
+      "extractor_class": "m9.d",
+      "registry_line": 73,
+      "matcher": {
+        "package_name": "com.sankuai.meituan",
+        "adapter_class": "aa.d",
+        "priority_in_app": 9,
+        "matcher_class": "w9.d",
+        "page_type": "MeiTuanDeliveryDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "DouyingTransferWaiting",
+      "extractor_class": "k9.d",
+      "registry_line": 75,
+      "matcher": {
+        "package_name": "com.ss.android.ugc.aweme",
+        "adapter_class": "aa.b",
+        "priority_in_app": 0,
+        "matcher_class": "u9.d",
+        "page_type": "DouyingTransferWaiting"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "DouyingTransferReceived",
+      "extractor_class": "k9.c",
+      "registry_line": 75,
+      "matcher": {
+        "package_name": "com.ss.android.ugc.aweme",
+        "adapter_class": "aa.b",
+        "priority_in_app": 1,
+        "matcher_class": "u9.c",
+        "page_type": "DouyingTransferReceived"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "DouyingWalletBillDetail",
+      "extractor_class": "k9.e",
+      "registry_line": 75,
+      "matcher": {
+        "package_name": "com.ss.android.ugc.aweme",
+        "adapter_class": "aa.b",
+        "priority_in_app": 2,
+        "matcher_class": "u9.e",
+        "page_type": "DouyingWalletBillDetail"
+      },
+      "status": "statically_connected"
+    },
+    {
+      "page_type": "DouyingPaySuccess",
+      "extractor_class": "k9.b",
+      "registry_line": 75,
+      "matcher": {
+        "package_name": "com.ss.android.ugc.aweme",
+        "adapter_class": "aa.b",
+        "priority_in_app": 3,
+        "matcher_class": "u9.b",
+        "page_type": "DouyingPaySuccess"
+      },
+      "status": "statically_connected"
+    }
+  ],
+  "matchers_without_extractors": [
+    {
+      "package_name": "com.tencent.mm",
+      "adapter_class": "aa.h",
+      "priority_in_app": 11,
+      "matcher_class": "z9.e",
+      "page_type": "WechatPayPassword"
+    }
+  ],
+  "summary": {
+    "configured_packages": 11,
+    "registered_apps": 7,
+    "registered_matchers": 57,
+    "registered_extractors": 58,
+    "connected_extractors": 56,
+    "extractor_status_counts": {
+      "statically_connected": 56,
+      "extractor_without_registered_matcher": 2
+    }
+  },
+  "permissions": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.INTERNET",
+    "android.permission.CAMERA",
+    "android.permission.USE_BIOMETRIC",
+    "com.android.vending.BILLING",
+    "android.permission.POST_NOTIFICATIONS",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_SPECIAL_USE",
+    "android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS",
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.WRITE_SECURE_SETTINGS",
+    "android.permission.USE_FINGERPRINT",
+    "com.mutangtech.qianji.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "activities": [
+    "com.mutangtech.qianji.widget.WidgetSettingAct",
+    "com.mutangtech.qianji.ui.main.MainActivity",
+    "com.mutangtech.qianji.ui.settings.SettingsActivity",
+    "com.mutangtech.qianji.ui.feedback.home.FeedbackListActivity",
+    "com.mutangtech.qianji.ui.feedback.submit.FeedbackSubmitActivity",
+    "com.mutangtech.qianji.ui.feedback.detail.FeedbackDetailActivity",
+    "com.mutangtech.qianji.bill.add.AddBillActivity",
+    "com.mutangtech.qianji.currency.manage.CurrencyManageAct",
+    "com.mutangtech.qianji.bill.auto.AddBillIntentAct",
+    "com.mutangtech.qianji.auto.AutoRecordSettingsActivity",
+    "com.mutangtech.qianji.auto.QianjiAutoHomeActivity",
+    "com.mutangtech.qianji.auto.ocr.OcrAutoRecordSettingsActivity",
+    "com.mutangtech.qianji.auto.ocr.OcrShareActivity",
+    "com.mutangtech.qianji.auto.log.AutoBillLogListActivity",
+    "com.mutangtech.qianji.auto.log.AutoBillLogDetailActivity",
+    "com.mutangtech.qianji.ui.webview.WebViewActivity",
+    "com.mutangtech.qianji.ui.user.LoginActivity",
+    "com.mutangtech.qianji.wxapi.WXEntryActivity",
+    "com.mutangtech.qianji.ui.user.RegisterActivity",
+    "com.mutangtech.qianji.ui.user.FindPasswordActivity",
+    "com.mutangtech.qianji.ui.user.BindPhoneOrEmailAct",
+    "com.mutangtech.qianji.ui.user.EditUserProfileActivity",
+    "com.mutangtech.qianji.ui.user.cancelaccount.CancelAccountAct",
+    "com.mutangtech.qianji.ui.base.view.image.crop.CropImageActivity",
+    "com.mutangtech.qianji.statistics.bill.ui.StatisticsActivity",
+    "com.mutangtech.qianji.ui.category.manage.CategoryManageActivity",
+    "com.mutangtech.qianji.ui.category.submit.SubmitCateAct",
+    "com.mutangtech.qianji.ui.card.manage.CardManageAct",
+    "com.mutangtech.qianji.ui.card.submit.CardSubmitActivity",
+    "com.mutangtech.qianji.ui.permit.PermitActivity",
+    "com.mutangtech.qianji.ui.permit.SetPermitActivity",
+    "com.mutangtech.qianji.dataimport.home.ImportHomeAct",
+    "com.mutangtech.qianji.asset.submit.mvp.SubmitAssetActivity",
+    "com.mutangtech.qianji.asset.loanpay.LoanPayAct",
+    "com.mutangtech.qianji.asset.detail.AssetDetailAct",
+    "com.mutangtech.qianji.bill.baoxiao.BaoxiaoManageAct",
+    "com.mutangtech.qianji.ui.settings.CommonFragActivity",
+    "com.mutangtech.qianji.statistics.fullscreen.StatFullScreenPreviewAct",
+    "com.mutangtech.qianji.bill.search.SearchActivity",
+    "com.mutangtech.qianji.ui.user.vip.VipInfoActivity",
+    "com.mutangtech.qianji.ui.user.vip.gift.UserAddressAct",
+    "com.mutangtech.qianji.theme.ThemesActivity",
+    "com.mutangtech.qianji.book.submit.BookSubmitAct",
+    "com.mutangtech.qianji.book.manager.BookManageAct",
+    "com.mutangtech.qianji.book.detail.BookDetailAct",
+    "com.mutangtech.qianji.book.detail.BookDeleteAct",
+    "com.mutangtech.qianji.ui.guide.GuideHomeActivity",
+    "com.mutangtech.qianji.budget.BudgetManageAct",
+    "com.mutangtech.qianji.ui.calendar.CalendarHubPage",
+    "com.mutangtech.qianji.repeat.repeattask.submit.RepeatTaskSubmitAct",
+    "com.mutangtech.qianji.repeat.RepeatHomeAct",
+    "com.mutangtech.qianji.bill.imagegallery.BillImageGalleryActivity",
+    "com.mutangtech.qianji.bill.imagegallery.BillImagePreviewActivity",
+    "com.mutangtech.qianji.ui.imagepreview.ImagePreviewActivity",
+    "com.mutangtech.qianji.statistics.singlestat.SingleStatAct",
+    "com.mutangtech.qianji.schema.AppSchemaAct",
+    "com.mutangtech.qianji.share.daily.ShareBillActivity",
+    "com.mutangtech.qianji.ui.user.loginrecord.LoginRecordAct",
+    "com.mutangtech.qianji.asset.diff.AssetDiffAct",
+    "com.mutangtech.qianji.assetrecord.trend.AssetTrendAct",
+    "com.mutangtech.qianji.assetrecord.balancesheet.BalanceSheetDetailAct",
+    "com.mutangtech.qianji.assetrecord.assetline.AssetLineAct",
+    "com.mutangtech.qianji.assetrecord.guide.AssetRecordGuideAct",
+    "com.mutangtech.qianji.tag.manage.TagsManageAct",
+    "com.mutangtech.qianji.savingplan.ui.home.SavingPlanHomePage",
+    "com.mutangtech.qianji.savingplan.ui.sort.SavingPlanSortPage",
+    "com.mutangtech.qianji.savingplan.ui.submit.SubmitCustomSavingPlanAct",
+    "com.mutangtech.qianji.savingplan.ui.submit.SubmitIncreaseSavingPlanAct",
+    "com.mutangtech.qianji.ui.bill.batch.BillBatchModifyActivity",
+    "com.mutangtech.qianji.ui.bill.batch.BillBatchDeleteActivity",
+    "com.mutangtech.qianji.savingplan.ui.submit.SubmitFixedAmountSavingPlanAct",
+    "com.mutangtech.qianji.savingplan.ui.detail.SavingPlanDetailAct",
+    "com.mutangtech.qianji.savingplan.ui.deposit.SavingPlanDepositAct",
+    "com.mutangtech.qianji.ui.user.CrackNoticeActivity",
+    "com.mutangtech.qianji.asset.sort.AssetSortPage",
+    "com.mutangtech.qianji.assetgroup.manage.AssetGroupManageAct",
+    "com.mutangtech.qianji.assetgroup.sort.AssetGroupSortPage",
+    "com.tencent.tauth.AuthActivity",
+    "com.tencent.connect.common.AssistActivity",
+    "com.mutangtech.qianji.appwidget.monthbar.AppWidgetMonthBar4x2HonorConfigureActivity",
+    "com.mutangtech.qianji.appwidget.monthbar.AppWidgetMonthBar4x2ConfigureActivity",
+    "com.mutangtech.qianji.appwidget.budget2x2.AppWidgetBudget2x2HonorConfigureActivity",
+    "com.mutangtech.qianji.appwidget.budget2x2.AppWidgetBudget2x2ConfigureActivity",
+    "com.mutangtech.qianji.appwidget.full2x2.AppWidgetFull2x2HonorConfigureActivity",
+    "com.mutangtech.qianji.appwidget.full2x2.AppWidgetFull2x2ConfigureActivity",
+    "com.mutangtech.qianji.appwidget.dailyinfo2x2.AppWidgetDailyInfo2x2HonorConfigureActivity",
+    "com.mutangtech.qianji.appwidget.dailyinfo2x2.AppWidgetDailyInfo2x2ConfigureActivity",
+    "com.mutangtech.qianji.appwidget.heatmap2x2.AppWidgetHeatmap2x2HonorConfigureActivity",
+    "com.mutangtech.qianji.appwidget.heatmap2x2.AppWidgetHeatmap2x2ConfigureActivity",
+    "com.mutangtech.qianji.appwidget.latestxdays4x2.AppWidgetLatestXDaysHonorConfigureActivity",
+    "com.mutangtech.qianji.appwidget.latestxdays4x2.AppWidgetLatestXDaysConfigureActivity",
+    "com.mutangtech.qianji.appwidget.AppWidgetClickReceiverAct",
+    "com.google.android.gms.common.api.GoogleApiActivity",
+    "com.alipay.sdk.app.H5PayActivity",
+    "com.alipay.sdk.app.H5AuthActivity",
+    "com.alipay.sdk.app.PayResultActivity",
+    "com.alipay.sdk.app.AlipayResultActivity",
+    "com.alipay.sdk.app.H5OpenAuthActivity",
+    "com.alipay.sdk.app.APayEntranceActivity",
+    "com.sina.weibo.sdk.web.WebActivity",
+    "com.sina.weibo.sdk.share.ShareTransActivity"
+  ],
+  "services": [
+    {
+      "name": "androidx.appcompat.app.AppLocalesMetadataHolderService",
+      "permission": null,
+      "exported": "false"
+    },
+    {
+      "name": "com.mutangtech.qianji.quicksetting.QuickSettingsServiceCommon",
+      "permission": "android.permission.BIND_QUICK_SETTINGS_TILE",
+      "exported": "true"
+    },
+    {
+      "name": "com.mutangtech.qianji.auto.floatview.AutoBillFloatingService",
+      "permission": null,
+      "exported": "false"
+    },
+    {
+      "name": "com.google.android.accessibility.selecttospeak.SelectToSpeakService",
+      "permission": "android.permission.BIND_ACCESSIBILITY_SERVICE",
+      "exported": "true"
+    },
+    {
+      "name": "com.google.mlkit.common.internal.MlKitComponentDiscoveryService",
+      "permission": null,
+      "exported": "false"
+    },
+    {
+      "name": "com.google.android.datatransport.runtime.backends.TransportBackendDiscovery",
+      "permission": null,
+      "exported": "false"
+    },
+    {
+      "name": "com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService",
+      "permission": "android.permission.BIND_JOB_SERVICE",
+      "exported": "false"
+    }
+  ],
+  "database_entities": [
+    "AssetAccount",
+    "AssetGroup",
+    "AssetSnapshot",
+    "AutoTaskLog",
+    "Bank",
+    "Bill",
+    "Book",
+    "BookMember",
+    "Budget",
+    "Card",
+    "Category",
+    "CrashLog",
+    "Currency",
+    "ErrorLog",
+    "GracePeriodDisable",
+    "Installment",
+    "RepeatTask",
+    "Tag",
+    "TagGroup",
+    "UploadFileLogEntity",
+    "UserLog"
+  ]
+}

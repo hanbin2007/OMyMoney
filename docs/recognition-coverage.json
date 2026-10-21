@@ -1,0 +1,1560 @@
+{
+  "product": "OMyMoney",
+  "scope": "Stage B deterministic local recognition",
+  "sourceApk": {
+    "sha256": "0c656dabd3f9ce09592fc146e5ae2c349f1a542bf3d5bb3480248e2cb1f8f4bf",
+    "version_name": "4.5.3b7",
+    "version_code": 1229
+  },
+  "generation": "ruby scripts/recognition-coverage.rb; fixture counts are generated, test outcomes are verified separately",
+  "counts": {
+    "staticConnected": 56,
+    "packages": 7,
+    "positiveFixtureCases": 56,
+    "negativeFixtureCases": 56,
+    "livePaymentAppVerified": 0
+  },
+  "stateBoundary": "Recognized, queued, editing, ignored, failed and saved are distinct queue events; scenario coverage is not a count of persisted bills",
+  "platformEvidence": {
+    "kind": "API 34 emulator",
+    "device": "ledger34",
+    "scope": [
+      "Real accessibility grant/revoke and Settings node adapter",
+      "Synthetic-node capture to durable queue and manual review",
+      "Secure overlay with IME and Back",
+      "Bundled OCR without active network"
+    ],
+    "references": [
+      "docs/accessibility-capture.md",
+      "docs/draft-review.md",
+      "docs/offline-ocr.md",
+      "docs/acceptance-B.md"
+    ],
+    "notVerified": [
+      "Physical payment apps",
+      "Live payment execution",
+      "API 26/36 runtime in Stage B",
+      "TalkBack service in Stage B"
+    ]
+  },
+  "excluded": [
+    "cn.gov.pbc.dcep",
+    "com.sankuai.meituan.takeoutnew",
+    "com.taobao.taobao",
+    "me.ele"
+  ],
+  "scenarios": [
+    {
+      "pageType": "WeChatBillDetail",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.b",
+        "registryLine": 19,
+        "matcher": "z9.b",
+        "priority": 6
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "bill detail actual payment",
+        "bill waiting for payment"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WeChatTransferDetailWaiting",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.j",
+        "registryLine": 20,
+        "matcher": "z9.k",
+        "priority": 7
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "waiting transfer does not assert receipt",
+        "waiting chat title without transaction amount"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WeChatPaySuccess",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.e",
+        "registryLine": 21,
+        "matcher": "z9.f",
+        "priority": 12
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "payment success lacks original transaction time",
+        "embedded ordering homepage is not payment detail"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatPersonalRedPacketSend",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.h",
+        "registryLine": 22,
+        "matcher": "z9.i",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "personal packet sent awaiting claim",
+        "packet amount without owner title"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatPersonalRedPacketReceive",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.g",
+        "registryLine": 23,
+        "matcher": "z9.g",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "personal receipt layout one",
+        "personal packet greeting not amount"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatPersonalRedPacketReceive2",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.f",
+        "registryLine": 24,
+        "matcher": "z9.h",
+        "priority": 3
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "personal receipt layout two",
+        "separate yuan without receipt navigation"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WeChatTransferDetail",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.i",
+        "registryLine": 25,
+        "matcher": "z9.j",
+        "priority": 4
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "outgoing transfer detail",
+        "outgoing transfer failed"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WeChatTransferInDetail",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.k",
+        "registryLine": 26,
+        "matcher": "z9.l",
+        "priority": 5
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "merchant incoming transfer",
+        "merchant transfer missing merchant field"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatGroupRedPacketDetail",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.d",
+        "registryLine": 27,
+        "matcher": "z9.d",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "group progress does not establish my income",
+        "group face value alone"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatWithdrawSuccess",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.m",
+        "registryLine": 28,
+        "matcher": "z9.n",
+        "priority": 8
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "withdrawal success naming actually application",
+        "withdrawal form before application"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatWithdrawDetail",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.l",
+        "registryLine": 29,
+        "matcher": "z9.m",
+        "priority": 9
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "withdrawal detail with proven arrival",
+        "withdrawal unrelated balance"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "WechatChargeDetail",
+      "package": "com.tencent.mm",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "q9.c",
+        "registryLine": 30,
+        "matcher": "z9.c",
+        "priority": 10
+      },
+      "fixture": "core/src/test/resources/recognition/wechat/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "charge detail own account transfer",
+        "charge awaiting verification"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayBillDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.a",
+        "registryLine": 31,
+        "matcher": "t9.b",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "bill explicit amount and payment time",
+        "bill unpaid"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayPaySuccess",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.e",
+        "registryLine": 32,
+        "matcher": "t9.e",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "payment success without fabricated time",
+        "payment successful banner absent"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayTransfer",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.h",
+        "registryLine": 33,
+        "matcher": "t9.j",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "external transfer successful",
+        "external transfer before authorization"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayCharge",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.c",
+        "registryLine": 34,
+        "matcher": "t9.d",
+        "priority": 5
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "balance recharge actual debit",
+        "recharge only submitted"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayChargeDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.b",
+        "registryLine": 35,
+        "matcher": "t9.c",
+        "priority": 6
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "balance recharge detail no explicit status",
+        "balance detail not recharge"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayWithdraw",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.l",
+        "registryLine": 36,
+        "matcher": "t9.l",
+        "priority": 7
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "withdrawal successful",
+        "withdrawal pending"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayWithdrawDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.k",
+        "registryLine": 37,
+        "matcher": "t9.k",
+        "priority": 8
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "withdrawal detail no explicit status",
+        "withdrawal balance overview"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayTransferOut",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.j",
+        "registryLine": 38,
+        "matcher": "t9.i",
+        "priority": 3
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "balance transfer out",
+        "transfer out unknown destination"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayTransferIn",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.i",
+        "registryLine": 39,
+        "matcher": "t9.h",
+        "priority": 4
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "balance transfer in web layout",
+        "web transfer incomplete"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipaySendRedPacket",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.g",
+        "registryLine": 40,
+        "matcher": "t9.g",
+        "priority": 9
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "sent packet total not already claimed portion",
+        "packet progress without sent identity"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayQRCodeReceiveDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.f",
+        "registryLine": 41,
+        "matcher": "t9.f",
+        "priority": 10
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "QR payment received",
+        "QR awaiting receipt"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayYuLiBaoIncomeDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.m",
+        "registryLine": 42,
+        "matcher": "t9.m",
+        "priority": 11
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "investment earnings paid",
+        "estimated yield not paid"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayYuLiBaoTransferOutSuccess",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.q",
+        "registryLine": 43,
+        "matcher": "t9.q",
+        "priority": 12
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "investment principal out success",
+        "investment principal out pending"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayYuLiBaoTransferOutDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.p",
+        "registryLine": 44,
+        "matcher": "t9.p",
+        "priority": 13
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "investment principal out detail",
+        "investment out webview title required"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayYuLiBaoTransferInDetail",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.n",
+        "registryLine": 45,
+        "matcher": "t9.n",
+        "priority": 14
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "investment principal in detail",
+        "investment in without source account"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "AlipayYuLiBaoTransferInSuccess",
+      "package": "com.eg.android.AlipayGphone",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "j9.o",
+        "registryLine": 46,
+        "matcher": "t9.o",
+        "priority": 15
+      },
+      "fixture": "core/src/test/resources/recognition/alipay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "investment in success inline amount",
+        "investment in schedule without success"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "PddOrderDetail",
+      "package": "com.xunmeng.pinduoduo",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "n9.d",
+        "registryLine": 47,
+        "matcher": "x9.b",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/pdd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "order actual payment",
+        "cancelled order not paid"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "PddPayFirstDialog",
+      "package": "com.xunmeng.pinduoduo",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "n9.e",
+        "registryLine": 48,
+        "matcher": "x9.c",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/pdd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "pay later is future debit",
+        "pay later advertisement not order receipt"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "PddWalletBillDetail",
+      "package": "com.xunmeng.pinduoduo",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "n9.f",
+        "registryLine": 49,
+        "matcher": "x9.d",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/pdd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "wallet payment detail",
+        "wallet failed payment"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "UnionpayBillDetail",
+      "package": "com.unionpay",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "p9.b",
+        "registryLine": 50,
+        "matcher": "y9.b",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "bill payment detail",
+        "bill failed"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "UnionpayPaySuccess",
+      "package": "com.unionpay",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "p9.d",
+        "registryLine": 51,
+        "matcher": "y9.d",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "payment result no transaction time",
+        "payment form not success"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "UnionpayTransferSuccess",
+      "package": "com.unionpay",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "p9.f",
+        "registryLine": 52,
+        "matcher": "y9.f",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "transfer result",
+        "transfer failed"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "UnionpayTransferDetail",
+      "package": "com.unionpay",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "p9.e",
+        "registryLine": 53,
+        "matcher": "y9.e",
+        "priority": 3
+      },
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "transfer detail order time only",
+        "transfer detail no destination"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "UnionpayMessageOrderDetail",
+      "package": "com.unionpay",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "p9.c",
+        "registryLine": 54,
+        "matcher": "y9.c",
+        "priority": 4
+      },
+      "fixture": "core/src/test/resources/recognition/unionpay/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "message transaction type without success proof",
+        "message unknown transaction category"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "JingDongWalletBillDetail",
+      "package": "com.jingdong.app.mall",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "l9.f",
+        "registryLine": 57,
+        "matcher": "v9.f",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "wallet version one prior amount",
+        "wallet version one unpaid"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "JingDongWalletBillDetailV2",
+      "package": "com.jingdong.app.mall",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "l9.g",
+        "registryLine": 58,
+        "matcher": "v9.g",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "wallet version two merged node",
+        "wallet version two processing"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "JingDongAihuishouOrderDetail",
+      "package": "com.jingdong.app.mall",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "l9.b",
+        "registryLine": 59,
+        "matcher": "v9.b",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "recycling received payment",
+        "recycling quote is not income"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "JingDongOrderDetail",
+      "package": "com.jingdong.app.mall",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "l9.c",
+        "registryLine": 60,
+        "matcher": "v9.c",
+        "priority": 3
+      },
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "native paid order actual amount",
+        "native unpaid order"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "JingDongOrderWeb",
+      "package": "com.jingdong.app.mall",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "l9.d",
+        "registryLine": 61,
+        "matcher": "v9.d",
+        "priority": 4
+      },
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "web paid order colon labels",
+        "web unpaid order"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "JingDongPaySuccess",
+      "package": "com.jingdong.app.mall",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "l9.e",
+        "registryLine": 62,
+        "matcher": "v9.e",
+        "priority": 5
+      },
+      "fixture": "core/src/test/resources/recognition/jd/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "typed native payment and coupon line",
+        "untyped payment text is not native result"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanOrderDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.g",
+        "registryLine": 64,
+        "matcher": "w9.g",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "consumed order explicit payment time",
+        "cancelled order"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanVoucherDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.i",
+        "registryLine": 65,
+        "matcher": "w9.i",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "unused voucher not consumed yet",
+        "voucher advertisement lacks paid field"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanVoucherSuccessDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.j",
+        "registryLine": 66,
+        "matcher": "w9.j",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "voucher payment split character labels",
+        "voucher payment fragmented marker missing"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanGrouponDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.e",
+        "registryLine": 67,
+        "matcher": "w9.e",
+        "priority": 3
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "group purchase distinct detail",
+        "group purchase without actual payment"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanMovieDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.f",
+        "registryLine": 68,
+        "matcher": "w9.f",
+        "priority": 4
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "movie ticket actual amount",
+        "movie showtime not purchased ticket"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanChargeOrderDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.c",
+        "registryLine": 69,
+        "matcher": "w9.c",
+        "priority": 5
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "power bank return does not prove payment",
+        "power bank still rented"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanBikeOrderDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.b",
+        "registryLine": 70,
+        "matcher": "w9.b",
+        "priority": 6
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "bike paid ride summary",
+        "bike estimated price not paid"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanPaySuccess",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.h",
+        "registryLine": 71,
+        "matcher": "w9.h",
+        "priority": 7
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "web payment result inline amount",
+        "web payment requires typed title"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanWalletBillDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.k",
+        "registryLine": 72,
+        "matcher": "w9.k",
+        "priority": 8
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "wallet explicit paid time",
+        "wallet failed payment"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "MeiTuanDeliveryDetail",
+      "package": "com.sankuai.meituan",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "m9.d",
+        "registryLine": 73,
+        "matcher": "w9.d",
+        "priority": 9
+      },
+      "fixture": "core/src/test/resources/recognition/meituan/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "delivery order actual payment",
+        "delivery not placed"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "DouyingTransferWaiting",
+      "package": "com.ss.android.ugc.aweme",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "k9.d",
+        "registryLine": 75,
+        "matcher": "u9.d",
+        "priority": 0
+      },
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "outgoing transfer pending receipt",
+        "chat reminder without transfer page"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "DouyingTransferReceived",
+      "package": "com.ss.android.ugc.aweme",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "k9.c",
+        "registryLine": 75,
+        "matcher": "u9.c",
+        "priority": 1
+      },
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "outgoing transfer recipient received",
+        "transfer not received yet"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "DouyingWalletBillDetail",
+      "package": "com.ss.android.ugc.aweme",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "k9.e",
+        "registryLine": 75,
+        "matcher": "u9.e",
+        "priority": 2
+      },
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "wallet payment inline fields",
+        "wallet failed payment"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    },
+    {
+      "pageType": "DouyingPaySuccess",
+      "package": "com.ss.android.ugc.aweme",
+      "staticSource": {
+        "inventory": "docs/qianji-static-inventory.json",
+        "extractor": "k9.b",
+        "registryLine": 75,
+        "matcher": "u9.b",
+        "priority": 3
+      },
+      "fixture": "core/src/test/resources/recognition/douyin/scenarios.json",
+      "positiveCases": 1,
+      "negativeCases": 1,
+      "fixtureNames": [
+        "lynx payment success typed fields",
+        "untyped success label not lynx result"
+      ],
+      "evidenceLevel": "synthetic_fixtures",
+      "test": "RuleRegistryTest.everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence",
+      "livePaymentApp": {
+        "status": "not_tested",
+        "appVersion": null,
+        "device": null,
+        "api": null
+      },
+      "conclusion": "Independent bounded fixture coverage, not real payment-app compatibility or save-rate evidence"
+    }
+  ]
+}
