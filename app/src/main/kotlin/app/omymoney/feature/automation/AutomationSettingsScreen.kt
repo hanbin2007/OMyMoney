@@ -206,22 +206,27 @@ fun AutomationSettingsScreen(repository: AutomationSettingsRepository, onBack: (
             .toggleable(checked, enabled = enabled, role = Role.Switch, onValueChange = onChange))
 }
 
-fun applicationLabel(name: String): String = when (name) {
-    "com.tencent.mm" -> "微信"
-    "com.eg.android.AlipayGphone" -> "支付宝"
-    "com.xunmeng.pinduoduo" -> "拼多多"
-    "com.unionpay" -> "云闪付"
-    "com.jingdong.app.mall" -> "京东"
-    "com.sankuai.meituan" -> "美团"
-    "com.sankuai.meituan.takeoutnew" -> "美团外卖"
-    "com.ss.android.ugc.aweme" -> "抖音"
-    "OCR" -> "截图"
-    "MANUAL" -> "手工输入"
-    "ACCESSIBILITY" -> "无障碍"
-    "NOTIFICATION" -> "交易通知"
-    "IMPORT" -> "导入"
-    "SCHEDULE" -> "周期账单"
-    else -> name
+@Composable
+fun applicationLabel(name: String): String {
+    val label = when (name) {
+        "com.tencent.mm" -> R.string.runtime_app_wechat
+        "com.eg.android.AlipayGphone" -> R.string.runtime_app_alipay
+        "com.xunmeng.pinduoduo" -> R.string.runtime_app_pinduoduo
+        "com.unionpay" -> R.string.runtime_app_unionpay
+        "com.jingdong.app.mall" -> R.string.runtime_app_jd
+        "com.sankuai.meituan" -> R.string.runtime_app_meituan
+        "com.sankuai.meituan.takeoutnew" -> R.string.runtime_app_meituan_takeout
+        "com.ss.android.ugc.aweme" -> R.string.runtime_app_douyin
+        "com.mcdonalds.gma.cn" -> R.string.runtime_app_mcdonalds
+        "OCR" -> R.string.runtime_source_screenshot
+        "MANUAL" -> R.string.runtime_source_manual
+        "ACCESSIBILITY" -> R.string.runtime_source_accessibility
+        "NOTIFICATION" -> R.string.runtime_source_notification
+        "IMPORT" -> R.string.runtime_source_import
+        "SCHEDULE" -> R.string.runtime_source_schedule
+        else -> return name
+    }
+    return stringResource(label)
 }
 
 @Composable private fun dedupLabel(value: DedupPresentation): String = stringResource(when (value) {

@@ -1,0 +1,19 @@
+<resources>
+    <string name="yesterday">Yesterday</string>
+    <string name="day_expense_total">Expense %1$s</string>
+    <string name="day_income_total">Income %1$s</string>
+    <string name="budget_used_of_total">Spent %1$s / %2$s</string>
+    <string name="budget_set_hint">Set a monthly budget to keep track of spending</string>
+    <string name="assets_overview">Asset overview</string>
+    <string name="assets_account_count">%1$d accounts</string>
+    <string name="settings_section_ledger">Bookkeeping</string>
+    <string name="settings_section_automation">Automatic bookkeeping</string>
+    <string name="settings_section_data">Data and books</string>
+    <string name="settings_section_app">App</string>
+    <string name="settings_tagline">Local-first personal bookkeeping</string>
+    <string name="preferences_widgets">Home screen</string>
+    <string name="preferences_support">Diagnostics and updates</string>
+    <string name="editor_more_options">More options</string>
+    <string name="editor_more_summary">Fees, tags, images and statistics settings</string>
+    <string name="editor_more_categories">More categories</string>
+</resources>

@@ -2,7 +2,7 @@ package app.omymoney
 
 import android.os.Bundle
 import android.content.Intent
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import app.omymoney.ui.OMyMoneyApp
@@ -12,7 +12,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import app.omymoney.platform.security.LaunchRequest
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private var queueRequest by mutableIntStateOf(0)
     private var diagnosticsRequest by mutableIntStateOf(0)
     private var reviewId by mutableStateOf<String?>(null)

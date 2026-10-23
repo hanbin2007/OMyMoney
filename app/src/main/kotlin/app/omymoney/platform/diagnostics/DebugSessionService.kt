@@ -87,6 +87,18 @@ class DebugSessionService : Service() {
     private var ending = false
     private var stopReason = "service_destroyed"
 
+    override fun onCreate() {
+        super.onCreate()
+        scope.launch {
+            container.languageChanges.collect {
+                if (controller.state.value.active && !ending && notificationsAllowed(this@DebugSessionService)) {
+                    try { getSystemService(NotificationManager::class.java).notify(ID, notification()) }
+                    catch (_: SecurityException) { /* Permission may be revoked while the notification is rebuilt. */ }
+                }
+            }
+        }
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -165,17 +177,18 @@ class DebugSessionService : Service() {
     }
 
     private fun notification(): Notification {
+        val context = ContextCompat.getContextForLanguage(this)
         getSystemService(NotificationManager::class.java).createNotificationChannel(
-            NotificationChannel(CHANNEL, getString(R.string.debug_session_title), NotificationManager.IMPORTANCE_LOW))
+            NotificationChannel(CHANNEL, context.getString(R.string.debug_session_title), NotificationManager.IMPORTANCE_LOW))
         val open = PendingIntent.getActivity(this, ID, Intent(this, MainActivity::class.java)
             .setAction(MainActivity.ACTION_DIAGNOSTICS)
             .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val stop = PendingIntent.getService(this, ID, Intent(this, DebugSessionService::class.java).setAction(ACTION_STOP),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        return NotificationCompat.Builder(this, CHANNEL).setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(getString(R.string.debug_session_active)).setContentText(getString(R.string.debug_session_notification))
+        return NotificationCompat.Builder(context, CHANNEL).setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.debug_session_active)).setContentText(context.getString(R.string.debug_session_notification))
             .setContentIntent(open).setOngoing(true).setOnlyAlertOnce(true).setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .addAction(0, getString(R.string.debug_session_stop), stop).build()
+            .addAction(0, context.getString(R.string.debug_session_stop), stop).build()
     }
 
     companion object {

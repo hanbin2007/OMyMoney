@@ -7,6 +7,7 @@ import androidx.room.withTransaction
 import app.omymoney.core.model.*
 import app.omymoney.core.recognition.*
 import app.omymoney.core.recognition.rules.MeituanTakeoutRules
+import app.omymoney.core.recognition.rules.McDonaldsRules
 import java.time.Clock
 import java.time.Duration
 import java.time.Instant
@@ -89,7 +90,9 @@ class RecognitionQueue(private val database: LedgerDatabase, private val clock: 
                 byId[match.id]?.let { other ->
                     other.state == QueueState.SAVED && other.draft.source == BillSource.ACCESSIBILITY &&
                         other.draft.sourcePackage != packageName &&
-                        MeituanTakeoutRules.PACKAGE in setOf(packageName, other.draft.sourcePackage) &&
+                        setOf(MeituanTakeoutRules.PACKAGE, McDonaldsRules.PACKAGE).any {
+                            it == packageName || it == other.draft.sourcePackage
+                        } &&
                         other.billId?.let { dao.bill(it)?.let { row -> row.deletedAt == null } } == true
                 } == true
             } -> AutomaticReviewReason.CROSS_SOURCE_IDENTITY

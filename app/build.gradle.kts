@@ -12,9 +12,9 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = providers.gradleProperty("omymoneyQaVersionCode").orNull?.toInt()?.also {
-            require(it == 11) { "Only isolated upgrade acceptance version 11 is supported" }
-        } ?: 10
-        versionName = if (versionCode == 11) "0.2.9-qa" else "0.2.8"
+            require(it == 12) { "Only isolated upgrade acceptance version 12 is supported" }
+        } ?: 11
+        versionName = if (versionCode == 12) "0.2.10-qa" else "0.2.9"
         buildConfigField("String", "SERVICE_ORIGIN", "\"https://omymoney.origenclub.cn:58952\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,6 +37,7 @@ dependencies {
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.icons)
     implementation(libs.activity.compose)
+    implementation(libs.appcompat)
     implementation(libs.core.ktx)
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.compose)

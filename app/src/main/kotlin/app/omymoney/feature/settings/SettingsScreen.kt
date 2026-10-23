@@ -1,9 +1,14 @@
 package app.omymoney.feature.settings
 
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Widgets
@@ -14,6 +19,7 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.ScreenLockPortrait
 import androidx.compose.ui.Alignment
@@ -25,17 +31,21 @@ import app.omymoney.ui.components.IconBadge
 import app.omymoney.ui.components.SectionHeader
 import app.omymoney.ui.components.groupedShape
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.activity.compose.LocalActivity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.core.os.LocaleListCompat
 import app.omymoney.AppContainer
 import app.omymoney.android.R
 import app.omymoney.core.model.Book
 import app.omymoney.platform.security.lockErrorMessage
+import app.omymoney.platform.locale.AppLanguage
 import app.omymoney.ui.components.ScreenScaffold
 import app.omymoney.ui.theme.ThemeMode
 import kotlinx.coroutines.launch
@@ -49,6 +59,9 @@ fun SettingsScreen(container: AppContainer, book: Book?, onBack: () -> Unit, onD
     var storageError by remember { mutableStateOf(false) }
     var storageAttempt by remember { mutableIntStateOf(0) }
     var lockAttempt by remember { mutableIntStateOf(0) }
+    var languageDialog by rememberSaveable { mutableStateOf(false) }
+    val configuration = LocalConfiguration.current
+    val language = remember(configuration, languageDialog) { AppLanguage.fromLanguageTags(AppCompatDelegate.getApplicationLocales().toLanguageTags()) }
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     fun launcherUnavailable() { scope.launch {
@@ -66,11 +79,32 @@ fun SettingsScreen(container: AppContainer, book: Book?, onBack: () -> Unit, onD
         snackbar.currentSnackbarData?.dismiss()
         snackbar.showSnackbar(activity.getString(R.string.privacy_storage), withDismissAction = true, duration = SnackbarDuration.Indefinite)
     }
+    if (languageDialog) AlertDialog(onDismissRequest = { languageDialog = false },
+        title = { Text(stringResource(R.string.language_title)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()).selectableGroup()) {
+                AppLanguage.entries.forEach { option ->
+                    Row(Modifier.fillMaxWidth().heightIn(min = 56.dp)
+                        .selectable(language == option, role = Role.RadioButton, onClick = {
+                            languageDialog = false
+                            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(option.tag))
+                            container.refreshLanguageSurfaces()
+                        }).testTag("language_${option.tag.ifEmpty { "system" }}")
+                        .padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        RadioButton(language == option, onClick = null)
+                        Text(stringResource(option.label), Modifier.weight(1f))
+                    }
+                }
+            }
+        }, confirmButton = {}, dismissButton = {
+            TextButton(onClick = { languageDialog = false }) { Text(stringResource(R.string.cancel)) }
+        })
     ScreenScaffold(stringResource(R.string.preferences_title), onBack, snackbarHostState = snackbar) { padding ->
         LazyColumn(Modifier.fillMaxSize().padding(padding).testTag("preferences_screen"), contentPadding = PaddingValues(bottom = 24.dp)) {
             item { SectionHeader(stringResource(R.string.preferences_appearance)) }
             item {
-                Surface(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 2.dp), shape = groupedShape(0, 2),
+                Surface(Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 2.dp), shape = groupedShape(0, 3),
                     color = MaterialTheme.colorScheme.surfaceContainerLow) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         IconBadge(Icons.Outlined.Palette, containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.onPrimaryContainer)
@@ -86,7 +120,17 @@ fun SettingsScreen(container: AppContainer, book: Book?, onBack: () -> Unit, onD
                     }
                 }
             }
-            item { SettingSwitch(R.string.theme_dynamic, options.dynamicColor, "theme_dynamic", shape = groupedShape(1, 2), icon = Icons.Outlined.ColorLens) { write { container.preferences.setDynamicColor(it) } } }
+            item { SettingSwitch(R.string.theme_dynamic, options.dynamicColor, "theme_dynamic", shape = groupedShape(1, 3), icon = Icons.Outlined.ColorLens) { write { container.preferences.setDynamicColor(it) } } }
+            item {
+                Box(Modifier.padding(horizontal = 16.dp)) {
+                    GroupedRow(groupedShape(2, 3), headline = { Text(stringResource(R.string.language_title)) },
+                        supporting = { Text(stringResource(language.label)) },
+                        leading = { IconBadge(Icons.Outlined.Language, containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer) },
+                        trailing = { Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null) },
+                        modifier = Modifier.testTag("app_language"), onClick = { languageDialog = true })
+                }
+            }
             item { SectionHeader(stringResource(R.string.preferences_privacy)) }
             item { SettingSwitch(R.string.privacy_lock, lock.enabled, "privacy_enable", !lock.authenticating, shape = groupedShape(0, 2), icon = Icons.Outlined.Lock) { lockAttempt++; container.privacyLock.setEnabled(activity, it) } }
             item { SettingSwitch(R.string.privacy_secure_screen, options.secureScreens || options.lockEnabled, "privacy_screenshots", !options.lockEnabled, shape = groupedShape(1, 2), icon = Icons.Outlined.ScreenLockPortrait) { write { container.preferences.setSecureScreens(it) } } }

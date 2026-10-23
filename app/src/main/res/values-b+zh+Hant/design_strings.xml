@@ -1,0 +1,19 @@
+<resources>
+    <string name="yesterday">昨天</string>
+    <string name="day_expense_total">支出 %1$s</string>
+    <string name="day_income_total">收入 %1$s</string>
+    <string name="budget_used_of_total">已用 %1$s / %2$s</string>
+    <string name="budget_set_hint">設定每月預算，隨時掌握開支</string>
+    <string name="assets_overview">資產總覽</string>
+    <string name="assets_account_count">%1$d 個帳戶</string>
+    <string name="settings_section_ledger">記帳</string>
+    <string name="settings_section_automation">自動記帳</string>
+    <string name="settings_section_data">資料與帳本</string>
+    <string name="settings_section_app">應用程式</string>
+    <string name="settings_tagline">本機優先的個人記帳</string>
+    <string name="preferences_widgets">主畫面捷徑與小工具</string>
+    <string name="preferences_support">診斷與更新</string>
+    <string name="editor_more_options">更多選項</string>
+    <string name="editor_more_summary">手續費、標籤、圖片與統計設定</string>
+    <string name="editor_more_categories">更多分類</string>
+</resources>

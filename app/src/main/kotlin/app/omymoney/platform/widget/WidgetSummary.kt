@@ -2,6 +2,7 @@ package app.omymoney.platform.widget
 
 import android.content.Context
 import android.appwidget.AppWidgetProviderInfo
+import androidx.core.content.ContextCompat
 import app.omymoney.android.R
 import app.omymoney.core.model.*
 import app.omymoney.core.statistics.*
@@ -11,9 +12,14 @@ import java.time.Instant
 data class WidgetSummary(val title: String, val status: String, val income: String, val expense: String, val hidden: Boolean = false,
     val requiresConfiguration: Boolean = false) {
     companion object {
-        fun hidden(context: Context) = WidgetSummary(context.getString(R.string.app_name), context.getString(R.string.widget_private), "", "", true)
-        fun unavailable(context: Context) = WidgetSummary(context.getString(R.string.app_name), context.getString(R.string.widget_book_unavailable), "", "", requiresConfiguration = true)
+        fun hidden(context: Context) = ContextCompat.getContextForLanguage(context).let {
+            WidgetSummary(it.getString(R.string.app_name), it.getString(R.string.widget_private), "", "", true)
+        }
+        fun unavailable(context: Context) = ContextCompat.getContextForLanguage(context).let {
+            WidgetSummary(it.getString(R.string.app_name), it.getString(R.string.widget_book_unavailable), "", "", requiresConfiguration = true)
+        }
         fun create(context: Context, book: Book?, bills: List<Bill>, rates: List<ManualExchangeRate>, privacy: Boolean, host: Int, now: Instant): WidgetSummary {
+            val context = ContextCompat.getContextForLanguage(context)
             if (privacy || (host and AppWidgetProviderInfo.WIDGET_CATEGORY_KEYGUARD) != 0) return hidden(context)
             if (book == null || book.archived) return unavailable(context)
             val month = now.atZone(book.zoneId).toLocalDate().withDayOfMonth(1)

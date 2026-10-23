@@ -12,6 +12,7 @@ object RuleRegistry {
         "com.jingdong.app.mall" to JdRules::create,
         "com.sankuai.meituan" to MeituanRules::create,
         MeituanTakeoutRules.PACKAGE to MeituanTakeoutRules::create,
+        McDonaldsRules.PACKAGE to McDonaldsRules::create,
         "com.ss.android.ugc.aweme" to DouyinRules::create,
     )
     val supportedPackages: Set<String> = Collections.unmodifiableSet(factories.keys.toSet())

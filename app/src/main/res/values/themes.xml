@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.OMyMoney" parent="android:style/Theme.Material.Light.NoActionBar">
+    <style name="Theme.OMyMoney" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowActionModeOverlay">true</item>

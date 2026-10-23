@@ -236,10 +236,10 @@ internal fun RemoteHeading(label: Int) {
 }
 
 @Composable
-internal fun remoteErrorText(code: String, diagnostics: Boolean = true): String = when (code) {
-    "http_401", "http_403" -> if (diagnostics) "配对凭据无效或已撤销，请重新配对。" else "更新服务器拒绝访问，请稍后重试。应用更新无需配对日志上传。"
-    "http_429" -> if (diagnostics) "请求较多，请稍后重试；日志仍保存在本机。" else "更新服务器繁忙，请稍后重试。"
-    "http_503" -> "服务器暂不可用或空间不足，请稍后重试。"
-    "storage", "disk_space" -> "设备存储不可用或剩余空间不足。"
-    else -> stringResource(R.string.remote_error)
-}
+internal fun remoteErrorText(code: String, diagnostics: Boolean = true): String = stringResource(when (code) {
+    "http_401", "http_403" -> if (diagnostics) R.string.runtime_pairing_invalid else R.string.runtime_update_access_denied
+    "http_429" -> if (diagnostics) R.string.runtime_diagnostics_rate_limited else R.string.runtime_updates_busy
+    "http_503" -> R.string.runtime_server_unavailable
+    "storage", "disk_space" -> R.string.runtime_storage_unavailable
+    else -> R.string.remote_error
+})

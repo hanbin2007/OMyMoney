@@ -29,7 +29,7 @@ class RuleRegistryTest {
     }
 
     @Test fun everyEnabledRuleHasPassingIndependentPositiveAndNegativeEvidence() {
-        assertEquals(apps.values.toSet() + MeituanTakeoutRulesTest.PACKAGE, RuleRegistry.supportedPackages)
+        assertEquals(apps.values.toSet() + MeituanTakeoutRulesTest.PACKAGE + McDonaldsRulesTest.PACKAGE, RuleRegistry.supportedPackages)
         val fixtureIds = apps.keys.flatMap(::fixtures).map { it.ruleId }.toSet()
         assertEquals(fixtureIds, all.map { it.id }.toSet())
         apps.forEach { (name, pkg) ->

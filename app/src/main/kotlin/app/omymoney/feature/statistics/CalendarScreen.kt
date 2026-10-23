@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.TextAlign
@@ -44,24 +45,26 @@ internal fun LazyListScope.calendarDays(summary: StatisticsSummary, month: YearM
     listMode: Boolean, displayedKind: EconomicKind, onChoose: (LocalDate) -> Unit) {
     val days = summary.days.filter { YearMonth.from(it.date) == month }
     if (listMode) itemsIndexed(days, key = { _, day -> "calendar/${day.date}" }) { index, day ->
+        val locale = LocalConfiguration.current.locales[0]
         val description = dayDescription(day, summary)
         val chosen = day.date == selected
         GroupedRow(groupedShape(index, days.size), onClick = { onChoose(day.date) },
             modifier = Modifier.testTag("stats_day_${day.date}").semantics { contentDescription = description; this.selected = chosen },
             containerColor = if (chosen) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surfaceContainerLow,
-            headline = { Text(day.date.format(DateTimeFormatter.ofPattern("MM-dd EEE"))) },
+            headline = { Text(day.date.format(DateTimeFormatter.ofPattern("MM-dd EEE", locale))) },
             supporting = { Column {
                 Text(economicLabel(displayedKind), style = MaterialTheme.typography.labelMedium)
                 StatisticsValue(day.totals[displayedKind], summary.currency, Modifier.fillMaxWidth())
             } })
     } else item {
+        val locale = LocalConfiguration.current.locales[0]
         // Each day is tinted by its share of the month's busiest day, turning the grid into a spending heatmap.
         val peak = days.mapNotNull { it.totals[displayedKind].minor?.abs() }.maxOrNull()?.takeIf { it.signum() > 0 }
         val heat = MaterialTheme.colorScheme.primary
         Surface(Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.large, color = MaterialTheme.colorScheme.surfaceContainerLow) {
             Column(Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Row(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                    java.time.DayOfWeek.entries.forEach { day -> Text(day.getDisplayName(java.time.format.TextStyle.NARROW, java.util.Locale.getDefault()),
+                    java.time.DayOfWeek.entries.forEach { day -> Text(day.getDisplayName(java.time.format.TextStyle.NARROW, locale),
                         Modifier.weight(1f), textAlign = TextAlign.Center, style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant) }
                 }

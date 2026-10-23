@@ -3,7 +3,7 @@ package app.omymoney.feature.automation
 import android.os.Bundle
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -34,7 +34,7 @@ import app.omymoney.ui.theme.LedgerTheme
 import app.omymoney.ui.theme.ThemeMode
 import app.omymoney.ui.components.*
 
-class ScreenshotImportActivity : ComponentActivity() {
+class ScreenshotImportActivity : AppCompatActivity() {
     internal lateinit var importer: ScreenshotImportViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

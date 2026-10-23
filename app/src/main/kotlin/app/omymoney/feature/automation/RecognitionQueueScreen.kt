@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.omymoney.android.R
@@ -29,6 +30,7 @@ fun RecognitionQueueScreen(queue: RecognitionQueue, onBack: () -> Unit, onReview
     var busyId by remember { mutableStateOf<String?>(null) }
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     LaunchedEffect(queue, retry) {
         try {
             error = false; loading = true
@@ -64,7 +66,7 @@ fun RecognitionQueueScreen(queue: RecognitionQueue, onBack: () -> Unit, onReview
                                     scope.launch {
                                         try { onReview(queue.resolve(entry.id, QueueOutcome.Reopen).entry) }
                                         catch (cancelled: CancellationException) { throw cancelled }
-                                        catch (_: Exception) { snackbar.showSnackbar("未能重新打开，请重试") }
+                                        catch (_: Exception) { snackbar.showSnackbar(context.getString(R.string.runtime_reopen_failed)) }
                                         finally { busyId = null }
                                     }
                                 })

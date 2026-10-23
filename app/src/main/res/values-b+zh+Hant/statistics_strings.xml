@@ -1,0 +1,35 @@
+<resources>
+    <string name="stats_overview">概覽</string>
+    <string name="stats_monthly">月度</string>
+    <string name="stats_annual">年度</string>
+    <string name="stats_categories">分類</string>
+    <string name="stats_calendar">日曆</string>
+    <string name="stats_entries">明細</string>
+    <string name="stats_filter">篩選統計</string>
+    <string name="stats_income">收入</string>
+    <string name="stats_expense">支出</string>
+    <string name="stats_transfer">轉帳及還款</string>
+    <string name="stats_net">收支結餘</string>
+    <string name="stats_unknown">缺少匯率：%1$s</string>
+    <string name="stats_unavailable">無法彙總</string>
+    <string name="stats_empty">本期無計入統計的記錄</string>
+    <string name="stats_no_day_entries">當日無計入統計的記錄</string>
+    <string name="stats_load_failed">無法讀取統計，請重試</string>
+    <string name="stats_uncategorized">未分類</string>
+    <string name="stats_trend">收支趨勢</string>
+    <string name="stats_chart_description">%1$s趨勢，縱軸%2$s至%3$s；收入為實線圓點，支出為虛線方點。逐期金額請見彙總資料。</string>
+    <string name="stats_income_legend">收入 · 實線 / 圓點</string>
+    <string name="stats_expense_legend">支出 · 虛線 / 方點</string>
+    <string name="stats_daily">每日彙總</string>
+    <string name="stats_months">年度逐月彙總</string>
+    <string name="stats_fee">手續費</string>
+    <string name="stats_refund_reduction">退款沖減</string>
+    <string name="stats_refund_income">超額退款收入</string>
+    <string name="stats_date_scope">%1$s 至 %2$s · %3$s</string>
+    <string name="stats_day_description">%1$s，收入%2$s，支出%3$s，轉帳及還款%4$s</string>
+    <string name="stats_category_description">%1$s · %2$s</string>
+    <string name="stats_units">單位：%1$s</string>
+    <string name="stats_zero_axis">零點</string>
+    <string name="stats_category_scale">範圍：%1$s 至 %2$s</string>
+    <string name="stats_nominal">原幣 %1$s %2$s</string>
+</resources>

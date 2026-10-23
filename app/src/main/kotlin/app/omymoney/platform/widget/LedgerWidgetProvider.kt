@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
+import androidx.core.content.ContextCompat
 import app.omymoney.AppContainer
 import app.omymoney.OMyMoneyApplication
 import app.omymoney.android.R
@@ -70,8 +71,12 @@ class LedgerWidgets(private val context: Context, private val container: AppCont
         catch (_: Exception) { withContext(Dispatchers.Main.immediate) { publish(null) } }
     }
     // Called synchronously on screen-off, before any asynchronous database refresh.
-    fun redact() { ids().forEach { manager.updateAppWidget(it, views(context, it, books.read(it), WidgetSummary.hidden(context))) } }
+    fun redact() {
+        val context = ContextCompat.getContextForLanguage(context)
+        ids().forEach { manager.updateAppWidget(it, views(context, it, books.read(it), WidgetSummary.hidden(context))) }
+    }
     private fun publish(snapshot: Snapshot?) {
+        val context = ContextCompat.getContextForLanguage(context)
         ids().forEach { id ->
             val bookId = books.read(id)
             val private = container.preferences.state.value.lockEnabled || context.getSystemService(KeyguardManager::class.java).isDeviceLocked
@@ -88,10 +93,15 @@ class LedgerWidgets(private val context: Context, private val container: AppCont
     }
     companion object {
         fun views(context: Context, id: Int, bookId: String?, model: WidgetSummary) = RemoteViews(context.packageName, R.layout.ledger_widget).apply {
+            val context = ContextCompat.getContextForLanguage(context)
             setTextViewText(R.id.widget_title, model.title)
             setTextViewText(R.id.widget_status, model.status)
             setTextViewText(R.id.widget_income, model.income)
             setTextViewText(R.id.widget_expense, model.expense)
+            setTextViewText(R.id.widget_income_label, context.getString(R.string.income))
+            setTextViewText(R.id.widget_expense_label, context.getString(R.string.expense))
+            setTextViewText(R.id.widget_open, context.getString(R.string.widget_open))
+            setContentDescription(R.id.widget_add, context.getString(R.string.new_bill))
             setViewVisibility(R.id.widget_totals, if (model.income.isEmpty() && model.expense.isEmpty()) View.GONE else View.VISIBLE)
             setContentDescription(R.id.widget_income, context.getString(R.string.widget_income, model.income))
             setContentDescription(R.id.widget_expense, context.getString(R.string.widget_expense, model.expense))

@@ -110,7 +110,7 @@ internal fun PaymentReceipt(draft: TransactionDraft, onEdit: () -> Unit, onDismi
                 BasicText(draft.amount?.let { "${it.currency.code} ${it.decimalText()}" }.orEmpty(),
                     style = MaterialTheme.typography.titleLarge.copy(color = amountColor, fontFeatureSettings = "tnum"), maxLines = 3,
                     autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = MaterialTheme.typography.titleLarge.fontSize, stepSize = 1.sp))
-                Text(listOfNotNull(draft.sourcePackage?.let(::applicationLabel), draft.payment?.counterparty?.takeIf(String::isNotBlank)).joinToString(" · "),
+                Text(listOfNotNull(draft.sourcePackage?.let { applicationLabel(it) }, draft.payment?.counterparty?.takeIf(String::isNotBlank)).joinToString(" · "),
                     style = MaterialTheme.typography.bodySmall, color = foreground.copy(alpha = 0.72f), maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
             LedgerIconButton(Icons.Outlined.Edit, stringResource(R.string.edit_bill), { leave(onEdit) }, Modifier.testTag("receipt_edit"))

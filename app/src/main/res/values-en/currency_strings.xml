@@ -1,0 +1,35 @@
+<resources>
+    <string name="currency_delete_confirm">Delete exchange rate</string>
+    <string name="currency_rates">Currencies and manual rates</string>
+    <string name="currency_rate_add">Add exchange rate</string>
+    <string name="currency_rate_edit">Edit exchange rate</string>
+    <string name="currency_source">Source currency</string>
+    <string name="currency_target">Target currency</string>
+    <string name="currency_rate">Rate: 1 %1$s equals how many %2$s</string>
+    <string name="currency_rate_date">Rate date (yyyy-MM-dd)</string>
+    <string name="currency_rate_dated">Rate date: %1$s</string>
+    <string name="currency_rate_delete">Delete %1$s / %2$s rate</string>
+    <string name="currency_rate_delete_note">Exchange rates and actual amounts on saved transactions will not change.</string>
+    <string name="currency_rate_empty">No manual exchange rates yet</string>
+    <string name="currency_rate_invalid">Enter a decimal rate greater than zero, with up to 18 decimal places</string>
+    <string name="currency_date_invalid">Enter a valid date, such as 2026-10-11</string>
+    <string name="currency_pair_invalid">Choose different currencies</string>
+    <string name="currency_pair_exists">A rate already exists for this currency pair. Edit that record instead.</string>
+    <string name="currency_valuation">Active account conversion (current manual rates)</string>
+    <string name="currency_missing">Missing exchange rate for %1$s. Total unavailable.</string>
+    <string name="currency_use_manual_rate">Use current manual rate</string>
+    <string name="currency_recalculate">Recalculate at this rate</string>
+    <string name="currency_nominal">Transaction currency</string>
+    <string name="currency_actual">Actual settlement amount (before fees)</string>
+    <string name="currency_difference">Actual amount minus converted amount: %1$s</string>
+    <string name="currency_fee">Fee (charged separately)</string>
+    <string name="currency_fee_invalid">Enter a nonnegative amount within the decimal precision of this currency</string>
+    <string name="currency_fee_changed">The cash account currency has changed. Re-enter the fee in the new currency or clear it.</string>
+    <string name="currency_snapshot_invalid">Confirm the actual amount, exchange rate and settlement account</string>
+    <string name="currency_missing_pair">No manual rate exists for this pair. Enter the rate for this transaction.</string>
+    <string name="currency_exchange_changed">The account currency has changed. Confirm the exchange rate and actual amount again.</string>
+    <string name="currency_account_changed">The account currency has changed. Select the settlement account again to confirm the amount.</string>
+    <string name="asset_history_title">Balance history</string>
+    <string name="asset_history_basis">Rebuilt by transaction date · %1$s · All books</string>
+    <string name="asset_history_change">Daily change</string>
+</resources>

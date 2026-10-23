@@ -22,7 +22,7 @@ class OverlayReviewTest {
     @Test fun comparisonRetainsSecondPrecision() = runBlocking {
         withLedger { catalog, _, _, _, _ ->
             val draft = catalog.initialDraft().copy(occurredAt = Instant.parse("2026-10-11T12:00:40Z"), zoneId = java.time.ZoneId.of("UTC"))
-            assertTrue(app.omymoney.feature.automation.summary(draft).contains("12:00:40"))
+            assertTrue(app.omymoney.feature.automation.summary(context, draft).contains("12:00:40"))
         }
     }
     @Test fun newCandidatesDoNotReplaceAnExpandedSessionAndLockedWindowsStayHidden() {

@@ -1,0 +1,35 @@
+<resources>
+    <string name="currency_delete_confirm">删除汇率</string>
+    <string name="currency_rates">币种与手动汇率</string>
+    <string name="currency_rate_add">新增汇率</string>
+    <string name="currency_rate_edit">编辑汇率</string>
+    <string name="currency_source">原币种</string>
+    <string name="currency_target">目标币种</string>
+    <string name="currency_rate">汇率：1 %1$s = 多少 %2$s</string>
+    <string name="currency_rate_date">汇率日期（yyyy-MM-dd）</string>
+    <string name="currency_rate_dated">汇率日期：%1$s</string>
+    <string name="currency_rate_delete">删除 %1$s / %2$s 汇率</string>
+    <string name="currency_rate_delete_note">已保存账单的汇率和实际金额不变。</string>
+    <string name="currency_rate_empty">尚无手动汇率</string>
+    <string name="currency_rate_invalid">请输入大于零的十进制汇率，最多 18 位小数</string>
+    <string name="currency_date_invalid">请输入有效日期，例如 2026-10-11</string>
+    <string name="currency_pair_invalid">请选择不同的币种</string>
+    <string name="currency_pair_exists">此币种组合已有汇率，请编辑现有记录</string>
+    <string name="currency_valuation">未归档账户折算（当前手动汇率）</string>
+    <string name="currency_missing">缺少 %1$s 汇率，暂不提供合计</string>
+    <string name="currency_use_manual_rate">使用当前手动汇率</string>
+    <string name="currency_recalculate">按此汇率重算</string>
+    <string name="currency_nominal">账单币种</string>
+    <string name="currency_actual">实际结算金额（未扣手续费）</string>
+    <string name="currency_difference">实际金额与汇率换算差额：%1$s</string>
+    <string name="currency_fee">手续费（另扣）</string>
+    <string name="currency_fee_invalid">请输入零或正数，并遵守此币种的小数位数</string>
+    <string name="currency_fee_changed">现金账户币种已改变，请按新币种重新输入或清空手续费</string>
+    <string name="currency_snapshot_invalid">请确认实际金额、汇率和结算账户</string>
+    <string name="currency_missing_pair">没有此币种组合的手动汇率，请填写本次汇率</string>
+    <string name="currency_exchange_changed">账户币种已改变，请重新确认本次汇率和实际金额</string>
+    <string name="currency_account_changed">账户币种已改变，请重新选择结算账户以确认本次金额</string>
+    <string name="asset_history_title">余额历史</string>
+    <string name="asset_history_basis">按交易日期重建 · %1$s · 全部账本</string>
+    <string name="asset_history_change">当日变化</string>
+</resources>

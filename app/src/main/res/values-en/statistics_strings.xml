@@ -1,0 +1,35 @@
+<resources>
+    <string name="stats_overview">Overview</string>
+    <string name="stats_monthly">Monthly</string>
+    <string name="stats_annual">Annual</string>
+    <string name="stats_categories">Categories</string>
+    <string name="stats_calendar">Calendar</string>
+    <string name="stats_entries">Details</string>
+    <string name="stats_filter">Filter statistics</string>
+    <string name="stats_income">Income</string>
+    <string name="stats_expense">Expenses</string>
+    <string name="stats_transfer">Transfers and repayments</string>
+    <string name="stats_net">Net income</string>
+    <string name="stats_unknown">Missing exchange rate: %1$s</string>
+    <string name="stats_unavailable">Cannot calculate totals</string>
+    <string name="stats_empty">No included records for this period</string>
+    <string name="stats_no_day_entries">No included records for this day</string>
+    <string name="stats_load_failed">Cannot read statistics. Please try again.</string>
+    <string name="stats_uncategorized">Uncategorized</string>
+    <string name="stats_trend">Income and expense trend</string>
+    <string name="stats_chart_description">%1$s trend. Vertical axis: %2$s to %3$s. Income uses a solid line with circles; expenses use a dashed line with squares. See the summary for amounts by period.</string>
+    <string name="stats_income_legend">Income · Solid line / circles</string>
+    <string name="stats_expense_legend">Expenses · Dashed line / squares</string>
+    <string name="stats_daily">Daily summary</string>
+    <string name="stats_months">Monthly summary for the year</string>
+    <string name="stats_fee">Fees</string>
+    <string name="stats_refund_reduction">Refund offsets</string>
+    <string name="stats_refund_income">Excess refund income</string>
+    <string name="stats_date_scope">%1$s to %2$s · %3$s</string>
+    <string name="stats_day_description">%1$s, income %2$s, expenses %3$s, transfers and repayments %4$s</string>
+    <string name="stats_category_description">%1$s · %2$s</string>
+    <string name="stats_units">Unit: %1$s</string>
+    <string name="stats_zero_axis">Zero</string>
+    <string name="stats_category_scale">Range: %1$s to %2$s</string>
+    <string name="stats_nominal">Original currency %1$s %2$s</string>
+</resources>

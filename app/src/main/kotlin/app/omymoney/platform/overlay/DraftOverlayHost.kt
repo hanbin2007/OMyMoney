@@ -86,7 +86,7 @@ class DraftOverlayHost(private val service: AccessibilityService, private val co
         val lifecycle = Owner { dismiss(OverlayDismissReason.USER) }
         owner = lifecycle
         receiptMode = entry.state == QueueState.SAVED && entry.automaticRevision != null
-        val context = ContextThemeWrapper(service, R.style.Theme_OMyMoney)
+        val context = ContextThemeWrapper(androidx.core.content.ContextCompat.getContextForLanguage(service), R.style.Theme_OMyMoney)
         val root = object : FrameLayout(context) {
             override fun dispatchKeyEvent(event: KeyEvent): Boolean {
                 if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {

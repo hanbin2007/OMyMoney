@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preferences_title">外觀與隱私</string>
+    <string name="preferences_appearance">外觀</string>
+    <string name="preferences_privacy">隱私</string>
+    <string name="theme_system">系統</string>
+    <string name="theme_light">淺色</string>
+    <string name="theme_dark">深色</string>
+    <string name="theme_dynamic">桌布配色</string>
+    <string name="privacy_lock">應用程式隱私鎖</string>
+    <string name="privacy_secure_screen">禁止截圖與螢幕投射</string>
+    <string name="privacy_disclosure">離開應用程式或鎖定螢幕後須重新驗證。啟用時主畫面小工具會始終隱藏金額，也不會顯示背景記帳浮動提示。資料仍存放在本機，此鎖不會加密資料庫或匯出的備份。</string>
+    <string name="privacy_screenshot_disclosure">啟用隱私鎖時會強制開啟此保護，同時保護最近使用的應用程式預覽。系統及裝置可能有不同限制。</string>
+    <string name="widget_book_unavailable">原帳本已封存或不存在，請重新選擇。</string>
+    <string name="widget_private">金額已隱藏，開啟應用程式查看。</string>
+    <string name="widget_refresh_failed">無法重新整理帳目，請開啟應用程式重試。</string>
+    <string name="widget_income">本月收入 %1$s</string>
+    <string name="widget_expense">本月支出 %1$s</string>
+    <string name="widget_open">開啟帳本</string>
+    <string name="widget_description">本月收支與快速記帳</string>
+    <string name="widget_choose">選擇小工具使用的帳本</string>
+    <string name="widget_pin">新增主畫面小工具</string>
+    <string name="shortcut_pin">新增此帳本的記帳捷徑</string>
+    <string name="widget_disclosure">關閉隱私鎖時，主畫面小工具會展示本月收支。小工具只包含已儲存帳單；帳本幣別換算使用本機手動匯率。</string>
+    <string name="widget_launcher_unavailable">目前的主畫面不支援此操作，可從主畫面小工具清單中新增。</string>
+    <string name="privacy_unlock">解鎖</string>
+    <string name="privacy_no_credential">請先在系統設定中設定螢幕鎖定 PIN、圖案或密碼。</string>
+    <string name="privacy_cancelled">已取消驗證。</string>
+    <string name="privacy_failed">驗證未完成，請重試。</string>
+    <string name="privacy_storage">無法儲存設定，請重試。</string>
+    <string name="privacy_auth_title">驗證身分</string>
+    <string name="privacy_auth_description">使用系統螢幕鎖定憑證或生物辨識開啟 OMyMoney。</string>
+</resources>

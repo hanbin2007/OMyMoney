@@ -128,38 +128,38 @@
   {
     "group": "androidx.appcompat",
     "name": "appcompat-resources",
-    "version": "1.6.1",
+    "version": "1.7.1",
     "licenses": [
       {
         "name": "The Apache Software License, Version 2.0",
         "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
       }
     ],
-    "licenseMetadataFrom": "androidx.appcompat:appcompat-resources:1.6.1",
+    "licenseMetadataFrom": "androidx.appcompat:appcompat-resources:1.7.1",
     "notices": [],
     "artifacts": [
       {
-        "file": "appcompat-resources-1.6.1.aar",
-        "sha256": "db915dbf49357863de1669ff9fdd8e9008d65fe357af6cce9ae63043ad5f6617"
+        "file": "appcompat-resources-1.7.1.aar",
+        "sha256": "8e2db31224ca53b108c784da2b361959062716d416b210cfef3d5a3828306df0"
       }
     ]
   },
   {
     "group": "androidx.appcompat",
     "name": "appcompat",
-    "version": "1.6.1",
+    "version": "1.7.1",
     "licenses": [
       {
         "name": "The Apache Software License, Version 2.0",
         "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
       }
     ],
-    "licenseMetadataFrom": "androidx.appcompat:appcompat:1.6.1",
+    "licenseMetadataFrom": "androidx.appcompat:appcompat:1.7.1",
     "notices": [],
     "artifacts": [
       {
-        "file": "appcompat-1.6.1.aar",
-        "sha256": "7ea5573b93ababd3bd32312451c6ea48a662b03a140dda81aebe75776a20a422"
+        "file": "appcompat-1.7.1.aar",
+        "sha256": "2ad334a323b28046e89b738c77d184cb3dcca32a551ab048851b2fda23a3ba26"
       }
     ]
   },
@@ -1282,19 +1282,19 @@
   {
     "group": "androidx.fragment",
     "name": "fragment",
-    "version": "1.3.6",
+    "version": "1.5.4",
     "licenses": [
       {
         "name": "The Apache Software License, Version 2.0",
         "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
       }
     ],
-    "licenseMetadataFrom": "androidx.fragment:fragment:1.3.6",
+    "licenseMetadataFrom": "androidx.fragment:fragment:1.5.4",
     "notices": [],
     "artifacts": [
       {
-        "file": "fragment-1.3.6.aar",
-        "sha256": "12f0831b4f08092d5dda272c1923c11a022ff20ceffed3e801751e21bb8d1c1e"
+        "file": "fragment-1.5.4.aar",
+        "sha256": "bc3c2431dda42e94bb9511c587eae890d276e4aafe393a8da7b00169186dafde"
       }
     ]
   },
@@ -2257,19 +2257,21 @@
   {
     "group": "androidx.startup",
     "name": "startup-runtime",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "licenses": [
       {
         "name": "The Apache Software License, Version 2.0",
         "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
       }
     ],
-    "licenseMetadataFrom": "androidx.startup:startup-runtime:1.1.1",
-    "notices": [],
+    "licenseMetadataFrom": "androidx.startup:startup-runtime:1.2.0",
+    "notices": [
+      "androidx.startup-startup-runtime-1.2.0/META-INF_androidx_startup_startup-runtime_LICENSE.txt"
+    ],
     "artifacts": [
       {
-        "file": "startup-runtime-1.1.1.aar",
-        "sha256": "e0a6329a371262fe4c450372b70fdaf33b769ef6917094723787cfce896b1dd3"
+        "file": "startup-runtime-1.2.0.aar",
+        "sha256": "f51d361d17b30b09cfb9e2aebf301d113f99437cbf462a066092795fb60eddd2"
       }
     ]
   },
@@ -2827,6 +2829,82 @@
       {
         "file": "vision-interfaces-16.3.0.aar",
         "sha256": "8f0192a26d01b728a01a15a620d829fff7095822822694438a93127c04cb16fb"
+      }
+    ]
+  },
+  {
+    "group": "com.squareup.okhttp3",
+    "name": "okhttp-android",
+    "version": "5.3.2",
+    "licenses": [
+      {
+        "name": "The Apache Software License, Version 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "licenseMetadataFrom": "com.squareup.okhttp3:okhttp-android:5.3.2",
+    "notices": [],
+    "artifacts": [
+      {
+        "file": "okhttp-release.aar",
+        "sha256": "f1a78812ebeef4d45eee0dbeb4f27347210f564d2b8ee411f012ce8573b0a658"
+      }
+    ]
+  },
+  {
+    "group": "com.squareup.okhttp3",
+    "name": "okhttp",
+    "version": "5.3.2",
+    "licenses": [
+      {
+        "name": "The Apache Software License, Version 2.0",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "licenseMetadataFrom": "com.squareup.okhttp3:okhttp:5.3.2",
+    "notices": [],
+    "artifacts": [
+      {
+        "file": "okhttp-metadata-5.3.2.jar",
+        "sha256": "e720a383fdc3eb1df4aac77a085e61b7730837364151de867093fdbcafcb44aa"
+      }
+    ]
+  },
+  {
+    "group": "com.squareup.okio",
+    "name": "okio-jvm",
+    "version": "3.16.4",
+    "licenses": [
+      {
+        "name": "The Apache Software License, Version 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "licenseMetadataFrom": "com.squareup.okio:okio-jvm:3.16.4",
+    "notices": [],
+    "artifacts": [
+      {
+        "file": "okio-jvm-3.16.4.jar",
+        "sha256": "2196b993cd34dbbd919e7e01f57a4781b58bee80f86106163e287c20343a96a7"
+      }
+    ]
+  },
+  {
+    "group": "com.squareup.okio",
+    "name": "okio",
+    "version": "3.16.4",
+    "licenses": [
+      {
+        "name": "The Apache Software License, Version 2.0",
+        "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+      }
+    ],
+    "licenseMetadataFrom": "com.squareup.okio:okio:3.16.4",
+    "notices": [],
+    "artifacts": [
+      {
+        "file": "okio-metadata-3.16.4.jar",
+        "sha256": "c9964f394c4cd32b79bf338afbfa2f2297221eee08311787061cea55f87dd60e"
       }
     ]
   },

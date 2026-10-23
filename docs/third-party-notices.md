@@ -9,7 +9,7 @@ In-app icons use the AndroidX Material Icons library. OMyMoney is an independent
 
 ## Release Inventory
 
-`release-dependencies.json` is the current resolved release-runtime inventory, including platform/BOM metadata. It records 163 modules, inherited publisher POM license declarations, cached original artifact SHA-256 values, and 100 license/notice references to 99 distinct original files. Two lifecycle-viewmodel artifacts reference the same notice path. Reproduce it with `scripts/dependency-inventory.init.gradle` and `scripts/collect-licenses.rb`; the build instructions give the exact commands. Test-only JUnit, Espresso and test providers are not part of this release-runtime inventory.
+`release-dependencies.json` is the current resolved release-runtime inventory, including platform/BOM metadata. It records 167 modules, inherited publisher POM license declarations, cached original artifact SHA-256 values, and 101 license/notice references to 100 distinct original files. Two lifecycle-viewmodel artifacts reference the same notice path. Reproduce it with `scripts/dependency-inventory.init.gradle` and `scripts/collect-licenses.rb`; the build instructions give the exact commands. Test-only JUnit, Espresso and test providers are not part of this release-runtime inventory.
 
 The APK includes `assets/licenses/dependencies.json`, the original notices under `assets/licenses/third-party/`, and a human-readable `README.txt`. This compensates for duplicate generic `META-INF/AL2.0` / `LGPL2.1` packaging exclusions rather than silently omitting attribution.
 

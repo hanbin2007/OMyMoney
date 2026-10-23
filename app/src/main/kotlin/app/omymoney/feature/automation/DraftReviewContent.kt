@@ -1,5 +1,6 @@
 package app.omymoney.feature.automation
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -22,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -64,6 +66,7 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
 }
 
 @Composable private fun ReviewEvidence(entry: QueueEntry, catalog: CatalogState, store: LedgerStore, showSimilar: Boolean) {
+    val context = LocalContext.current
     var evidenceOpen by rememberSaveable(entry.id) { mutableStateOf(false) }
     var comparisonOpen by rememberSaveable(entry.id) { mutableStateOf(false) }
     val evidence = entry.result.evidence()
@@ -107,7 +110,7 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
                     val differences = Deduplicator.differences(DedupCandidate(entry.id, entry.result.draft(), evidence),
                         DedupCandidate(match.id, draft, fields)) + if (entry.result.draft().note != draft.note) listOf("note") else emptyList()
                     if (differences.isNotEmpty()) Text(stringResource(R.string.review_differences,
-                        differences.joinToString("、") { evidenceLabel(it) }))
+                        differences.joinToString(context.getString(R.string.runtime_list_separator)) { evidenceLabel(context, it) }))
                     else Text(stringResource(R.string.review_no_differences))
                 }
             }
@@ -118,7 +121,7 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
         Text(stringResource(R.string.review_account_candidates), style = MaterialTheme.typography.labelLarge)
         suggestions.options.take(5).forEach { suggestion ->
             val account = catalog.accounts.firstOrNull { it.id == suggestion.accountId }
-            Text(listOfNotNull(account?.name, suggestion.reasons.joinToString("、") { evidenceLabel(it) },
+            Text(listOfNotNull(account?.name, suggestion.reasons.joinToString(context.getString(R.string.runtime_list_separator)) { evidenceLabel(context, it) },
                 if (suggestion.differences.isEmpty()) null else stringResource(R.string.review_account_conflict)).joinToString(" · "),
                 style = MaterialTheme.typography.bodySmall)
         }
@@ -132,7 +135,7 @@ fun DraftReviewContent(editor: BillEditorViewModel, catalog: CatalogViewModel, s
                 Surface(Modifier.fillMaxWidth(), shape = groupedShape(index, evidence.size, outer = 16.dp, inner = 4.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHigh) {
                     Column(Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
-                        Text(evidenceLabel(field.field), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Text(evidenceLabel(context, field.field), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
                         Text(field.rawText, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
@@ -158,25 +161,39 @@ private fun comparisonFlow(match: DedupMatch, store: LedgerStore): Flow<Comparis
     }
 
 @Composable private fun ComparisonFields(draft: TransactionDraft, evidence: List<FieldEvidence>, catalog: CatalogState) {
-    Text(summary(draft))
-    Text("收支类型：${draft.kind?.let { billKindLabel(it) } ?: "未确认"}")
+    val context = LocalContext.current
+    Text(summary(context, draft))
+    Text(stringResource(R.string.runtime_field_value, stringResource(R.string.runtime_kind),
+        draft.kind?.let { billKindLabel(it) } ?: stringResource(R.string.runtime_unconfirmed)))
     Text(stringResource(R.string.review_source, applicationLabel(draft.sourcePackage ?: draft.source.name)))
-    evidence.filter { it.field == "merchant" || it.field in ORDER_ID_FIELDS }.forEach { Text("${evidenceLabel(it.field)}：${it.rawText}") }
-    val accounts = listOfNotNull(draft.fromAccountId, draft.toAccountId).map { id -> catalog.accounts.firstOrNull { it.id == id }?.name ?: "账户不可用" }
-    Text("账户：${accounts.joinToString(" → ").ifEmpty { "未选择" }}")
+    evidence.filter { it.field == "merchant" || it.field in ORDER_ID_FIELDS }.forEach {
+        Text(stringResource(R.string.runtime_field_value, evidenceLabel(context, it.field), it.rawText))
+    }
+    val accounts = listOfNotNull(draft.fromAccountId, draft.toAccountId).map { id ->
+        catalog.accounts.firstOrNull { it.id == id }?.name ?: context.getString(R.string.unavailable_account)
+    }
+    Text(stringResource(R.string.runtime_field_value, stringResource(R.string.account),
+        accounts.joinToString(" → ").ifEmpty { context.getString(R.string.runtime_not_selected) }))
 }
 
-internal fun summary(draft: TransactionDraft): String = listOfNotNull(
-    draft.amount?.let { "${it.currency.code} ${it.decimalText()}" } ?: "金额未确认",
-    draft.occurredAt?.atZone(draft.zoneId)?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")) ?: "时间未确认",
+internal fun summary(context: Context, draft: TransactionDraft): String = listOfNotNull(
+    draft.amount?.let { "${it.currency.code} ${it.decimalText()}" } ?: context.getString(R.string.review_amount_unknown),
+    draft.occurredAt?.atZone(draft.zoneId)?.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")) ?: context.getString(R.string.runtime_time_unconfirmed),
     draft.note.take(160).takeIf(String::isNotBlank),
 ).joinToString("\n")
 
-private fun evidenceLabel(field: String): String = when (field) {
-    "amount" -> "金额"; "kind" -> "收支类型"; "occurredAt" -> "交易时间"; "merchant" -> "商户"; "orderId" -> "订单号"
-    "transactionId" -> "交易单号"; "merchantOrderId" -> "商户订单号"
-    "sourcePackage" -> "来源应用"; "accounts", "accountHint" -> "账户"; "fromAccountHint" -> "付款账户依据"; "toAccountHint" -> "收款账户依据"
-    "note" -> "备注"; "paymentState" -> "付款状态"; "fee" -> "手续费"; "name" -> "名称匹配"; "similar_name" -> "相似名称"; "card_tail" -> "尾号匹配"; "scenario" -> "应用场景"
-    "notification" -> "通知内容"
-    else -> field
+private fun evidenceLabel(context: Context, field: String): String {
+    val label = when (field) {
+        "amount" -> R.string.amount; "kind" -> R.string.runtime_kind; "occurredAt" -> R.string.transaction_time
+        "merchant" -> R.string.runtime_merchant; "orderId" -> R.string.runtime_order_id
+        "transactionId" -> R.string.runtime_transaction_id; "merchantOrderId" -> R.string.runtime_merchant_order_id
+        "sourcePackage" -> R.string.runtime_source_app; "accounts", "accountHint" -> R.string.account
+        "fromAccountHint" -> R.string.runtime_payment_account_evidence; "toAccountHint" -> R.string.runtime_receiving_account_evidence
+        "note" -> R.string.note; "paymentState" -> R.string.runtime_payment_state; "fee" -> R.string.currency_fee
+        "name" -> R.string.runtime_name_match; "similar_name" -> R.string.runtime_similar_name
+        "card_tail" -> R.string.runtime_card_tail_match; "scenario" -> R.string.runtime_scenario
+        "notification" -> R.string.runtime_notification_content
+        else -> return field
+    }
+    return context.getString(label)
 }

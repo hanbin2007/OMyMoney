@@ -4,13 +4,21 @@ import android.app.Application
 import android.content.Context
 import android.app.Activity
 import android.os.Bundle
+import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.LocaleManagerCompat
+import androidx.core.content.ContextCompat
 import app.omymoney.data.LedgerStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.asStateFlow
 import app.omymoney.platform.accessibility.AccessibilityStatus
 import app.omymoney.platform.notification.RecognitionNotification
 import app.omymoney.core.diagnostics.recordSafely
@@ -32,6 +40,10 @@ class OMyMoneyApplication : Application() {
         // A killed import may leave its bounded temporary image, never an attachment.
         java.io.File(cacheDir, "ocr").listFiles().orEmpty().filter { it.isFile && it.name.endsWith(".image") }.forEach { it.delete() }
     }
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        container.refreshLanguageSurfaces()
+    }
 }
 
 class AppContainer(context: Context) {
@@ -47,6 +59,9 @@ class AppContainer(context: Context) {
     val appVisible = MutableStateFlow(false)
     val debugSession = app.omymoney.platform.diagnostics.DebugSessionController(appContext, diagnostics) { appVisible.value }
     private val notificationRefresh = MutableStateFlow(0)
+    private val languageTags = MutableStateFlow("")
+    val languageChanges = languageTags.asStateFlow()
+    private var languageRefresh: Job? = null
     private var scheduleCheck: kotlinx.coroutines.Job? = null
     fun checkSchedules() {
         if (scheduleCheck?.isActive == true) return
@@ -60,6 +75,27 @@ class AppContainer(context: Context) {
         }
     }
     fun refreshNotificationPermission() { notificationRefresh.value++ }
+    fun refreshLanguageSurfaces() {
+        val requested = if (android.os.Build.VERSION.SDK_INT >= 33) LocaleManagerCompat.getApplicationLocales(appContext).toLanguageTags()
+            else AppCompatDelegate.getApplicationLocales().toLanguageTags()
+        languageRefresh?.cancel()
+        languageRefresh = applicationScope.launch {
+            // AppCompat persists pre-33 choices asynchronously; services must not read the previous choice.
+            repeat(50) {
+                val stored = withContext(Dispatchers.IO) { LocaleManagerCompat.getApplicationLocales(appContext).toLanguageTags() }
+                if (stored == requested) {
+                    val tags = withContext(Dispatchers.IO) { ContextCompat.getContextForLanguage(appContext).resources.configuration.locales.toLanguageTags() }
+                    if (languageTags.value != tags) {
+                        languageTags.value = tags
+                        refreshNotificationPermission()
+                        widgets.refresh()
+                    }
+                    return@launch
+                }
+                delay(100)
+            }
+        }
+    }
     init {
         AccessibilityStatus.observe(appContext, diagnostics)
         widgets.observeInstalled()
@@ -78,6 +114,7 @@ class AppContainer(context: Context) {
                 AccessibilityStatus.refreshAccess(activity)
                 app.omymoney.platform.notification.NotificationCaptureStatus.requestConnection(activity)
                 resumed += activity; appVisible.value = true; refreshNotificationPermission(); checkSchedules()
+                refreshLanguageSurfaces()
                 diagnostics.recordRuntime("activity_resumed", debugSession.state.value.active, true)
             }
             override fun onActivityPaused(activity: Activity) {

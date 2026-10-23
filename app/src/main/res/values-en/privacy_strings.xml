@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preferences_title">Appearance and privacy</string>
+    <string name="preferences_appearance">Appearance</string>
+    <string name="preferences_privacy">Privacy</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dynamic">Wallpaper colors</string>
+    <string name="privacy_lock">App privacy lock</string>
+    <string name="privacy_secure_screen">Block screenshots and screen casting</string>
+    <string name="privacy_disclosure">Authentication is required again after leaving the app or locking the screen. When enabled, home screen widgets always hide amounts and background transaction overlays are hidden. Data stays on this device. This lock does not encrypt the database or exported backups.</string>
+    <string name="privacy_screenshot_disclosure">This protection is always on when the privacy lock is enabled, and also protects recent-app previews. System and device limitations may vary.</string>
+    <string name="widget_book_unavailable">The original book is archived or no longer exists. Choose another book.</string>
+    <string name="widget_private">Amounts hidden. Open the app to view.</string>
+    <string name="widget_refresh_failed">Cannot refresh transactions. Open the app and try again.</string>
+    <string name="widget_income">Monthly income %1$s</string>
+    <string name="widget_expense">Monthly expenses %1$s</string>
+    <string name="widget_open">Open book</string>
+    <string name="widget_description">Monthly income, expenses and quick entry</string>
+    <string name="widget_choose">Choose widget book</string>
+    <string name="widget_pin">Add home screen widget</string>
+    <string name="shortcut_pin">Add quick-entry shortcut for this book</string>
+    <string name="widget_disclosure">When the privacy lock is off, home screen widgets show monthly income and expenses. Widgets include only saved transactions. Conversion to the book currency uses local manual exchange rates.</string>
+    <string name="widget_launcher_unavailable">Your launcher does not support this action. Add it from the home screen widget list instead.</string>
+    <string name="privacy_unlock">Unlock</string>
+    <string name="privacy_no_credential">First set a screen-lock PIN, pattern or password in system settings.</string>
+    <string name="privacy_cancelled">Authentication cancelled.</string>
+    <string name="privacy_failed">Authentication did not complete. Please try again.</string>
+    <string name="privacy_storage">Cannot save settings. Please try again.</string>
+    <string name="privacy_auth_title">Verify your identity</string>
+    <string name="privacy_auth_description">Use your screen-lock credentials or biometrics to access OMyMoney.</string>
+</resources>

@@ -27,6 +27,7 @@ class RecognitionNotification(private val context: Context) {
 
     fun refresh(pendingCount: Int, settings: AutomationSettings, runtime: CaptureRuntime,
         notificationRuntime: NotificationCaptureRuntime = NotificationCaptureRuntime()) {
+        val context = ContextCompat.getContextForLanguage(context)
         val manager = context.getSystemService(NotificationManager::class.java)
         if (!allowed() || pendingCount == 0 && !settings.enabled) { manager.cancel(ID); return }
         manager.createNotificationChannel(NotificationChannel(CHANNEL, context.getString(R.string.review_notification_channel), NotificationManager.IMPORTANCE_LOW)
